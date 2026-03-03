@@ -377,3 +377,12 @@ s3_region = "env(S3_REGION)"
 s3_access_key = "env(S3_ACCESS_KEY)"
 # Configures AWS_SECRET_ACCESS_KEY for S3 bucket
 s3_secret_key = "env(S3_SECRET_KEY)"
+[functions.suggestRecipesGenAI]
+verify_jwt = false
+
+# Nếu sau này bạn bị lỗi tương tự ở các hàm AI khác, bạn cũng thêm vào đây:
+[functions.analyzeImageGenAI]
+verify_jwt = false
+
+[functions.chat-chef]
+verify_jwt = false

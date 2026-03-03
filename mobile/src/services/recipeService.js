@@ -15,19 +15,24 @@ const formatError = (error) => {
 
     const message = error.message || String(error);
 
-    if (message.includes("FunctionsHttpError") || message.includes("non-2xx status code")) {
-        return "Máy chủ AI đang bận xử lý, bạn vui lòng thử lại sau giây lát nhé!";
+    // 1. ƯU TIÊN 1: Kiểm tra mã HTTP Status (401 = Lỗi Token/Đăng nhập)
+    // Supabase thường bọc status trong error.status hoặc error.context.status
+    const statusCode = error.status || error?.context?.status;
+    if (statusCode === 401 || message.includes("authorized") || message.includes("401") || message.includes("Auth")) {
+        return "Phiên đăng nhập đã hết hạn hoặc bạn chưa đăng nhập. Vui lòng đăng nhập lại để dùng tính năng AI nhé!";
     }
 
+    // 2. ƯU TIÊN 2: Kiểm tra lỗi quá tải/hết lượt
     if (message.includes("resource-exhausted") || message.includes("hết lượt dùng")) {
         return "Bạn đã hết lượt sử dụng AI trong ngày hôm nay. Hãy quay lại vào ngày mai nhé!";
     }
 
-    // Cập nhật: Báo chính xác lỗi 401 là do phiên đăng nhập
-    if (message.includes("authorized") || message.includes("401") || message.includes("Auth")) {
-        return "Phiên đăng nhập đã hết hạn hoặc bạn chưa đăng nhập. Vui lòng đăng nhập lại để dùng tính năng AI nhé!";
+    // 3. ƯU TIÊN 3: Các lỗi server/hàm Edge Function chung chung
+    if (message.includes("FunctionsHttpError") || message.includes("non-2xx status code")) {
+        return "Máy chủ AI đang bận xử lý, bạn vui lòng thử lại sau giây lát nhé!";
     }
 
+    // 4. Lỗi mạng
     if (message.includes("network") || message.includes("fetch")) {
         return "Kết nối mạng không ổn định. Bạn vui lòng kiểm tra lại mạng nhé!";
     }
@@ -57,8 +62,7 @@ export const recipeService = {
                 body: {
                     imageBase64: base64Image,
                     mimeType: 'image/jpeg'
-                },
-                headers: await getAuthHeaders() // Ép gửi token
+                }
             });
 
             const { data, error } = response;
@@ -90,10 +94,10 @@ export const recipeService = {
                         if (constraintsResult?.success && constraintsResult.constraints?.memberCount > 0) {
                             const { dietaryPreferences, healthConditions } = constraintsResult.constraints;
                             familyContext = `
-Gia đình có ${constraintsResult.constraints.memberCount} thành viên.
-Sở thích ăn uống chung: ${dietaryPreferences?.join(', ') || 'Không có'}.
-Lưu ý sức khỏe: ${healthConditions?.join(', ') || 'Không có'}.
-Hãy ưu tiên gợi ý món phù hợp với sở thích và tránh các món không phù hợp với sức khỏe gia đình.`;
+                                Gia đình có ${constraintsResult.constraints.memberCount} thành viên.
+                                Sở thích ăn uống chung: ${dietaryPreferences?.join(', ') || 'Không có'}.
+                                Lưu ý sức khỏe: ${healthConditions?.join(', ') || 'Không có'}.
+                                Hãy ưu tiên gợi ý món phù hợp với sở thích và tránh các món không phù hợp với sức khỏe gia đình.`;
                         }
                     }
                 } catch (importError) {
@@ -102,8 +106,7 @@ Hãy ưu tiên gợi ý món phù hợp với sở thích và tránh các món k
             }
 
             const response = await supabase.functions.invoke('suggestRecipesGenAI', {
-                body: { ingredients, style, familyContext },
-                headers: await getAuthHeaders() // Ép gửi token chống lỗi 401 do race condition
+                body: { ingredients, style, familyContext }
             });
 
             if (!response) {
@@ -137,38 +140,103 @@ Hãy ưu tiên gợi ý món phù hợp với sở thích và tránh các món k
         }
     },
 
+    /**
+         * Tự động gợi ý thực đơn ngày linh hoạt theo cấu trúc mâm cơm gia đình Việt
+         */
     async suggestDailyMealsAI(user_id) {
         try {
             const { inventoryService } = await import('./inventoryService');
 
+            // 1. Lấy dữ liệu nguyên liệu trong tủ lạnh
             const inventoryRes = await inventoryService.getItems(user_id);
-            const ingredients = inventoryRes.success
+            const ingredients = inventoryRes.success && inventoryRes.items.length > 0
                 ? inventoryRes.items.map(i => i.item_name).join(', ')
-                : 'Hiện tủ lạnh trống';
+                : 'Tủ lạnh hiện tại chưa có thông tin nguyên liệu, hãy đề xuất các nguyên liệu phổ thông dễ mua.';
 
-            const prompt = `Hãy gợi ý đúng 3 món ăn cho 3 bữa: Sáng, Trưa, Tối. 
-            Dựa trên các nguyên liệu có sẵn: ${ingredients}.
-            Hãy chọn các món Việt Nam hài hòa và đủ dinh dưỡng.`;
+            // 2. Lấy thông tin gia đình
+            let familyDetails = 'Chưa có thông tin chi tiết các thành viên trong gia đình.';
+            if (user_id) {
+                try {
+                    const { familyMemberService } = await import('./familyMemberService');
+                    const membersRes = await familyMemberService.getFamilyMembers(user_id);
+                    if (membersRes.success && membersRes.data && membersRes.data.length > 0) {
+                        familyDetails = membersRes.data.map(m =>
+                            `- ${m.name || m.role} (${m.age_group || 'Không rõ tuổi'}): Thích ăn ${m.dietary_preferences?.join(', ') || 'đa dạng'}, Dị ứng/Kiêng: ${m.allergies?.join(', ') || 'Không'}, Lưu ý sức khỏe: ${m.health_conditions?.join(', ') || 'Bình thường'}.`
+                        ).join('\n');
+                    }
+                } catch (err) {
+                    console.warn("[RecipeService] Could not fetch detailed family members:", err);
+                }
+            }
 
-            const result = await recipeService.suggestRecipesGenAI(prompt, 'Daily Plan', user_id);
+            // 3. Prompt định hướng cấu trúc thay vì số lượng
+            const prompt = `Hãy đóng vai một chuyên gia dinh dưỡng và đầu bếp gia đình Việt Nam. 
+Nhiệm vụ của bạn là lên Thực Đơn 1 Ngày (Sáng, Trưa, Tối) phối hợp hài hòa các nguyên liệu đang có sẵn: ${ingredients}.
 
-            if (result.success && result.recipes.length >= 3) {
+THỰC ĐƠN PHẢI TUÂN THỦ NGHIÊM NGẶT CẤU TRÚC BỮA ĂN VIỆT NAM:
+- Bữa sáng: Ưu tiên nhanh gọn, dễ tiêu, cung cấp năng lượng khởi đầu (ví dụ: bánh mì, phở, bún, xôi, cháo); kèm rau thơm hoặc trái cây nhẹ.
+- Bữa trưa: Bữa ăn đầy đủ năng lượng nhất. Cấu trúc mâm cơm bắt buộc hài hòa các nhóm: tinh bột (cơm/bún/miến), 1-2 món mặn đậm đà (thịt/cá kho, rim, xào), 1 món rau (luộc/xào), 1 món canh; có thể thêm trái cây tráng miệng. Các món mặn và nhạt phải hỗ trợ vị cho nhau.
+- Bữa tối: Cân bằng, thanh đạm, ít dầu mỡ hơn trưa để dễ ngủ. Thường gồm cơm, 1 món đạm nhẹ nhàng, 1-2 món rau xanh nhiều chất xơ, và món canh.
+
+HỒ SƠ GIA ĐÌNH (BẮT BUỘC TUÂN THỦ VÀ TRÁNH CÁC MÓN DỊ ỨNG):
+${familyDetails}
+
+YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
+1. Bạn tự quyết định số lượng món ăn sao cho mâm cơm đủ đầy, không gượng ép số lượng.
+2. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, bạn BẮT BUỘC phải mở đầu bằng một trong các từ khóa sau để phân loại: [Bữa sáng], [Bữa trưa], hoặc [Bữa tối].`;
+
+            // 4. Gọi hàm AI
+            const result = await recipeService.suggestRecipesGenAI(prompt, 'Thực đơn gia đình Việt', user_id);
+
+            // 5. Logic phân nhóm thông minh dựa vào Tag (Description)
+            if (result.success && result.recipes && result.recipes.length > 0) {
+                const breakfast = [];
+                const lunch = [];
+                const dinner = [];
+                const uncategorized = [];
+
+                result.recipes.forEach(recipe => {
+                    const desc = (recipe.description || '').toLowerCase();
+                    // Đọc từ khóa AI gắn trong description để đưa vào đúng mảng
+                    if (desc.includes('[bữa sáng]') || desc.includes('[sáng]')) {
+                        // (Tùy chọn) Xóa cái tag đi để UI nhìn đẹp hơn
+                        recipe.description = recipe.description.replace(/\[Bữa sáng\]|\[Sáng\]/gi, '').trim();
+                        breakfast.push(recipe);
+                    } else if (desc.includes('[bữa trưa]') || desc.includes('[trưa]')) {
+                        recipe.description = recipe.description.replace(/\[Bữa trưa\]|\[Trưa\]/gi, '').trim();
+                        lunch.push(recipe);
+                    } else if (desc.includes('[bữa tối]') || desc.includes('[tối]')) {
+                        recipe.description = recipe.description.replace(/\[Bữa tối\]|\[Tối\]/gi, '').trim();
+                        dinner.push(recipe);
+                    } else {
+                        uncategorized.push(recipe);
+                    }
+                });
+
+                // Fallback: Nếu AI quên gắn tag, ta chia đều danh sách món ăn ra 3 bữa
+                if (breakfast.length === 0 && lunch.length === 0 && dinner.length === 0) {
+                    const total = result.recipes.length;
+                    const third = Math.floor(total / 3);
+                    return {
+                        success: true,
+                        meals: {
+                            breakfast: result.recipes.slice(0, third || 1),
+                            lunch: result.recipes.slice(third || 1, third * 2 || 2),
+                            dinner: result.recipes.slice(third * 2 || 2)
+                        }
+                    };
+                }
+
+                // Ghép các món AI quên gắn tag vào bữa trưa hoặc tối để không bị mất data
+                if (uncategorized.length > 0) {
+                    const splitIdx = Math.floor(uncategorized.length / 2);
+                    lunch.push(...uncategorized.slice(0, splitIdx));
+                    dinner.push(...uncategorized.slice(splitIdx));
+                }
+
                 return {
                     success: true,
-                    meals: {
-                        breakfast: result.recipes[0],
-                        lunch: result.recipes[1],
-                        dinner: result.recipes[2]
-                    }
-                };
-            } else if (result.success && result.recipes.length > 0) {
-                return {
-                    success: true,
-                    meals: {
-                        breakfast: result.recipes[0],
-                        lunch: result.recipes[Math.min(1, result.recipes.length - 1)],
-                        dinner: result.recipes[Math.min(2, result.recipes.length - 1)]
-                    }
+                    meals: { breakfast, lunch, dinner }
                 };
             }
 
@@ -193,8 +261,7 @@ Hãy ưu tiên gợi ý món phù hợp với sở thích và tránh các món k
 
             const prompt = `Hãy tạo lại công thức chi tiết cho món: "${title}". Chỉ cần trả về duy nhất món này.`;
             const response = await supabase.functions.invoke('suggestRecipesGenAI', {
-                body: { ingredients: prompt, style: 'Chi tiết, Chính xác' },
-                headers: await getAuthHeaders()
+                body: { ingredients: prompt, style: 'Chi tiết, Chính xác' }
             });
 
             const { data, error } = response;
@@ -252,8 +319,7 @@ Hãy ưu tiên gợi ý món phù hợp với sở thích và tránh các món k
             ];
 
             const { data, error } = await supabase.functions.invoke('chat-chef', {
-                body: { messages: validHistory },
-                headers: await getAuthHeaders()
+                body: { messages: validHistory }
             });
 
             if (error) throw error;
