@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Xác thực thành công</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col">
+<!-- Top Status Bar Area (iOS Style Spacer) -->
+<div class="h-12 w-full bg-white dark:bg-background-dark flex items-center justify-between px-6">
+<span class="text-sm font-semibold dark:text-white">9:41</span>
+<div class="flex gap-1.5 items-center">
+<span class="material-symbols-outlined text-lg dark:text-white">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-lg dark:text-white">wifi</span>
+<span class="material-symbols-outlined text-lg dark:text-white">battery_full</span>
+</div>
+</div>
+<!-- Main Success Content -->
+<main class="flex-1 flex flex-col items-center justify-center px-8 text-center">
+<!-- Success Visual -->
+<div class="relative mb-8">
+<div class="absolute inset-0 bg-primary/20 rounded-full scale-150 blur-3xl"></div>
+<div class="relative w-32 h-32 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined text-white text-6xl font-bold" style="font-variation-settings: 'FILL' 1, 'wght' 700;">
+                    check_circle
+                </span>
+</div>
+</div>
+<!-- Success Text -->
+<div class="z-10 flex flex-col gap-4 max-w-sm">
+<h1 class="text-[#111813] dark:text-white text-3xl font-bold tracking-tight">
+                Xác thực thành công!
+            </h1>
+<p class="text-[#4b5563] dark:text-gray-400 text-base leading-relaxed">
+                Chào mừng bạn đến với ứng dụng quản lý tủ lạnh thông minh. Bạn đã sẵn sàng để giảm lãng phí thực phẩm chưa?
+            </p>
+</div>
+<!-- Decorative background element (Image placeholder) -->
+<div class="mt-12 w-full max-w-[280px] opacity-40 grayscale pointer-events-none">
+<div class="bg-center bg-no-repeat aspect-square bg-contain" data-alt="Abstract minimalist line art of a refrigerator and fresh vegetables" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBVTCFv4Ug3W9TwGGo23H3TjKv-VNzAbKaZFbThYFrcWslb7tEoAMv72unFsVct1z_xDCnQjKbTi-kjTJYSpELBhcwxF0vNiER3L-VNLk6RTbD7glIDAihEfr94V_qcDh9MXgdPnjcqjlwm-P8K2VwbwXWqUmdMZtkdFL30mwTyUI5NiZOSTsjl9Fhv75t__nQUiqpzCae-HcxalAIu1ij3BdG4pu0srLdzhalYWe_f7SHh3mB-jaRYRizKC2qhBVJUFjD6hQznfg");'>
+</div>
+</div>
+</main>
+<!-- Bottom Action Area -->
+<div class="p-6 pb-12 w-full max-w-md mx-auto">
+<button class="w-full bg-primary hover:bg-primary/90 text-[#111813] h-14 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md">
+<span class="truncate">Bắt đầu ngay</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<!-- Bottom Indicator (iOS style) -->
+<div class="mt-8 flex justify-center">
+<div class="w-32 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
+</div>
+</div>
+</body></html>

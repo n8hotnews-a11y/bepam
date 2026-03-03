@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cài đặt thông báo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100dvh;
+        }
+        .ios-switch:checked + .ios-switch-bg {
+            background-color: #13ec5b;
+        }
+        .ios-switch:checked + .ios-switch-bg > .ios-switch-dot {
+            transform: translateX(18px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark">
+<div class="max-w-[430px] mx-auto h-screen flex flex-col overflow-hidden bg-background-light dark:bg-background-dark">
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 shrink-0">
+<div class="flex items-center px-4 py-2 justify-between">
+<div class="text-[#111813] dark:text-white flex size-8 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-xl">chevron_left</span>
+</div>
+<h2 class="text-[#111813] dark:text-white text-base font-bold leading-tight tracking-tight flex-1 text-center pr-8">Cài đặt thông báo</h2>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto">
+<section class="mt-2">
+<h3 class="text-[#111813] dark:text-white text-[11px] font-semibold uppercase tracking-wider px-4 pb-1 pt-2 opacity-60">Nhắc nhở bữa ăn</h3>
+<div class="bg-white dark:bg-gray-900 mx-3 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-3 px-4 py-2 justify-between border-b border-gray-50 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<p class="text-[#111813] dark:text-white text-sm font-medium">Bữa sáng</p>
+<span class="text-primary text-xs font-semibold bg-primary/5 px-2 py-0.5 rounded">07:00</span>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-[#f0f4f2] dark:bg-gray-700 p-0.5 transition-colors has-[:checked]:bg-primary">
+<input checked="" class="invisible absolute peer" type="checkbox"/>
+<div class="h-full w-[20px] rounded-full bg-white transition-all peer-checked:translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-3 px-4 py-2 justify-between border-b border-gray-50 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<p class="text-[#111813] dark:text-white text-sm font-medium">Bữa trưa</p>
+<span class="text-primary text-xs font-semibold bg-primary/5 px-2 py-0.5 rounded">12:30</span>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-[#f0f4f2] dark:bg-gray-700 p-0.5 transition-colors has-[:checked]:bg-primary">
+<input checked="" class="invisible absolute peer" type="checkbox"/>
+<div class="h-full w-[20px] rounded-full bg-white transition-all peer-checked:translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-3 px-4 py-2 justify-between">
+<div class="flex items-center gap-3">
+<p class="text-[#111813] dark:text-white text-sm font-medium">Bữa tối</p>
+<span class="text-primary text-xs font-semibold bg-primary/5 px-2 py-0.5 rounded">19:00</span>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-[#f0f4f2] dark:bg-gray-700 p-0.5 transition-colors has-[:checked]:bg-primary">
+<input class="invisible absolute peer" type="checkbox"/>
+<div class="h-full w-[20px] rounded-full bg-white transition-all peer-checked:translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-3">
+<h3 class="text-[#111813] dark:text-white text-[11px] font-semibold uppercase tracking-wider px-4 pb-1 pt-1 opacity-60">Đề xuất cá nhân</h3>
+<div class="bg-white dark:bg-gray-900 mx-3 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-3 px-4 py-2 justify-between">
+<div class="flex-1">
+<p class="text-[#111813] dark:text-white text-sm font-medium">Gợi ý thực đơn</p>
+<p class="text-[10px] text-gray-500 dark:text-gray-400">Dựa trên nguyên liệu trong tủ lạnh</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-[#f0f4f2] dark:bg-gray-700 p-0.5 transition-colors has-[:checked]:bg-primary">
+<input checked="" class="invisible absolute peer" type="checkbox"/>
+<div class="h-full w-[20px] rounded-full bg-white transition-all peer-checked:translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-3">
+<h3 class="text-[#111813] dark:text-white text-[11px] font-semibold uppercase tracking-wider px-4 pb-1 pt-1 opacity-60">Quản lý kho</h3>
+<div class="bg-white dark:bg-gray-900 mx-3 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-3 px-4 py-2 justify-between border-b border-gray-50 dark:border-gray-800">
+<div class="flex-1">
+<p class="text-[#111813] dark:text-white text-sm font-medium">Cảnh báo hết hạn</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-[#f0f4f2] dark:bg-gray-700 p-0.5 transition-colors has-[:checked]:bg-primary">
+<input checked="" class="invisible absolute peer" type="checkbox"/>
+<div class="h-full w-[20px] rounded-full bg-white transition-all peer-checked:translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px;"></div>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-3 px-4 py-2 justify-between bg-gray-50/50 dark:bg-gray-800/30">
+<p class="text-[#111813] dark:text-white text-xs">Thông báo trước</p>
+<div class="flex items-center gap-1 text-primary text-xs font-medium bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 px-2 py-0.5 rounded shadow-sm">
+<span>1 ngày</span>
+<span class="material-symbols-outlined text-[14px]">unfold_more</span>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-3 mb-4">
+<div class="flex items-center justify-between px-4 pb-1 pt-1">
+<h3 class="text-[#111813] dark:text-white text-[11px] font-semibold uppercase tracking-wider opacity-60">Lịch nhắc nấu ăn</h3>
+<button class="text-primary text-xs font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-base">add_circle</span>
+                        Thêm mới
+                    </button>
+</div>
+<div class="space-y-2 px-3">
+<div class="bg-white dark:bg-gray-900 px-3 py-2.5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-between group">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">restaurant</span>
+</div>
+<div>
+<p class="text-[#111813] dark:text-white text-[13px] font-semibold">Nhắc nấu: Bò sốt vang</p>
+<p class="text-[10px] text-gray-500 dark:text-gray-400">Hôm nay, 18:00</p>
+</div>
+</div>
+<button class="text-gray-300 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+<div class="bg-white dark:bg-gray-900 px-3 py-2.5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-between group">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">soup_kitchen</span>
+</div>
+<div>
+<p class="text-[#111813] dark:text-white text-[13px] font-semibold">Chuẩn bị: Salad cá hồi</p>
+<p class="text-[10px] text-gray-500 dark:text-gray-400">Ngày mai, 11:30</p>
+</div>
+</div>
+<button class="text-gray-300 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<nav class="sticky bottom-0 bg-white dark:bg-background-dark border-t border-gray-100 dark:border-gray-800 px-6 pt-2 pb-4 flex justify-between items-center shrink-0">
+<div class="flex flex-col items-center gap-0.5 opacity-40">
+<span class="material-symbols-outlined text-2xl">kitchen</span>
+<span class="text-[9px] font-medium">Tủ lạnh</span>
+</div>
+<div class="flex flex-col items-center gap-0.5 opacity-40">
+<span class="material-symbols-outlined text-2xl">shopping_basket</span>
+<span class="text-[9px] font-medium">Mua sắm</span>
+</div>
+<div class="flex flex-col items-center gap-0.5 opacity-40">
+<span class="material-symbols-outlined text-2xl">menu_book</span>
+<span class="text-[9px] font-medium">Công thức</span>
+</div>
+<div class="flex flex-col items-center gap-0.5 text-primary">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1">person</span>
+<span class="text-[9px] font-bold">Cá nhân</span>
+</div>
+</nav>
+</div>
+
+</body></html>

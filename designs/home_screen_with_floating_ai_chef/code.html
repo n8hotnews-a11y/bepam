@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Home Screen with Bếp Trưởng AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ee5b2b",
+                        "background-light": "#fdfaf9",
+                        "background-dark": "#221510",
+                        "terracotta": "#c05b3d",
+                        "gold": "#d4af37",
+                        "cream": "#FFFDF9"
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .ai-float-animation {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen pb-24">
+<!-- Top Navigation Bar -->
+<div class="fixed top-0 left-0 right-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center p-4 pb-2 justify-between">
+<div class="flex size-12 shrink-0 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/20" data-alt="User profile avatar smiling woman" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCEF7EaOPmr4XWq142o6fNah5ZDIbR71LBHjedw-z0Fdi9ytZuY0qNOcXAX5DaYmxZhj0xv5ifQf5XLGVSqYr3y61qkoxeJTqKJVWii3lXHx732QWVaRK0XN_bawSm4I_uQi87dUFbx1DN3Q7MPThXHt3Lwi0myoNVMabWLmBQS04RkGYH4Pa1HjtxKCOE2AYMf6j9FyH4wdjqZoj9DvBmE-78S5tuMUN097gp5CS3dXAikaS9TwbUX7P0bFWQbBBbTnNuq-RjwlQ");'>
+</div>
+</div>
+<div class="flex-1 px-3">
+<p class="text-[#896b61] text-xs font-medium uppercase tracking-wider">Kitchen Dashboard</p>
+<h2 class="text-[#181311] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Good Morning, Chef Sarah!</h2>
+</div>
+<div class="flex w-12 items-center justify-end">
+<button class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-white dark:bg-neutral-800 shadow-sm text-[#181311] dark:text-white border border-neutral-100 dark:border-neutral-700">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<main class="pt-20 px-4 space-y-6">
+<!-- Inventory Status Card -->
+<div class="pt-4 @container">
+<div class="flex flex-col items-stretch justify-start rounded-xl @xl:flex-row @xl:items-start shadow-sm bg-white dark:bg-neutral-900 border border-primary/10">
+<div class="w-full bg-center bg-no-repeat aspect-[16/7] bg-cover rounded-t-xl @xl:rounded-l-xl @xl:rounded-t-none" data-alt="Modern smart refrigerator interior organized with fresh produce" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBGGf_YHbcHTnAxxNaeY9YsMtsEq-0lDpP8h9DYOwWXrFP-I-IQmXrmR-VwbW2oj-1hjZ3CHj8pXcRlQfYrj6JMV-nhgkoBBj7Px7UHWuhS89QyWMXF8f40d-PkscTN-1YDZESCUfgopIs-AWdHuxrtEJv85XqF0kTe4wdh0cx4euYUhaIMhytOJ40PRpiURbBRZD8kc1jQJYhkkQgEsHGF-uJhsHSKxRGUNbTCCnbNrnrHs5GaSi9Q4bMOKY9CgAJYW_ejkUj5yA");'>
+</div>
+<div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-1 py-4 px-5">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-xl">kitchen</span>
+<p class="text-[#181311] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Fridge Status</p>
+</div>
+<div class="flex items-end gap-3 justify-between">
+<div class="flex flex-col gap-1">
+<p class="text-[#896b61] dark:text-neutral-400 text-sm font-normal leading-normal">3 items expiring within 2 days</p>
+<div class="w-full bg-neutral-100 dark:bg-neutral-800 h-1.5 rounded-full mt-2">
+<div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-white text-sm font-semibold leading-normal hover:bg-primary/90 transition-colors">
+<span class="truncate">View All</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Access Categories (Chips) -->
+<section>
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-primary/10 dark:bg-primary/20 pl-3 pr-4 border border-primary/20">
+<span class="material-symbols-outlined text-primary" style="font-size: 20px;">eco</span>
+<p class="text-[#181311] dark:text-white text-sm font-semibold">Vegetables</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-neutral-800 shadow-sm pl-3 pr-4 border border-neutral-100 dark:border-neutral-700">
+<span class="material-symbols-outlined text-neutral-500" style="font-size: 20px;">set_meal</span>
+<p class="text-[#181311] dark:text-white text-sm font-medium">Meat</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-neutral-800 shadow-sm pl-3 pr-4 border border-neutral-100 dark:border-neutral-700">
+<span class="material-symbols-outlined text-neutral-500" style="font-size: 20px;">water_drop</span>
+<p class="text-[#181311] dark:text-white text-sm font-medium">Dairy</p>
+</div>
+<div class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white dark:bg-neutral-800 shadow-sm pl-3 pr-4 border border-neutral-100 dark:border-neutral-700">
+<span class="material-symbols-outlined text-neutral-500" style="font-size: 20px;">ac_unit</span>
+<p class="text-[#181311] dark:text-white text-sm font-medium">Freezer</p>
+</div>
+</div>
+</section>
+<!-- Recommended for Dinner -->
+<section>
+<div class="flex items-center justify-between mb-2 px-1">
+<h3 class="text-[#181311] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Dinner Suggestions</h3>
+<p class="text-primary text-sm font-semibold">Refresh</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm border border-neutral-100 dark:border-neutral-800">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover" data-alt="Bowl of creamy warm pumpkin soup with garnish" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpQYKKq2jICrtjOe1gkMXhuu9izH9vKeiP3MILyoR_b9pA_X0TYR_mcfc8-hX1h3kgDqkotENl9sArzXs5rCRdqWOnrhjnnNsfx53i6I6tNh5Q_Q_7ozIrjqXD3i7INFxxlr3Z_IyZGW2x28mfLz2dHoIflmm8s7ZIsc6lWvMJ7pN2IWrJuWV5cSYmi-CpPlPM9indi3PY1nSmYdJQJwibXwBJvesIIT9uzwGD5NowsEJmNhS0JOUFkANkXhPh8PKQvZoR8psEeg");'>
+</div>
+<div class="px-3 pb-1">
+<p class="text-[#181311] dark:text-white text-base font-bold leading-tight">Warm Pumpkin Soup</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-[#896b61] text-xs">schedule</span>
+<p class="text-[#896b61] dark:text-neutral-400 text-xs font-medium">25 mins • Easy</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 pb-3 bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm border border-neutral-100 dark:border-neutral-800">
+<div class="w-full bg-center bg-no-repeat aspect-[4/3] bg-cover" data-alt="Honey glazed salmon fillet with asparagus" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDKw2dYcOzG5KqHukKru0FjNJKw9tG0JvibwxocKoETqDibLHuh-XlACpAoj_gra4JAHwhfYcngIW80566AhpD-NCLlzUXD7pMfjRN0FK_x7-jCVAsiyPfhkxVPh1jH_7ZAmGwykljjE3SwvrEzhczI8_2tbmZTYNgZb_NeMYCeRlotoj1Ogg2vNXCKZUpauWUK5uN7a-XOAKELVMoWGX43ML-QeP-hXwfihu09wKrfTmXQTu9Zdjz-WjFIUGn9Qw8va9TJX7wmuw");'>
+</div>
+<div class="px-3 pb-1">
+<p class="text-[#181311] dark:text-white text-base font-bold leading-tight">Glazed Salmon</p>
+<div class="flex items-center gap-2 mt-1">
+<span class="material-symbols-outlined text-[#896b61] text-xs">schedule</span>
+<p class="text-[#896b61] dark:text-neutral-400 text-xs font-medium">30 mins • Med</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Meal Plan -->
+<section class="pb-8">
+<h3 class="text-[#181311] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] mb-3 px-1">Today's Meal Plan</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-4 p-3 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
+<div class="flex-shrink-0 w-12 h-12 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">light_mode</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-primary uppercase">Breakfast</p>
+<p class="text-sm font-bold text-[#181311] dark:text-white">Avocado Toast &amp; Egg</p>
+</div>
+<span class="material-symbols-outlined text-green-500">check_circle</span>
+</div>
+<div class="flex items-center gap-4 p-3 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 shadow-sm">
+<div class="flex-shrink-0 w-12 h-12 bg-amber-500/10 dark:bg-amber-500/20 rounded-lg flex items-center justify-center text-amber-500">
+<span class="material-symbols-outlined">wb_sunny</span>
+</div>
+<div class="flex-1">
+<p class="text-xs font-bold text-amber-600 uppercase">Lunch</p>
+<p class="text-sm font-bold text-[#181311] dark:text-white">Quinoa Salad with Feta</p>
+</div>
+<button class="bg-primary text-white text-[10px] font-bold px-3 py-1.5 rounded-lg">START</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating AI Chef and Speech Bubble -->
+<div class="fixed bottom-24 right-4 flex flex-col items-end z-50">
+<!-- Speech Bubble -->
+<div class="mb-2 mr-2 bg-white dark:bg-neutral-800 shadow-lg p-3 rounded-2xl rounded-br-sm border border-primary/20 max-w-[200px]">
+<p class="text-[#181311] dark:text-white text-xs font-medium leading-relaxed">
+                Xin chào! Hôm nay nhà mình có bí đỏ, nấu súp không Chef? 🎃
+            </p>
+</div>
+<!-- Floating Character Button -->
+<button class="ai-float-animation flex items-center justify-center size-20 rounded-full shadow-2xl bg-gradient-to-br from-primary via-[#c05b3d] to-gold p-1.5">
+<div class="relative w-full h-full bg-white dark:bg-neutral-900 rounded-full overflow-hidden border-2 border-white/50">
+<div class="absolute inset-0 bg-center bg-no-repeat bg-cover" data-alt="Friendly AI chef character with terracotta hat and gold details" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0Ebplb7XkDPJSa-Z1cig5oZuivGT4nJGAwfXtWWoAUod-Nu3mKSuXel_bGuu9-1aTm3aUdtIPyY4aAnuBgu3sKQ72DzY0Hf8f4KWNEI9U1Y6iW-1ckLeZtTUEXb6g8RRsGZgUJu4ycIzqStdb3nlo8zbwM7eXwRmnCN2NjOzC8N6q1q18BL7s96MI_b61-g-Cx6SDuFzYktLm72villYZXbGhvGITLdqSAAEm6NJ2Iga97sW238OyxrDNzkm8uW8JX6O6OGLJkA");'>
+</div>
+<!-- Chef Hat Overlay (Decorative Representation) -->
+<div class="absolute top-0 left-0 w-full h-1/3 bg-white/20 backdrop-blur-[2px]"></div>
+</div>
+<!-- Badge -->
+<div class="absolute -bottom-1 -right-1 bg-green-500 size-5 rounded-full border-2 border-white flex items-center justify-center">
+<div class="size-2 bg-white rounded-full"></div>
+</div>
+</button>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-neutral-950 border-t border-neutral-100 dark:border-neutral-800 px-6 py-3 pb-8 z-40">
+<div class="flex items-center justify-between">
+<div class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-neutral-400">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-medium">Pantry</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-neutral-400">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="text-[10px] font-medium">List</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-neutral-400">
+<span class="material-symbols-outlined">restaurant_menu</span>
+<span class="text-[10px] font-medium">Recipes</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-neutral-400">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</div>
+</div>
+<!-- iOS Indicator -->
+<div class="mt-4 mx-auto w-32 h-1 bg-neutral-200 dark:bg-neutral-700 rounded-full"></div>
+</nav>
+</body></html>

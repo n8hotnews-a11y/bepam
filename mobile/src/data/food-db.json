@@ -1,0 +1,1136 @@
+[
+  {
+    "id": 1,
+    "name": "Gạo tẻ",
+    "category": "Gạo & Ngũ cốc",
+    "unit": "kg"
+  },
+  {
+    "id": 2,
+    "name": "Gạo nếp",
+    "category": "Gạo & Ngũ cốc",
+    "unit": "kg"
+  },
+  {
+    "id": 3,
+    "name": "Gạo lứt",
+    "category": "Gạo & Ngũ cốc",
+    "unit": "kg"
+  },
+  {
+    "id": 4,
+    "name": "Gạo tám thơm",
+    "category": "Gạo & Ngũ cốc",
+    "unit": "kg"
+  },
+  {
+    "id": 5,
+    "name": "Gạo ST25",
+    "category": "Gạo & Ngũ cốc",
+    "unit": "kg"
+  },
+  {
+    "id": 10,
+    "name": "Thịt heo ba chỉ",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 11,
+    "name": "Thịt heo nạc vai",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 12,
+    "name": "Thịt heo đùi",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 13,
+    "name": "Sườn heo",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 14,
+    "name": "Thịt heo xay",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 15,
+    "name": "Thịt bò thăn",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 16,
+    "name": "Thịt bò bắp",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 17,
+    "name": "Thịt bò xay",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 18,
+    "name": "Thịt gà nguyên con",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 19,
+    "name": "Đùi gà",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 20,
+    "name": "Cánh gà",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 21,
+    "name": "Ức gà",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 22,
+    "name": "Má đùi gà",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 23,
+    "name": "Chân gà",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 24,
+    "name": "Thịt vịt",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 25,
+    "name": "Thịt ngan",
+    "category": "Thịt",
+    "unit": "kg"
+  },
+  {
+    "id": 26,
+    "name": "Giò lụa",
+    "category": "Thịt chế biến",
+    "unit": "kg"
+  },
+  {
+    "id": 27,
+    "name": "Chả lụa",
+    "category": "Thịt chế biến",
+    "unit": "kg"
+  },
+  {
+    "id": 28,
+    "name": "Xúc xích",
+    "category": "Thịt chế biến",
+    "unit": "gói"
+  },
+  {
+    "id": 29,
+    "name": "Lạp xưởng",
+    "category": "Thịt chế biến",
+    "unit": "gói"
+  },
+  {
+    "id": 30,
+    "name": "Thịt nguội",
+    "category": "Thịt chế biến",
+    "unit": "gói"
+  },
+  {
+    "id": 40,
+    "name": "Cá hồi",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 41,
+    "name": "Cá thu",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 42,
+    "name": "Cá basa",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 43,
+    "name": "Cá điêu hồng",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 44,
+    "name": "Cá trê",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 45,
+    "name": "Cá rô phi",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 46,
+    "name": "Cá ngừ",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 47,
+    "name": "Tôm sú",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 48,
+    "name": "Tôm thẻ",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 49,
+    "name": "Tôm hùm",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 50,
+    "name": "Mực ống",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 51,
+    "name": "Mực lá",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 52,
+    "name": "Cua biển",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 53,
+    "name": "Cua đồng",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 54,
+    "name": "Ghẹ",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 55,
+    "name": "Nghêu",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 56,
+    "name": "Sò huyết",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 57,
+    "name": "Ốc hương",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 58,
+    "name": "Hàu",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 59,
+    "name": "Bạch tuộc",
+    "category": "Hải sản",
+    "unit": "kg"
+  },
+  {
+    "id": 70,
+    "name": "Trứng gà",
+    "category": "Trứng",
+    "unit": "quả"
+  },
+  {
+    "id": 71,
+    "name": "Trứng gà ta",
+    "category": "Trứng",
+    "unit": "quả"
+  },
+  {
+    "id": 72,
+    "name": "Trứng vịt",
+    "category": "Trứng",
+    "unit": "quả"
+  },
+  {
+    "id": 73,
+    "name": "Trứng cút",
+    "category": "Trứng",
+    "unit": "quả"
+  },
+  {
+    "id": 74,
+    "name": "Trứng muối",
+    "category": "Trứng",
+    "unit": "quả"
+  },
+  {
+    "id": 80,
+    "name": "Rau muống",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 81,
+    "name": "Rau cải ngọt",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 82,
+    "name": "Rau cải xanh",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 83,
+    "name": "Rau cải thìa",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 84,
+    "name": "Rau cải bẹ",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 85,
+    "name": "Rau dền",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 86,
+    "name": "Rau mồng tơi",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 87,
+    "name": "Rau lang",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 88,
+    "name": "Rau ngót",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 89,
+    "name": "Xà lách",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 90,
+    "name": "Rau diếp cá",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 91,
+    "name": "Bắp cải",
+    "category": "Rau xanh",
+    "unit": "kg"
+  },
+  {
+    "id": 92,
+    "name": "Cải thảo",
+    "category": "Rau xanh",
+    "unit": "kg"
+  },
+  {
+    "id": 93,
+    "name": "Súp lơ xanh",
+    "category": "Rau xanh",
+    "unit": "kg"
+  },
+  {
+    "id": 94,
+    "name": "Súp lơ trắng",
+    "category": "Rau xanh",
+    "unit": "kg"
+  },
+  {
+    "id": 95,
+    "name": "Măng tây",
+    "category": "Rau xanh",
+    "unit": "bó"
+  },
+  {
+    "id": 100,
+    "name": "Cà rốt",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 101,
+    "name": "Khoai tây",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 102,
+    "name": "Khoai lang",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 103,
+    "name": "Củ cải trắng",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 104,
+    "name": "Su hào",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 105,
+    "name": "Củ dền",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 106,
+    "name": "Bí đỏ",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 107,
+    "name": "Bí xanh",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 108,
+    "name": "Mướp",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 109,
+    "name": "Mướp đắng",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 110,
+    "name": "Bầu",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 111,
+    "name": "Cà tím",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 112,
+    "name": "Cà chua",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 113,
+    "name": "Dưa leo",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 114,
+    "name": "Ớt chuông",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 115,
+    "name": "Đậu bắp",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 116,
+    "name": "Đậu que",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 117,
+    "name": "Đậu Hà Lan",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 118,
+    "name": "Măng",
+    "category": "Củ quả",
+    "unit": "kg"
+  },
+  {
+    "id": 130,
+    "name": "Hành lá",
+    "category": "Gia vị tươi",
+    "unit": "bó"
+  },
+  {
+    "id": 131,
+    "name": "Hành tây",
+    "category": "Gia vị tươi",
+    "unit": "kg"
+  },
+  {
+    "id": 132,
+    "name": "Hành tím",
+    "category": "Gia vị tươi",
+    "unit": "kg"
+  },
+  {
+    "id": 133,
+    "name": "Tỏi",
+    "category": "Gia vị tươi",
+    "unit": "kg"
+  },
+  {
+    "id": 134,
+    "name": "Gừng",
+    "category": "Gia vị tươi",
+    "unit": "kg"
+  },
+  {
+    "id": 135,
+    "name": "Sả",
+    "category": "Gia vị tươi",
+    "unit": "bó"
+  },
+  {
+    "id": 136,
+    "name": "Ớt tươi",
+    "category": "Gia vị tươi",
+    "unit": "kg"
+  },
+  {
+    "id": 137,
+    "name": "Ngò rí",
+    "category": "Gia vị tươi",
+    "unit": "bó"
+  },
+  {
+    "id": 138,
+    "name": "Húng quế",
+    "category": "Gia vị tươi",
+    "unit": "bó"
+  },
+  {
+    "id": 139,
+    "name": "Rau mùi",
+    "category": "Gia vị tươi",
+    "unit": "bó"
+  },
+  {
+    "id": 140,
+    "name": "Lá chanh",
+    "category": "Gia vị tươi",
+    "unit": "bó"
+  },
+  {
+    "id": 150,
+    "name": "Nấm rơm",
+    "category": "Nấm",
+    "unit": "kg"
+  },
+  {
+    "id": 151,
+    "name": "Nấm hương",
+    "category": "Nấm",
+    "unit": "kg"
+  },
+  {
+    "id": 152,
+    "name": "Nấm mèo",
+    "category": "Nấm",
+    "unit": "kg"
+  },
+  {
+    "id": 153,
+    "name": "Nấm kim châm",
+    "category": "Nấm",
+    "unit": "gói"
+  },
+  {
+    "id": 154,
+    "name": "Nấm đùi gà",
+    "category": "Nấm",
+    "unit": "gói"
+  },
+  {
+    "id": 155,
+    "name": "Nấm bào ngư",
+    "category": "Nấm",
+    "unit": "gói"
+  },
+  {
+    "id": 156,
+    "name": "Nấm đông cô",
+    "category": "Nấm",
+    "unit": "gói"
+  },
+  {
+    "id": 170,
+    "name": "Đậu phụ",
+    "category": "Đậu & Đồ chay",
+    "unit": "miếng"
+  },
+  {
+    "id": 171,
+    "name": "Đậu hũ chiên",
+    "category": "Đậu & Đồ chay",
+    "unit": "miếng"
+  },
+  {
+    "id": 172,
+    "name": "Tàu hũ non",
+    "category": "Đậu & Đồ chay",
+    "unit": "hộp"
+  },
+  {
+    "id": 173,
+    "name": "Đậu nành",
+    "category": "Đậu & Đồ chay",
+    "unit": "kg"
+  },
+  {
+    "id": 174,
+    "name": "Đậu xanh",
+    "category": "Đậu & Đồ chay",
+    "unit": "kg"
+  },
+  {
+    "id": 175,
+    "name": "Đậu đỏ",
+    "category": "Đậu & Đồ chay",
+    "unit": "kg"
+  },
+  {
+    "id": 176,
+    "name": "Đậu đen",
+    "category": "Đậu & Đồ chay",
+    "unit": "kg"
+  },
+  {
+    "id": 200,
+    "name": "Táo",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 201,
+    "name": "Cam",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 202,
+    "name": "Quýt",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 203,
+    "name": "Bưởi",
+    "category": "Trái cây",
+    "unit": "quả"
+  },
+  {
+    "id": 204,
+    "name": "Chuối",
+    "category": "Trái cây",
+    "unit": "nải"
+  },
+  {
+    "id": 205,
+    "name": "Xoài",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 206,
+    "name": "Ổi",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 207,
+    "name": "Dưa hấu",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 208,
+    "name": "Dưa lưới",
+    "category": "Trái cây",
+    "unit": "quả"
+  },
+  {
+    "id": 209,
+    "name": "Nho",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 210,
+    "name": "Lê",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 211,
+    "name": "Mận",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 212,
+    "name": "Thanh long",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 213,
+    "name": "Chôm chôm",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 214,
+    "name": "Nhãn",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 215,
+    "name": "Vải",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 216,
+    "name": "Măng cụt",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 217,
+    "name": "Sầu riêng",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 218,
+    "name": "Mít",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 219,
+    "name": "Dừa tươi",
+    "category": "Trái cây",
+    "unit": "quả"
+  },
+  {
+    "id": 220,
+    "name": "Chanh",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 221,
+    "name": "Kiwi",
+    "category": "Trái cây",
+    "unit": "quả"
+  },
+  {
+    "id": 222,
+    "name": "Bơ",
+    "category": "Trái cây",
+    "unit": "quả"
+  },
+  {
+    "id": 223,
+    "name": "Hồng",
+    "category": "Trái cây",
+    "unit": "kg"
+  },
+  {
+    "id": 250,
+    "name": "Sữa tươi",
+    "category": "Sữa & Bơ",
+    "unit": "hộp"
+  },
+  {
+    "id": 251,
+    "name": "Sữa chua",
+    "category": "Sữa & Bơ",
+    "unit": "hộp"
+  },
+  {
+    "id": 252,
+    "name": "Sữa đặc",
+    "category": "Sữa & Bơ",
+    "unit": "lon"
+  },
+  {
+    "id": 253,
+    "name": "Phô mai",
+    "category": "Sữa & Bơ",
+    "unit": "gói"
+  },
+  {
+    "id": 254,
+    "name": "Bơ lạt",
+    "category": "Sữa & Bơ",
+    "unit": "hộp"
+  },
+  {
+    "id": 255,
+    "name": "Kem tươi",
+    "category": "Sữa & Bơ",
+    "unit": "hộp"
+  },
+  {
+    "id": 270,
+    "name": "Nước mắm",
+    "category": "Gia vị",
+    "unit": "chai"
+  },
+  {
+    "id": 271,
+    "name": "Nước tương",
+    "category": "Gia vị",
+    "unit": "chai"
+  },
+  {
+    "id": 272,
+    "name": "Dầu hào",
+    "category": "Gia vị",
+    "unit": "chai"
+  },
+  {
+    "id": 273,
+    "name": "Tương ớt",
+    "category": "Gia vị",
+    "unit": "chai"
+  },
+  {
+    "id": 274,
+    "name": "Tương cà",
+    "category": "Gia vị",
+    "unit": "chai"
+  },
+  {
+    "id": 275,
+    "name": "Muối",
+    "category": "Gia vị",
+    "unit": "gói"
+  },
+  {
+    "id": 276,
+    "name": "Đường",
+    "category": "Gia vị",
+    "unit": "kg"
+  },
+  {
+    "id": 277,
+    "name": "Bột ngọt",
+    "category": "Gia vị",
+    "unit": "gói"
+  },
+  {
+    "id": 278,
+    "name": "Hạt nêm",
+    "category": "Gia vị",
+    "unit": "gói"
+  },
+  {
+    "id": 279,
+    "name": "Tiêu",
+    "category": "Gia vị",
+    "unit": "gói"
+  },
+  {
+    "id": 280,
+    "name": "Quế",
+    "category": "Gia vị",
+    "unit": "gói"
+  },
+  {
+    "id": 281,
+    "name": "Hồi",
+    "category": "Gia vị",
+    "unit": "gói"
+  },
+  {
+    "id": 282,
+    "name": "Dầu ăn",
+    "category": "Dầu mỡ",
+    "unit": "chai"
+  },
+  {
+    "id": 283,
+    "name": "Dầu mè",
+    "category": "Dầu mỡ",
+    "unit": "chai"
+  },
+  {
+    "id": 284,
+    "name": "Dầu oliu",
+    "category": "Dầu mỡ",
+    "unit": "chai"
+  },
+  {
+    "id": 285,
+    "name": "Dầu nành",
+    "category": "Dầu mỡ",
+    "unit": "chai"
+  },
+  {
+    "id": 286,
+    "name": "Giấm",
+    "category": "Gia vị",
+    "unit": "chai"
+  },
+  {
+    "id": 287,
+    "name": "Mật ong",
+    "category": "Gia vị",
+    "unit": "chai"
+  },
+  {
+    "id": 300,
+    "name": "Mì gói",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 301,
+    "name": "Phở khô",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 302,
+    "name": "Bún khô",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 303,
+    "name": "Miến",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 304,
+    "name": "Bánh tráng",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 305,
+    "name": "Mộc nhĩ",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 306,
+    "name": "Tôm khô",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 307,
+    "name": "Mực khô",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 308,
+    "name": "Cá khô",
+    "category": "Đồ khô",
+    "unit": "gói"
+  },
+  {
+    "id": 320,
+    "name": "Bánh mì",
+    "category": "Bánh",
+    "unit": "ổ"
+  },
+  {
+    "id": 321,
+    "name": "Bánh sandwich",
+    "category": "Bánh",
+    "unit": "gói"
+  },
+  {
+    "id": 322,
+    "name": "Bánh bao",
+    "category": "Bánh",
+    "unit": "cái"
+  },
+  {
+    "id": 323,
+    "name": "Bánh quy",
+    "category": "Bánh",
+    "unit": "gói"
+  },
+  {
+    "id": 340,
+    "name": "Nước suối",
+    "category": "Đồ uống",
+    "unit": "chai"
+  },
+  {
+    "id": 341,
+    "name": "Nước ngọt",
+    "category": "Đồ uống",
+    "unit": "lon"
+  },
+  {
+    "id": 342,
+    "name": "Bia",
+    "category": "Đồ uống",
+    "unit": "lon"
+  },
+  {
+    "id": 343,
+    "name": "Trà xanh",
+    "category": "Đồ uống",
+    "unit": "chai"
+  },
+  {
+    "id": 344,
+    "name": "Cà phê",
+    "category": "Đồ uống",
+    "unit": "gói"
+  },
+  {
+    "id": 345,
+    "name": "Nước cam",
+    "category": "Đồ uống",
+    "unit": "chai"
+  },
+  {
+    "id": 346,
+    "name": "Nước dừa",
+    "category": "Đồ uống",
+    "unit": "chai"
+  },
+  {
+    "id": 360,
+    "name": "Bột mì",
+    "category": "Bột",
+    "unit": "kg"
+  },
+  {
+    "id": 361,
+    "name": "Bột gạo",
+    "category": "Bột",
+    "unit": "kg"
+  },
+  {
+    "id": 362,
+    "name": "Bột năng",
+    "category": "Bột",
+    "unit": "kg"
+  },
+  {
+    "id": 363,
+    "name": "Bột chiên giòn",
+    "category": "Bột",
+    "unit": "gói"
+  },
+  {
+    "id": 364,
+    "name": "Bột cà ri",
+    "category": "Bột",
+    "unit": "gói"
+  },
+  {
+    "id": 380,
+    "name": "Nem chua",
+    "category": "Thực phẩm chế biến",
+    "unit": "gói"
+  },
+  {
+    "id": 381,
+    "name": "Chả giò",
+    "category": "Thực phẩm chế biến",
+    "unit": "gói"
+  },
+  {
+    "id": 382,
+    "name": "Há cảo",
+    "category": "Thực phẩm chế biến",
+    "unit": "gói"
+  },
+  {
+    "id": 383,
+    "name": "Sủi cảo",
+    "category": "Thực phẩm chế biến",
+    "unit": "gói"
+  },
+  {
+    "id": 384,
+    "name": "Đồ hộp",
+    "category": "Thực phẩm chế biến",
+    "unit": "lon"
+  }
+]

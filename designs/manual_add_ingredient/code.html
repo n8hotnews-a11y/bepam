@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manual Add Ingredient - Smart Kitchen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100dvh;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#111813] dark:text-gray-100 flex flex-col">
+<header class="sticky top-0 z-10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center px-4 py-3 justify-between max-w-md mx-auto">
+<button class="text-[#111813] dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+<span class="material-symbols-outlined">arrow_back_ios</span>
+</button>
+<h2 class="text-[#111813] dark:text-white text-base font-bold leading-tight flex-1 text-center">Thêm nguyên liệu</h2>
+<div class="size-10"></div>
+</div>
+</header>
+<main class="flex-1 max-w-md mx-auto w-full pb-36">
+<div class="px-4 py-4 flex justify-center">
+<label class="relative w-32 h-32 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden cursor-pointer active:scale-95 transition-all">
+<input accept="image/*" capture="environment" class="hidden" type="file"/>
+<div class="flex flex-col items-center gap-1 text-gray-400">
+<span class="material-symbols-outlined text-3xl">photo_camera</span>
+<span class="text-[10px] font-semibold text-center px-2">Thêm ảnh thực phẩm</span>
+</div>
+</label>
+</div>
+<div class="px-4 py-2">
+<div class="relative">
+<label class="flex flex-col w-full">
+<div class="flex w-full h-12 items-stretch rounded-xl overflow-hidden bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<div class="text-gray-400 flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full border-none bg-transparent focus:ring-0 text-[#111813] dark:text-white placeholder:text-gray-400 px-3 text-sm font-medium" placeholder="Tên nguyên liệu" type="text"/>
+</div>
+</label>
+<div class="mt-2 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+<span class="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-[10px] font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">Cà chua</span>
+<span class="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-[10px] font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">Sữa tươi</span>
+<span class="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-[10px] font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap">Trứng gà</span>
+</div>
+</div>
+</div>
+<section class="mt-4">
+<h3 class="text-[#111813] dark:text-white text-sm font-bold leading-tight px-4 pb-3">Danh mục</h3>
+<div class="grid grid-cols-3 gap-2 px-4">
+<button class="flex flex-col gap-1 rounded-xl border border-primary bg-primary/10 p-3 items-center transition-all group">
+<div class="text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">eco</span>
+</div>
+<span class="text-[#111813] dark:text-white text-[11px] font-bold text-center">Rau củ</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 items-center transition-all group">
+<div class="text-gray-500 dark:text-gray-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">kebab_dining</span>
+</div>
+<span class="text-[#111813] dark:text-white text-[11px] font-bold text-center">Thịt</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 items-center transition-all group">
+<div class="text-gray-500 dark:text-gray-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">set_meal</span>
+</div>
+<span class="text-[#111813] dark:text-white text-[11px] font-bold text-center">Hải sản</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 items-center transition-all group">
+<div class="text-gray-500 dark:text-gray-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">nutrition</span>
+</div>
+<span class="text-[#111813] dark:text-white text-[11px] font-bold text-center">Trái cây</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 items-center transition-all group">
+<div class="text-gray-500 dark:text-gray-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">egg_alt</span>
+</div>
+<span class="text-[#111813] dark:text-white text-[11px] font-bold text-center">Sữa &amp; Trứng</span>
+</button>
+<button class="flex flex-col gap-1 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-3 items-center transition-all group">
+<div class="text-gray-500 dark:text-gray-400 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-xl">more_horiz</span>
+</div>
+<span class="text-[#111813] dark:text-white text-[11px] font-bold text-center">Khác</span>
+</button>
+</div>
+</section>
+<section class="mt-6 px-4 space-y-4">
+<h3 class="text-[#111813] dark:text-white text-sm font-bold leading-tight">Chi tiết</h3>
+<div class="grid grid-cols-1 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-gray-500 dark:text-gray-400 ml-1">Hạn sử dụng</label>
+<div class="relative flex items-center">
+<div class="absolute left-4 text-gray-400 pointer-events-none">
+<span class="material-symbols-outlined text-xl">calendar_today</span>
+</div>
+<input class="w-full h-12 pl-12 pr-4 rounded-xl border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-[#111813] dark:text-white focus:border-primary focus:ring-primary/20 appearance-none text-sm" type="date" value="2023-10-25"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-gray-500 dark:text-gray-400 ml-1">Số lượng</label>
+<div class="flex items-center gap-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-1.5 h-12">
+<button class="size-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg">remove</span>
+</button>
+<input class="flex-1 text-center border-none bg-transparent focus:ring-0 text-base font-bold text-[#111813] dark:text-white" type="number" value="1"/>
+<button class="size-9 flex items-center justify-center rounded-lg bg-primary/20 text-primary active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg">add</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-gray-200 dark:border-gray-800">
+<div class="max-w-md mx-auto">
+<button class="w-full bg-primary hover:bg-primary/90 text-black font-bold text-base py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                Thêm vào tủ lạnh
+            </button>
+</div>
+</div>
+
+</body></html>

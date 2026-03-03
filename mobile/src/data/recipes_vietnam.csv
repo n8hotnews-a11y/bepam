@@ -1,0 +1,963 @@
+Tên Món,Loại Món,Nguyên Liệu Chính,Cách Chế Biến,Chi Phí Dự Báo 2026 (VND),Calo Ước Tính (cho 1 suất)
+Thịt kho tàu,Món Kho,"Thịt ba chỉ, Trứng vịt, Nước dừa, Đường thốt nốt, Nước mắm, Hành, Tỏi, Gừng","1. Chần thịt sơ. 2. Đảo đường thành nước màu. 3. Xào thịt, cho vào nồi kho với nước dừa. 4. Kho nhừ, cho trứng vào kho thêm.",~350.000,~450 kcal
+Thịt kho tiêu,Món Kho,"Thịt ba rọi, Hạt tiêu, Đường, Nước mắm, Nước dùng, Hành, Tỏi","1. Chần thịt sơ. 2. Ướp thịt với tiêu. 3. Phi thơm hành tỏi, xào thịt. 4. Kho với lửa nhỏ liu riu cho đến khi thịt nhừ và nước sánh.",~280.000,~400 kcal
+Thịt kho trứng,Món Kho,"Thịt ba chỉ, Trứng gà, Đường, Nước mắm, Nước dùng, Hành, Tỏi",1. Chần thịt sơ. 2. Đảo đường thành nước màu. 3. Kho thịt nhừ. 4. Cho trứng đã luộc chín vào kho thêm 10-15 phút.,~300.000,~420 kcal
+Cá kho tộ,Món Kho,"Cá basa, Mỡ gáy, Hành, Tỏi, Đường, Nước mắm, Nước dừa","1. Làm sạch và thấm khô cá. 2. Phi thơm hành tỏi trong mỡ gáy. 3. Rải mỡ hành vào nồi, xếp cá lên, rưới mỡ hành lên cá. 4. Kho liu riu với nước dùng (nước mắm+đường+nước) cho đến khi cá chín mềm.",~320.000,~380 kcal
+Cá kho riềng,Món Kho,"Cá basa, Riềng non, Hành, Tỏi, Đường, Nước mắm, Ớt",1. Làm sạch và thấm khô cá. 2. Phi thơm riềng non. 3. Xào sơ cá với riềng. 4. Kho với lửa nhỏ liu riu khoảng 20-25 phút cho cá chín.,~340.000,~360 kcal
+Cá kho nghệ,Món Kho,"Cá basa, Nghệ tươi, Hành, Tỏi, Đường, Nước mắm","1. Làm sạch và thấm khô cá. 2. Phi thơm hành tỏi và nghệ. 3. Cho cá vào nồi, đổ nước dùng (pha từ nước mắm, đường, bột nghệ) vào. 4. Kho nhỏ lửa khoảng 20 phút cho cá chín.",~330.000,~350 kcal
+Gà kho gừng,Món Kho,"Gà ta, Gừng non, Hành, Tỏi, Đường, Nước mắm, Nước dùng",1. Ướp gà với gừng và chanh. 2. Phi thơm gừng. 3. Kho gà với lửa nhỏ liu riu khoảng 45-60 phút cho đến khi gà nhừ.,~360.000,~390 kcal
+Gà kho sả ớt,Món Kho,"Gà ta, Sả, Ớt, Hành, Tỏi, Đường, Nước mắm","1. Ướp gà với sả, ớt, hành tỏi. 2. Phi thơm sả, ớt. 3. Kho gà với lửa nhỏ liu riu khoảng 45-60 phút cho đến khi gà nhừ.",~370.000,~410 kcal
+Thịt bò kho,Món Kho,"Thịt bắp/nạm bò, Hành tây, Hành, Tỏi, Gừng, Nước dùng, Dầu ăn",1. Chiên sơ thịt bò cho săn. 2. Ninh xương lấy nước dùng. 3. Kho thịt bò với lửa nhỏ liu riu khoảng 1.5-2 tiếng cho đến khi thịt nhừ mềm.,~450.000,~500 kcal
+Tôm kho,Món Kho,"Tôm sú, Nước dừa, Hành, Tỏi, Đường, Nước mắm","1. Làm sạch và để ráo tôm. 2. Phi thơm hành tỏi. 3. Kho tôm với nước dừa cho đến khi nước cạn, sánh lại và ngấm đều lên mặt tôm.",~400.000,~250 kcal
+Tôm kho thịt ba chỉ,Món Kho,"Tôm sú, Thịt ba chỉ, Hành, Tỏi, Nước mắm, Đường",1. Ướp thịt ba chỉ. 2. Xào thịt ba chỉ cho chín tới. 3. Cho tôm vào nồi cùng kho với lửa nhỏ liu riu khoảng 20-25 phút cho tôm chín.,~420.000,~480 kcal
+Mực kho tỏi sả,Món Kho,"Mực ống, Tỏi, Sả, Hành khô, Nước mắm, Đường","1. Làm sạch và để ráo mực. 2. Phi thơm tỏi, sả. 3. Kho mực với lửa nhỏ liu riu khoảng 15-20 phút cho mực chín.",~430.000,~220 kcal
+Ba chỉ kho mắm ruốc,Món Kho,"Thịt ba chỉ, Mắm ruốc, Hành, Tỏi, Đường, Nước mắm",1. Chần thịt sơ. 2. Xào thịt với mắm ruốc đã được làm se. 3. Kho với lửa nhỏ liu riu khoảng 45-60 phút cho đến khi thịt nhừ và thấm mắm ruốc.,~300.000,~430 kcal
+Kho quẹt,Món Kho,"Tôm khô, Cá khô, Tỏi, Hành tím, Ớt, Đường, Nước mắm, Mỡ gáy","1. Ngâm khô. 2. Phi thơm tỏi, hành tím. 3. Xào khô. 4. Cho hỗn hợp nước mắm+đường vào, đun sôi rồi hạ lửa nhỏ, khuấy liên tục cho đến khi sánh đặc.",~250.000,~550 kcal (cho 50g)
+Lạc kho,Món Kho,"Lạc (đậu phộng), Nước dừa, Đường, Muối","1. Luộc chín và tách vỏ lạc. 2. Kho lạc với nước dừa, đường, muối cho đến khi nước cạn, sánh lại và ngấm đều vào lạc.",~150.000,~300 kcal (cho 50g)
+Đậu hũ kho nấm,Món Kho,"Đậu hũ, Nấm rơm, Hành, Tỏi, Nước tương, Đường, Bột nêm","1. Chiên sơ đậu hũ. 2. Phi thơm nấm. 3. Kho đậu hũ với nước dùng (pha từ nước tương, đường, bột nêm) khoảng 15 phút cho thấm.",~120.000,~180 kcal (cho 1kg)
+Thịt bò xào hành tây,Món xào,"- Thịt bò nạc: 400g
+- Hành tây: 2 củ (~300g)
+- Tỏi, hành tím: 30g
+- Dầu hào, nước mắm, đường, tiêu","1. Sơ chế: Thịt bò thái lát mỏng, ướp với 1 muỗng canh dầu hào, 1 thìa cà phê tỏi băm, ½ thìa cà phê đường, ½ thìa cà phê tiêu, để 15 phút.
+2. Xào: Phi thơm hành tỏi, cho thịt bò vào xào lửa lớn 1–2 phút cho chín tái, vớt ra.
+3. Xào rau: Cho hành tây vào xào nhanh 2–3 phút, nêm ít nước mắm.
+4. Trộn lại: Cho thịt bò vào đảo đều, tắt bếp. Dùng nóng.",~180.000,~280 kcal
+Thịt bò xào cần tỏi,Món xào,"- Thịt bò: 400g
+- Cần tây: 300g
+- Tỏi: 30g
+- Dầu hào, nước mắm, tiêu","1. Sơ chế: Bò ướp như trên. Cần tây cắt khúc, rửa sạch.
+2. Xào: Phi tỏi, xào bò tái, vớt ra. Xào cần tây 2 phút, nêm gia vị.
+3. Kết hợp: Trộn bò vào, đảo nhanh, tắt bếp.",~175.000,~270 kcal
+Thịt bò xào măng tây/nấm/ớt chuông,Món xào,"- Thịt bò: 400g
+- Măng tây: 200g
+- Nấm đùi gà: 100g
+- Ớt chuông đỏ/vàng: 100g
+- Tỏi, dầu hào","1. Sơ chế: Bò ướp. Măng tây cắt khúc, chần sơ. Nấm, ớt chuông cắt lát.
+2. Xào: Xào bò tái, vớt ra. Xào nấm + ớt + măng tây 2–3 phút.
+3. Hoàn thiện: Trộn bò, nêm dầu hào, tiêu.",~200.000,~290 kcal
+Thịt bò xào rau muống,Món xào,"- Thịt bò: 300g
+- Rau muống: 500g
+- Tỏi: 40g
+- Dầu ăn, nước mắm","1. Sơ chế: Bò ướp nhẹ. Rau muống nhặt, rửa sạch.
+2. Xào: Phi tỏi vàng, cho bò vào xào tái, vớt ra.
+3. Xào rau: Cho rau vào xào lửa lớn, nêm nước mắm.
+4. Trộn: Cho bò vào, đảo đều.",~160.000,~250 kcal
+Thịt bò xào giá đỗ,Món xào,"- Thịt bò: 300g
+- Giá đỗ: 400g
+- Hành lá, tỏi, ớt","1. Sơ chế: Bò ướp. Giá rửa sạch, để ráo.
+2. Xào: Xào bò tái, vớt ra. Xào tỏi, cho giá vào xào nhanh 1–2 phút.
+3. Kết hợp: Trộn bò, nêm nước mắm, tiêu.",~150.000,~240 kcal
+Thịt bò xào thiên lý/súp lơ,Món xào,"- Thịt bò: 400g
+- Hoa thiên lý hoặc súp lơ: 300g
+- Tỏi, dầu hào","1. Sơ chế: Thiên lý/súp lơ chần sơ. Bò ướp.
+2. Xào: Xào bò tái, vớt ra. Xào rau 2 phút.
+3. Trộn: Cho bò vào, nêm dầu hào, tiêu.",~185.000,~275 kcal
+Thịt heo xào chua ngọt,Món xào,"- Thịt nạc vai: 400g
+- Cà chua: 2 quả
+- Dứa: 100g
+- Hành tây, ớt, tỏi","1. Sơ chế: Thịt thái miếng, ướp với nước mắm, tiêu.
+2. Xào: Xào thịt săn, vớt ra.
+3. Sốt: Xào tỏi, cho dứa + cà chua + hành tây vào, nêm đường, giấm, nước mắm (tỷ lệ 2:1:1).
+4. Hoàn thiện: Cho thịt vào, rim 2–3 phút.",~170.000,~300 kcal
+Thịt heo xào nấm,Món xào,"- Thịt heo: 300g
+- Nấm rơm/đông cô: 200g
+- Hành, tỏi, nước mắm","1. Sơ chế: Thịt ướp. Nấm ngâm, rửa sạch.
+2. Xào: Xào thịt săn, vớt ra. Xào nấm 3 phút.
+3. Trộn: Cho thịt vào, nêm gia vị, tiêu.",~155.000,~260 kcal
+Thịt heo xào sả ớt,Món xào,"- Thịt ba chỉ/nạc vai: 400g
+- Sả: 5 cây
+- Ớt, tỏi, nước mắm","1. Sơ chế: Thịt thái mỏng. Sả băm nhỏ.
+2. Xào: Phi sả + tỏi + ớt thơm, cho thịt vào xào săn.
+3. Nêm: Nêm nước mắm, đường, tiêu. Xào khô, dậy mùi.",~165.000,~320 kcal
+Tôm xào thập cẩm,Món xào,"- Tôm sú: 300g
+- Cà rốt, đậu Hà Lan, bắp non, nấm, ớt chuông: mỗi loại 50–100g","1. Sơ chế: Tôm bóc vỏ, ướp. Rau củ cắt hạt lựu, chần sơ.
+2. Xào: Xào tôm tái, vớt ra. Xào rau củ 2 phút.
+3. Trộn: Cho tôm vào, nêm dầu hào, tiêu.",~220.000,~280 kcal
+Tôm xào măng,Món xào,"- Tôm: 300g
+- Măng tươi: 200g
+- Hành, tỏi, ớt","1. Sơ chế: Măng luộc kỹ, xé sợi. Tôm ướp.
+2. Xào: Xào tôm tái, vớt ra. Xào măng 3 phút.
+3. Kết hợp: Trộn tôm, nêm nước mắm, tiêu.",~200.000,~250 kcal
+Tôm xào hành tây,Món xào,"- Tôm: 300g
+- Hành tây: 200g
+- Tỏi, tiêu, nước mắm","1. Sơ chế: Tôm ướp. Hành tây cắt múi cau.
+2. Xào: Xào tôm tái, vớt ra. Xào hành tây 2 phút.
+3. Trộn: Cho tôm vào, nêm gia vị.",~190.000,~240 kcal
+Mực xào thập cẩm,Món xào,"- Mực ống: 400g
+- Cà rốt, ớt chuông, hành tây, nấm: 300g tổng","1. Sơ chế: Mực làm sạch, khứa vảy rồng, chần sơ. Rau củ cắt vừa.
+2. Xào: Xào mực 1–2 phút, vớt ra. Xào rau củ 2 phút.
+3. Trộn: Cho mực vào, nêm dầu hào, tiêu.",~230.000,~260 kcal
+Mực xào chua ngọt,Món xào,"- Mực: 400g
+- Dứa, cà chua, dưa leo, ớt","1. Sơ chế: Mực chần sơ. Dứa, cà chua cắt miếng.
+2. Xào: Xào mực tái, vớt ra. Xào sốt chua ngọt (giấm, đường, nước mắm).
+3. Hoàn thiện: Cho mực + dứa vào, xào 2 phút.",~225.000,~250 kcal
+Mực xào dứa/khóm,Món xào,"- Mực: 400g
+- Dứa: 150g
+- Hành tây, ớt, tỏi","1. Sơ chế: Mực chần sơ. Dứa cắt miếng.
+2. Xào: Xào mực tái, vớt ra. Xào dứa + hành tây.
+3. Trộn: Cho mực vào, nêm nước mắm, tiêu.",~220.000,~245 kcal
+Mực xào cần tỏi,Món xào,"- Mực: 400g
+- Cần tây: 200g
+- Tỏi: 30g","1. Sơ chế: Mực chần sơ. Cần cắt khúc.
+2. Xào: Xào mực 1–2 phút, vớt ra. Xào cần 2 phút.
+3. Trộn: Cho mực vào, nêm gia vị.",~215.000,~240 kcal
+Lươn xào sả ớt,Món xào,"- Lươn đồng: 500g
+- Sả: 5 cây
+- Ớt, tỏi, nghệ","1. Sơ chế: Lươn làm sạch, ướp với nghệ, tiêu.
+2. Xào: Phi sả + tỏi + ớt thơm, cho lươn vào xào săn.
+3. Nêm: Nêm nước mắm, đường, tiêu. Xào khô, dậy mùi.",~280.000,~350 kcal
+Gà xào sả ớt,Món xào,"- Gà ta: 500g
+- Sả: 5 cây
+- Ớt, tỏi, chanh","1. Sơ chế: Gà chặt miếng nhỏ, ướp với sả băm, ớt, tiêu.
+2. Xào: Xào gà săn, nêm nước mắm, đường.
+3. Hoàn thiện: Vắt chanh trước khi tắt bếp.",~200.000,~320 kcal
+Gà xào nấm,Món xào,"- Gà: 400g
+- Nấm các loại: 200g
+- Hành, tỏi","1. Sơ chế: Gà ướp. Nấm ngâm, rửa sạch.
+2. Xào: Xào gà săn, vớt ra. Xào nấm 3 phút.
+3. Trộn: Cho gà vào, nêm nước mắm, tiêu.",~190.000,~300 kcal
+Gà xào gừng,Món xào,"- Gà: 500g
+- Gừng non: 50g
+- Hành, tỏi","1. Sơ chế: Gà ướp. Gừng thái sợi.
+2. Xào: Xào gừng thơm, cho gà vào xào săn.
+3. Nêm: Nêm nước mắm, đường, tiêu.",~195.000,~310 kcal
+"Tim, cật xào giá",Món xào,"- Tim/cật heo: 300g
+- Giá đỗ: 300g
+- Hành tây, tỏi, ớt","1. Sơ chế: Tim/cật làm sạch, thái mỏng, ướp. Giá rửa sạch.
+2. Xào: Xào tim/cật 2 phút, vớt ra. Xào giá 1–2 phút.
+3. Trộn: Cho tim/cật vào, nêm gia vị.",~180.000,~270 kcal
+Rau muống xào tỏi,Món xào,"- Rau muống: 500g
+- Tỏi: 40g
+- Dầu ăn, nước mắm","1. Sơ chế: Rau nhặt, rửa sạch.
+2. Xào: Phi tỏi vàng, cho rau vào xào lửa lớn.
+3. Nêm: Nêm nước mắm, đảo nhanh, tắt bếp.",~60.000,~120 kcal
+Rau muống xào chao,Món xào,"- Rau muống: 500g
+- Chao: 2–3 viên
+- Tỏi, ớt","1. Sơ chế: Rau rửa sạch. Chao tán nhuyễn với chút nước.
+2. Xào: Phi tỏi, cho chao vào, xào thơm.
+3. Cho rau: Cho rau vào xào nhanh, nêm thêm nếu cần.",~70.000,~130 kcal
+Rau lang xào tỏi,Món xào,"- Rau lang: 500g
+- Tỏi: 30g","1. Sơ chế: Rau rửa sạch, để ráo.
+2. Xào: Phi tỏi, cho rau vào xào lửa lớn.
+3. Nêm: Nêm nước mắm, tiêu.",~65.000,~110 kcal
+Giá đỗ xào thịt bò/heo,Món xào,"- Giá: 400g
+- Thịt bò/heo: 200g
+- Hành, tỏi","1. Sơ chế: Thịt ướp. Giá rửa sạch.
+2. Xào: Xào thịt tái, vớt ra. Xào giá 1–2 phút.
+3. Trộn: Cho thịt vào, nêm gia vị.",~140.000,~230 kcal
+Bông cải xanh xào tỏi/thịt,Món xào,"- Bông cải: 400g
+- Tỏi: 30g hoặc thịt bò: 200g","1. Sơ chế: Bông cải chần sơ.
+2. Xào: Nếu có thịt → xào thịt tái, vớt ra. Xào tỏi, cho bông cải vào.
+3. Nêm: Nêm nước mắm, tiêu.",~130.000 (chay) / ~170.000 (có thịt),~150 kcal / ~250 kcal
+Mướp đắng xào trứng,Món xào,"- Khổ qua: 300g
+- Trứng: 3 quả
+- Hành, tiêu","1. Sơ chế: Khổ qua bỏ ruột, thái lát mỏng, ngâm muối.
+2. Xào: Xào khổ qua 2 phút, vớt ra. Đánh trứng, cho vào xào chín.
+3. Trộn: Cho khổ qua vào, nêm gia vị.",~80.000,~180 kcal
+Nấm các loại xào,Món xào,"- Nấm (rơm, đùi gà, đông cô): 400g
+- Hành, tỏi, nước tương","1. Sơ chế: Nấm ngâm, rửa sạch.
+2. Xào: Phi thơm hành tỏi, cho nấm vào xào.
+3. Nêm: Nêm nước tương, tiêu.",~110.000,~140 kcal
+Đậu que xào thịt,Món xào,"- Đậu que: 300g
+- Thịt heo/bò: 200g","1. Sơ chế: Đậu chần sơ. Thịt ướp.
+2. Xào: Xào thịt săn, vớt ra. Xào đậu 2 phút.
+3. Trộn: Cho thịt vào, nêm gia vị.",~145.000,~240 kcal
+Cải thìa/xà lách xoong xào tỏi,Món xào,"- Cải thìa: 500g
+- Tỏi: 30g","1. Sơ chế: Rau rửa sạch.
+2. Xào: Phi tỏi, cho rau vào xào lửa lớn.
+3. Nêm: Nêm nước mắm, tiêu.",~60.000,~100 kcal
+Su su xào thịt,Món xào,"- Su su: 400g
+- Thịt heo: 200g","1. Sơ chế: Su su gọt vỏ, thái mỏng. Thịt ướp.
+2. Xào: Xào thịt săn, vớt ra. Xào su su 3–4 phút.
+3. Trộn: Cho thịt vào, nêm gia vị.",~130.000,~220 kcal
+"Cà rốt, su hào xào",Món xào,"- Cà rốt + su hào: 500g
+- Tỏi, hành lá","1. Sơ chế: Cắt sợi mỏng.
+2. Xào: Phi tỏi, cho rau củ vào xào nhanh.
+3. Nêm: Nêm nước mắm, tiêu.",~70.000,~130 kcal
+Thịt bằm xào cà chua,Món xào,"- Thịt heo xay: 300g
+- Cà chua: 3 quả
+- Hành, tỏi","1. Sơ chế: Cà chua thái hạt lựu.
+2. Xào: Xào thịt săn, cho cà chua vào rim 5–7 phút.
+3. Nêm: Nêm đường, nước mắm, tiêu.",~120.000,~260 kcal
+Bò lúc lắc,Món xào,"- Thịt bò nạc: 400g
+- Hành tây, ớt chuông
+- Nước tương, dầu hào, đường","1. Sơ chế: Bò cắt khối vuông, ướp với dầu hào, nước tương, đường.
+2. Xào: Xào bò lửa lớn 2–3 phút, vớt ra.
+3. Xào rau: Xào hành tây + ớt 2 phút.
+4. Trộn: Cho bò vào, đảo đều.",~210.000,~320 kcal
+Cơm chiên Dương Châu,Món xào,"- Cơm nguội: 4 chén
+- Trứng: 2 quả
+- Tôm, lạp xưởng, cà rốt, đậu Hà Lan: 300g tổng","1. Sơ chế: Nguyên liệu cắt hạt lựu.
+2. Xào: Xào trứng, vớt ra. Xào nguyên liệu, cho cơm vào.
+3. Nêm: Nêm nước mắm, tiêu, cho trứng vào trộn đều.",~180.000,~450 kcal
+Mì xào,Món xào,"- Mì trứng: 400g
+- Thịt, tôm, rau củ: 400g tổng","1. Sơ chế: Mì luộc sơ, xốc dầu. Nguyên liệu ướp.
+2. Xào: Xào thịt/tôm, cho rau củ, cho mì vào.
+3. Nêm: Nêm dầu hào, nước tương, tiêu.",~190.000,~480 kcal
+Hủ tiếu xào,Món xào,"- Hủ tiếu khô: 400g
+- Thịt, tôm, giá, hẹ: 400g tổng","1. Sơ chế: Hủ tiếu ngâm mềm, để ráo.
+2. Xào: Xào thịt/tôm, cho rau, cho hủ tiếu vào.
+3. Nêm: Nêm nước tương, dầu hào.",~200.000,~470 kcal
+Bún xào,Món xào,"- Bún tươi: 500g
+- Thịt, tôm, giá, hẹ, trứng","1. Sơ chế: Bún để ráo. Trứng tráng mỏng, cắt sợi.
+2. Xào: Xào thịt/tôm, cho rau, cho bún vào.
+3. Nêm: Nêm nước mắm, tiêu.",~195.000,~460 kcal
+Miến xào,Món xào,"- Miến dong: 200g (khô)
+- Thịt, nấm, cà rốt, hành lá","1. Sơ chế: Miến ngâm mềm, cắt ngắn.
+2. Xào: Xào thịt, nấm, rau củ.
+3. Cho miến: Cho miến vào, nêm nước tương, tiêu.",~150.000,~400 kcal
+Bánh phở xào,Món xào,"- Bánh phở tươi: 500g
+- Thịt bò, giá, hẹ, hành tây","1. Sơ chế: Bánh phở để ráo.
+2. Xào: Xào bò tái, vớt ra. Xào rau, cho bánh phở vào.
+3. Nêm: Nêm dầu hào, nước tương.",~185.000,~440 kcal
+Bò xào lá lốt,Món xào,"- Thịt bò: 300g
+- Lá lốt: 100g
+- Tỏi, sả","1. Sơ chế: Bò ướp. Lá lốt thái sợi.
+2. Xào: Xào bò tái, vớt ra. Xào lá lốt 1 phút.
+3. Trộn: Cho bò vào, nêm gia vị.",~175.000,~260 kcal
+Ngao xào cay,Món xào,"- Ngao: 600g
+- Ớt, sả, tỏi, hành lá","1. Sơ chế: Ngao ngâm, rửa sạch.
+2. Xào: Phi sả + tỏi + ớt, cho ngao vào xào.
+3. Nêm: Nêm nước mắm, đường, tiêu. Xào đến khi ngao há miệng.",~160.000,~200 kcal
+Ốc xào me/sả ớt,Món xào,"- Ốc bươu/ốc len: 500g
+- Me, sả, ớt, tỏi","1. Sơ chế: Ốc làm sạch, luộc sơ.
+2. Sốt: Nấu me chín, lọc lấy nước. Xào sả + tỏi + ớt.
+3. Xào: Cho ốc + nước me vào, rim 5 phút.",~170.000,~220 kcal
+Lòng gà xào mướp,Món xào,"- Lòng gà: 400g
+- Mướp hương: 300g
+- Hành, tỏi","1. Sơ chế: Lòng gà làm sạch, ướp. Mướp gọt, cắt miếng.
+2. Xào: Xào lòng gà săn, vớt ra. Xào mướp 2 phút.
+3. Trộn: Cho lòng gà vào, nêm gia vị.",~150.000,~250 kcal
+Sườn non xào chua ngọt,Món xào,"- Sườn non: 500g
+- Cà chua, dứa, ớt chuông","1. Sơ chế: Sườn ướp, chiên sơ.
+2. Sốt: Xào cà chua + dứa, nêm giấm, đường, nước mắm.
+3. Xào: Cho sườn vào rim 5–7 phút cho thấm.",~220.000,~420 kcal
+Canh rau ngót thịt bằm,Canh,"- Rau ngót: 300g
+- Thịt heo xay: 200g
+- Hành tím, nước mắm, tiêu","1. Sơ chế: Rau ngót vò nát, rửa sạch. Thịt ướp hành, nước mắm.
+2. Nấu: Đun sôi nước, cho thịt vào quấy đều.
+3. Cho rau: Khi nước sôi lại, cho rau ngót vào, đun 2–3 phút.
+4. Nêm: Nêm nước mắm, tiêu, tắt bếp.",~90.000,~150 kcal
+Canh mồng tơi nấu tôm/cua,Canh,"- Mồng tơi: 300g
+- Tôm sú hoặc cua đồng: 200g
+- Hành, tỏi","1. Sơ chế: Tôm bóc vỏ, giã sơ. Cua giã lấy gạch và nước.
+2. Nấu: Cho nước vào nồi, cho tôm/cua vào nấu sôi.
+3. Cho rau: Cho mồng tơi vào, đun 2 phút.
+4. Nêm: Nêm nước mắm, tiêu.",~120.000 (tôm) / ~100.000 (cua),~140 kcal
+Canh bầu/bí nấu tôm,Canh,"- Bầu/bí: 400g
+- Tôm sú: 200g
+- Hành lá, nước mắm","1. Sơ chế: Bầu gọt vỏ, cắt miếng. Tôm giã dập.
+2. Nấu: Xào tôm thơm, đổ nước vào đun sôi.
+3. Cho bầu: Cho bầu vào, nấu 5–7 phút.
+4. Nêm: Nêm nước mắm, hành lá.",~110.000,~130 kcal
+Canh khổ qua nhồi thịt,Canh,"- Khổ qua: 4 trái (~300g)
+- Thịt heo xay: 250g
+- Nấm mèo, hành, nước dùng","1. Sơ chế: Khổ qua bỏ ruột, nhồi thịt đã trộn với nấm mèo, hành.
+2. Nấu: Đun sôi nước dùng, cho khổ qua vào.
+3. Hầm: Nấu 15–20 phút cho chín mềm.
+4. Nêm: Nêm nước mắm, tiêu.",~140.000,~180 kcal
+Canh chua cá lóc/cá bông lau,Canh,"- Cá lóc/bông lau: 500g
+- Dọc mùng, đậu bắp, cà chua, me, rau thơm","1. Sơ chế: Cá làm sạch, cắt khúc. Me dầm lấy nước.
+2. Xào: Xào cà chua, dọc mùng, đậu bắp.
+3. Nấu: Đổ nước + nước me vào, cho cá vào nấu 10 phút.
+4. Hoàn thiện: Cho rau om, ngò gai, ớt.",~180.000,~200 kcal
+Canh chua đầu cá hồi,Canh,"- Đầu cá hồi: 1 cái (~400g)
+- Cà chua, dứa, me, rau thơm","1. Sơ chế: Đầu cá làm sạch, chiên sơ.
+2. Xào: Xào cà chua + dứa thơm.
+3. Nấu: Đổ nước + nước me vào, cho đầu cá vào nấu 10–12 phút.
+4. Nêm: Cho rau thơm, ớt.",~220.000,~250 kcal
+Canh chua tôm,Canh,"- Tôm sú: 300g
+- Dọc mùng, đậu bắp, cà chua, me, bạc hà","1. Sơ chế: Tôm bóc vỏ, để nguyên đuôi.
+2. Xào: Xào cà chua, dọc mùng, đậu bắp.
+3. Nấu: Đổ nước + nước me vào, cho tôm vào nấu 5–7 phút.
+4. Hoàn thiện: Cho rau thơm, ớt.",~160.000,~160 kcal
+Canh cá nấu ngót/dọc mùng,Canh,"- Cá lóc/thác lác: 400g
+- Rau ngót/dọc mùng: 200g
+- Cà chua, me","1. Sơ chế: Cá làm sạch. Rau ngót vò, dọc mùng bào sợi.
+2. Xào: Xào cà chua, cho cá vào xào sơ.
+3. Nấu: Đổ nước vào, nấu 10 phút, cho rau vào.
+4. Nêm: Nêm nước mắm, me.",~150.000,~170 kcal
+Canh cua rau đay/mồng tơi,Canh,"- Cua đồng: 300g
+- Rau đay/mồng tơi: 300g
+- Mướp hương: 100g","1. Sơ chế: Cua giã, lọc lấy nước. Rau rửa sạch.
+2. Nấu: Đun sôi nước cua, vớt gạch.
+3. Cho rau: Cho rau + mướp vào, nấu 5 phút.
+4. Hoàn thiện: Cho gạch cua lên mặt, nêm muối.",~110.000,~120 kcal
+Canh cua mướp,Canh,"- Cua đồng: 300g
+- Mướp hương: 300g
+- Hành lá","1. Sơ chế: Cua giã, lọc. Mướp gọt, cắt miếng.
+2. Nấu: Đun sôi nước cua, cho mướp vào.
+3. Nêm: Nêm muối, cho gạch cua lên trên.",~100.000,~110 kcal
+Canh hến nấu chua,Canh,"- Hến: 500g
+- Cà chua, me, dọc mùng, rau răm","1. Sơ chế: Hến ngâm, luộc lấy nước và thịt.
+2. Xào: Xào cà chua, dọc mùng.
+3. Nấu: Đổ nước hến + nước me vào, cho thịt hến vào.
+4. Hoàn thiện: Cho rau răm, ớt.",~130.000,~140 kcal
+Canh riêu cua,Canh,"- Cua đồng: 400g
+- Cà chua, đậu phụ, hành lá","1. Sơ chế: Cua giã, lọc. Đậu chiên vàng.
+2. Riêu: Đun nước cua, khuấy nhẹ để riêu nổi.
+3. Xào: Xào cà chua, cho vào nồi.
+4. Hoàn thiện: Cho đậu, hành, nêm muối.",~140.000,~160 kcal
+Canh sườn non nấu bí/củ quả,Canh,"- Sườn non: 400g
+- Bí đỏ/khoai tây/cà rốt: 300g","1. Sơ chế: Sườn chần sơ. Bí/củ cắt miếng.
+2. Nấu: Hầm sườn 30 phút, cho củ vào nấu thêm 15 phút.
+3. Nêm: Nêm nước mắm, tiêu.",~160.000,~220 kcal
+Canh sườn nấu chua,Canh,"- Sườn non: 400g
+- Me, dọc mùng, cà chua, đậu bắp","1. Sơ chế: Sườn chần. Rau củ cắt vừa.
+2. Xào: Xào cà chua, dọc mùng.
+3. Nấu: Hầm sườn 20 phút, cho rau + nước me vào.
+4. Hoàn thiện: Nêm gia vị, cho rau thơm.",~170.000,~230 kcal
+Canh sườn nấu khoai tây/cà rốt,Canh,"- Sườn non: 400g
+- Khoai tây, cà rốt: 300g tổng","1. Sơ chế: Sườn chần. Củ cắt khối.
+2. Nấu: Hầm sườn 30 phút, cho củ vào nấu 15 phút.
+3. Nêm: Nêm nước mắm, tiêu.",~155.000,~210 kcal
+Canh gà nấm/nấu thuốc bắc,Canh,"- Gà ta: 500g
+- Nấm đông cô: 100g
+- Thuốc bắc (kỷ tử, táo đỏ, hoài sơn): 30g","1. Sơ chế: Gà chặt miếng, chần. Nấm ngâm.
+2. Hầm: Cho gà + thuốc bắc vào hầm 45–60 phút.
+3. Cho nấm: Cho nấm vào nấu 10 phút.
+4. Nêm: Nêm ít muối.",~250.000,~280 kcal
+Canh trứng cà chua,Canh,"- Trứng: 3 quả
+- Cà chua: 3 quả
+- Hành lá, nước mắm","1. Sơ chế: Cà chua thái múi. Trứng đánh tan.
+2. Xào: Xào cà chua chín mềm.
+3. Nấu: Đổ nước vào, đun sôi, từ từ đổ trứng vào.
+4. Nêm: Nêm nước mắm, hành lá.",~70.000,~150 kcal
+Canh đậu hũ non nấu nấm,Canh,"- Đậu hũ non: 200g
+- Nấm rơm/đùi gà: 150g
+- Hành lá, nước dùng","1. Sơ chế: Đậu cắt khối. Nấm ngâm, rửa.
+2. Nấu: Đun sôi nước dùng, cho nấm vào nấu 5 phút.
+3. Cho đậu: Cho đậu hũ vào, nấu 3 phút.
+4. Nêm: Nêm nước tương, tiêu.",~100.000,~130 kcal
+Canh rong biển thịt bằm,Canh,"- Rong biển khô: 20g
+- Thịt heo xay: 200g
+- Tỏi, nước mắm","1. Sơ chế: Rong biển ngâm nở. Thịt ướp.
+2. Nấu: Xào thịt săn, đổ nước vào, cho rong biển.
+3. Nấu: Đun 10 phút.
+4. Nêm: Nêm nước mắm, tiêu.",~110.000,~140 kcal
+Canh bắp cải thịt viên,Canh,"- Bắp cải: 400g
+- Thịt heo xay: 250g
+- Hành, nước dùng","1. Sơ chế: Bắp cải cắt miếng. Thịt viên vo tròn.
+2. Nấu: Đun sôi nước dùng, cho thịt viên vào.
+3. Cho rau: Khi thịt chín, cho bắp cải vào nấu 5–7 phút.
+4. Nêm: Nêm nước mắm, tiêu.",~130.000,~170 kcal
+Canh bún tàu/thịt bằm,Canh,"- Bún tàu: 50g
+- Thịt heo xay: 200g
+- Cà rốt, nấm mèo","1. Sơ chế: Bún tàu ngâm mềm. Thịt ướp.
+2. Nấu: Xào thịt, đổ nước vào, cho cà rốt + nấm.
+3. Cho bún: Nấu 10 phút, cho bún tàu vào.
+4. Nêm: Nêm nước mắm.",~100.000,~160 kcal
+Canh chả cá/thịt viên,Canh,"- Chả cá/thịt viên: 300g
+- Cà chua, thì là, dọc mùng","1. Sơ chế: Chả cắt miếng. Cà chua thái.
+2. Xào: Xào cà chua, dọc mùng.
+3. Nấu: Đổ nước vào, cho chả vào nấu 10 phút.
+4. Hoàn thiện: Cho thì là, ớt.",~150.000,~190 kcal
+Canh cá rô đồng nấu ngót,Canh,"- Cá rô đồng: 500g
+- Rau ngót: 200g
+- Gừng, hành","1. Sơ chế: Cá làm sạch, chiên sơ. Rau ngót vò.
+2. Nấu: Đun sôi nước, cho cá + gừng vào nấu 15 phút.
+3. Cho rau: Cho rau ngót vào, nấu 2 phút.
+4. Nêm: Nêm nước mắm.",~190.000,~180 kcal
+Canh cá diêu hồng nấu thì là,Canh,"- Cá diêu hồng: 1 con (~600g)
+- Thì là, hành lá, cà chua","1. Sơ chế: Cá làm sạch, cắt khúc.
+2. Xào: Xào cà chua thơm.
+3. Nấu: Đổ nước vào, cho cá vào nấu 10 phút.
+4. Hoàn thiện: Cho thì là, hành, nêm nước mắm.",~200.000,~200 kcal
+Canh măng chua nấu sườn,Canh,"- Sườn non: 400g
+- Măng chua: 200g
+- Cà chua, ớt, hành","1. Sơ chế: Sườn chần. Măng luộc kỹ, vắt ráo.
+2. Xào: Xào măng + cà chua.
+3. Nấu: Hầm sườn 30 phút, cho măng vào nấu 15 phút.
+4. Nêm: Nêm nước mắm, ớt.",~160.000,~220 kcal
+Súp gà nấm,Súp,"- Ức gà: 200g
+- Nấm: 100g
+- Bột năng, trứng, ngô ngọt","1. Sơ chế: Gà luộc, xé sợi. Nấm cắt nhỏ.
+2. Nấu: Đun sôi nước dùng, cho nấm + ngô.
+3. Làm sánh: Hòa bột năng, từ từ đổ vào.
+4. Hoàn thiện: Đánh trứng vào, nêm hạt nêm.",~120.000,~180 kcal
+Súp bắp/cua,Súp,"- Cua thịt: 100g
+- Ngô ngọt: 150g
+- Trứng, bột năng","1. Sơ chế: Cua hấp. Ngô tách hạt.
+2. Nấu: Đun sôi nước dùng, cho ngô + cua.
+3. Làm sánh: Hòa bột năng, đổ vào.
+4. Đánh trứng, nêm gia vị.",~140.000,~170 kcal
+Súp hải sản,Súp,"- Tôm, mực, cua: 200g tổng
+- Ngô, nấm, cà rốt, bột năng, trứng","1. Sơ chế: Hải sản làm sạch, cắt nhỏ.
+2. Nấu: Đun sôi nước dùng, cho rau củ.
+3. Cho hải sản, nấu 5 phút.
+4. Làm sánh + trứng, nêm gia vị.",~180.000,~200 kcal
+Súp rong biển đậu hũ,Súp,"- Rong biển: 15g
+- Đậu hũ non: 100g
+- Trứng, bột năng","1. Sơ chế: Rong biển ngâm. Đậu cắt hạt lựu.
+2. Nấu: Đun sôi nước dùng, cho rong biển + đậu.
+3. Làm sánh, đánh trứng, nêm nước tương.",~90.000,~140 kcal
+Canh bí đỏ thịt bằm,Canh,"- Bí đỏ: 400g
+- Thịt heo xay: 200g
+- Hành, nước mắm","1. Sơ chế: Bí gọt, cắt miếng.
+2. Nấu: Xào thịt săn, đổ nước vào, cho bí.
+3. Nấu: Nấu 10–15 phút cho bí mềm.
+4. Nêm: Nêm nước mắm, hành lá.",~100.000,~160 kcal
+Cá chiên (các loại cá),Chiên,"- Cá lóc/basа/thu: 800g
+- Muối, tiêu, chanh","1. Sơ chế: Cá làm sạch, khứa vảy, thấm khô.
+2. Ướp: Rắc muối + tiêu, để 10 phút.
+3. Chiên: Dầu nóng già, cho cá vào chiên lửa vừa đến khi vàng giòn hai mặt.
+4. Hoàn thiện: Vắt chanh trước khi ăn.",~180.000,~320 kcal
+Cá chiên sốt cà chua,Chiên + Sốt,"- Cá basa/lóc: 600g
+- Cà chua: 3 quả
+- Hành, tỏi, nước mắm","1. Chiên cá: Làm như trên, chiên sơ.
+2. Làm sốt: Xào hành tỏi, cho cà chua vào xào nhuyễn.
+3. Rim: Cho cá vào rim 5–7 phút với sốt.
+4. Nêm: Nêm đường, nước mắm, tiêu.",~190.000,~340 kcal
+Cá chiên mắm tỏi/riềng,Chiên + Sốt,"- Cá: 600g
+- Tỏi/riềng: 30g
+- Nước mắm, đường, ớt","1. Chiên cá vàng giòn.
+2. Phi thơm: Tỏi băm hoặc riềng giã nhỏ.
+3. Pha sốt: Nước mắm + đường + nước lọc (tỷ lệ 1:1:1), đun sôi.
+4. Rưới: Rưới sốt lên cá đã chiên.",~185.000,~330 kcal
+Thịt heo chiên giòn (pan-seared),Chiên,"- Thịt nạc vai/ba chỉ: 500g
+- Muối, tiêu, dầu ăn","1. Sơ chế: Thịt cắt miếng dày 1.5cm, thấm khô.
+2. Chiên: Áp chảo không cần nhiều dầu, chiên vàng đều hai mặt.
+3. Nghỉ: Để thịt nghỉ 3 phút trước khi cắt.",~160.000,~380 kcal
+Sườn chiên nước mắm,Chiên + Sốt,"- Sườn non: 600g
+- Tỏi, ớt, nước mắm, đường","1. Sơ chế: Sườn chặt miếng, ướp nhẹ.
+2. Chiên: Chiên ngập dầu cho vàng giòn.
+3. Làm sốt: Phi tỏi, cho hỗn hợp nước mắm + đường + nước vào đun sệt.
+4. Trộn: Cho sườn vào đảo đều.",~200.000,~450 kcal
+Sườn chiên xù,Chiên,"- Sườn non: 500g
+- Trứng, bột chiên xù, bột mì","1. Sơ chế: Sườn ướp gia vị, hấp sơ 10 phút.
+2. Lăn bột: Nhúng qua bột mì → trứng → bột xù.
+3. Chiên: Chiên ngập dầu lửa vừa đến khi vàng giòn.",~210.000,~480 kcal
+Tôm chiên bột,Chiên,"- Tôm sú: 400g
+- Bột chiên giòn, trứng","1. Sơ chế: Tôm bóc vỏ, chừa đuôi, thấm khô.
+2. Lăn bột: Nhúng trứng → bột chiên giòn.
+3. Chiên: Chiên ngập dầu đến khi vàng giòn.",~230.000,~320 kcal
+Tôm chiên mắm tỏi,Chiên + Sốt,"- Tôm: 400g
+- Tỏi, ớt, nước mắm, đường","1. Chiên tôm sơ qua.
+2. Làm sốt: Phi tỏi, cho hỗn hợp nước mắm + đường + nước vào.
+3. Xào: Cho tôm vào xào nhanh 2–3 phút cho thấm.",~225.000,~310 kcal
+Tôm lăn bột chiên,Chiên,"- Tôm: 400g
+- Bột năng/bột gạo, nước","1. Pha bột: Bột + nước thành hỗn hợp sánh.
+2. Nhúng tôm vào bột.
+3. Chiên: Chiên ngập dầu lửa vừa, tôm giòn nhẹ.",~220.000,~300 kcal
+Đậu hũ chiên giòn,Chiên,"- Đậu hũ non/cứng: 400g
+- Dầu ăn, muối","1. Sơ chế: Đậu cắt miếng, thấm khô.
+2. Chiên: Dầu nóng, chiên vàng đều các mặt.
+3. Ăn kèm: Chấm tương ớt hoặc nước mắm chua ngọt.",~60.000,~220 kcal
+Đậu hũ chiên sốt thịt bằm/cà chua,Chiên + Sốt,"- Đậu hũ: 300g
+- Thịt bằm: 200g hoặc cà chua: 2 quả","1. Chiên đậu vàng giòn.
+2. Làm sốt: Xào thịt/cà chua, nêm gia vị.
+3. Rưới: Rưới sốt lên đậu đã chiên.",~120.000,~280 kcal
+Đậu hũ nhồi thịt chiên,Chiên,"- Đậu hũ: 300g
+- Thịt heo xay: 200g
+- Nấm mèo, hành","1. Nhồi: Cắt đôi đậu, khoét giữa, nhồi thịt đã trộn.
+2. Chiên: Áp chảo vàng đều hai mặt.
+3. Nêm: Có thể rim nhẹ với nước mắm.",~140.000,~300 kcal
+Trứng chiên thịt bằm/hành lá,Chiên,"- Trứng: 4 quả
+- Thịt bằm: 150g hoặc hành lá: 50g","1. Đánh trứng với thịt/hành, nêm chút nước mắm.
+2. Chiên: Dùng chảo chống dính, chiên lửa vừa.
+3. Gấp hoặc để nguyên miếng.",~70.000,~250 kcal
+Trứng chiên mắm,Chiên,"- Trứng: 4 quả
+- Nước mắm, đường, tỏi","1. Đánh trứng với nước mắm + đường.
+2. Chiên: Chiên như trứng thường.
+3. Hoàn thiện: Ăn nóng, có thể rắc tiêu.",~65.000,~240 kcal
+Trứng cuộn/ốp la,Chiên,"- Trứng: 4 quả
+- Sữa (tùy chọn), muối, tiêu","1. Ốp la: Chiên trứng nguyên lòng, lửa nhỏ.
+2. Trứng cuộn: Đánh trứng, chiên mỏng, cuộn lại từng lớp.
+3. Ăn kèm: Bánh mì, cơm, salad.",~60.000,~230 kcal
+Chả cá/thịt chiên,Chiên,"- Chả cá/thịt: 400g
+- Dầu ăn","1. Sơ chế: Chả cắt lát vừa.
+2. Chiên: Chiên ngập dầu hoặc áp chảo đến khi vàng.
+3. Ăn kèm: Bún, rau sống, mắm nêm.",~150.000,~350 kcal
+Chả giò/chả nem rán,Chiên,"- Bánh tráng cuốn: 20 cái
+- Thịt, nấm, miến, cà rốt: 500g tổng","1. Cuốn: Nhân trộn đều, cuốn chặt tay.
+2. Chiên: Chiên ngập dầu lửa vừa đến khi vàng giòn.
+3. Ăn kèm: Nước mắm chua ngọt, rau sống.",~180.000,~400 kcal
+Nem nướng/Nem Lụi (chiên),Chiên,"- Giò sống/thịt xay: 500g
+- Sả cây, que tre","1. Quết: Trộn thịt với gia vị, quết dai.
+2. Nặn: Quấn quanh sả hoặc que tre.
+3. Chiên: Chiên ngập dầu hoặc nướng.",~190.000,~380 kcal
+Bánh xèo,Chiên,"- Bột gạo: 200g
+- Nước cốt dừa, nghệ, tôm, thịt, giá","1. Pha bột: Bột + nước + nước cốt dừa + nghệ.
+2. Chiên: Đổ bột vào chảo nóng, cho nhân, gập lại.
+3. Ăn kèm: Rau sống, nước mắm chua ngọt.",~170.000,~450 kcal
+Bánh khọt,Chiên,"- Bột gạo: 200g
+- Nước cốt dừa, tôm, hành lá","1. Pha bột như bánh xèo.
+2. Chiên: Đổ vào khuôn tròn, rắc tôm lên.
+3. Ăn kèm: Rau sống, nước mắm.",~160.000,~420 kcal
+Khoai tây/cà rốt chiên,Chiên,"- Khoai tây: 400g
+- Cà rốt: 100g (tùy chọn)
+- Dầu ăn, muối","1. Sơ chế: Cắt que, ngâm nước lạnh, thấm khô.
+2. Chiên: Chiên 2 lần – lần 1 lửa nhỏ, lần 2 lửa lớn cho giòn.
+3. Ăn kèm: Sốt mayonnaise, tương ớt.",~80.000,~280 kcal
+Cá viên/chả cá chiên,Chiên,- Cá viên đông lạnh/tự làm: 400g,"1. Rã đông nếu dùng đông lạnh.
+2. Chiên: Chiên ngập dầu lửa vừa đến khi vàng.
+3. Ăn kèm: Sốt me, tương ớt.",~140.000,~320 kcal
+Gà chiên nước mắm,Chiên + Sốt,"- Gà ta/đùi gà: 600g
+- Tỏi, ớt, nước mắm, đường","1. Chiên gà vàng giòn.
+2. Làm sốt: Phi tỏi, cho hỗn hợp nước mắm + đường + nước vào.
+3. Xào: Cho gà vào đảo đều 2–3 phút.",~210.000,~460 kcal
+Gà chiên giòn (fried chicken),Chiên,"- Đùi/gà nguyên con: 800g
+- Bột mì, bột năng, trứng, sữa","1. Ướp gà với sữa + gia vị 30 phút.
+2. Lăn bột: Nhúng trứng → hỗn hợp bột.
+3. Chiên: Chiên ngập dầu 2 lần cho giòn.",~230.000,~520 kcal
+Gà chiên bơ tỏi,Chiên + Sốt,"- Gà: 600g
+- Bơ, tỏi, rau mùi","1. Chiên gà chín vàng.
+2. Làm sốt: Tan chảy bơ, phi tỏi thơm.
+3. Trộn: Cho gà vào đảo đều, rắc rau mùi.",~240.000,~500 kcal
+Mực chiên giòn,Chiên,"- Mực ống: 500g
+- Bột chiên giòn, trứng","1. Sơ chế: Mực làm sạch, cắt khoanh.
+2. Lăn bột: Nhúng trứng → bột.
+3. Chiên: Chiên ngập dầu đến khi vàng giòn.",~250.000,~340 kcal
+Mực chiên mắm tỏi,Chiên + Sốt,"- Mực: 500g
+- Tỏi, ớt, nước mắm, đường","1. Chiên mực sơ.
+2. Làm sốt: Phi tỏi, cho hỗn hợp nước mắm + đường + nước.
+3. Xào: Cho mực vào xào nhanh 2 phút.",~245.000,~330 kcal
+Cánh gà chiên nước mắm/mật ong,Chiên + Sốt,"- Cánh gà: 600g
+- Tỏi, mật ong, nước mắm, ớt","1. Chiên cánh vàng giòn.
+2. Làm sốt: Đun sôi nước mắm + mật ong + tỏi.
+3. Áo sốt: Trộn cánh gà vào sốt.",~220.000,~480 kcal
+Thịt ba chỉ chiên nước mắm,Chiên + Sốt,"- Thịt ba chỉ: 500g
+- Tỏi, ớt, nước mắm, đường","1. Luộc sơ thịt, để ráo.
+2. Chiên: Chiên cho mỡ ra, thịt vàng giòn.
+3. Làm sốt: Phi tỏi, cho hỗn hợp nước mắm + đường.
+4. Trộn: Cho thịt vào đảo đều.",~170.000,~420 kcal
+Cơm chiên (các loại),Chiên,"- Cơm nguội: 4 chén
+- Trứng, hành lá, thịt/tôm tùy chọn","1. Xào: Phi hành, cho trứng vào đánh.
+2. Cho cơm: Dùng đũa xới tơi, xào đều.
+3. Nêm: Nêm nước mắm, tiêu, hành lá.",~100.000,~450 kcal
+Cá hấp xì dầu/hành gừng,Hấp,"- Cá diêu hồng/lóc: 800g
+- Xì dầu, hành lá, gừng, rượu trắng","1. Sơ chế: Cá làm sạch, khứa vảy, ướp với gừng + rượu 10 phút.
+2. Trang trí: Rải hành + gừng lên mình cá.
+3. Hấp: Hấp cách thủy 15–20 phút.
+4. Rưới: Rưới xì dầu pha loãng (có thể thêm đường).",~200.000,~280 kcal
+Cá hấp bia,Hấp,"- Cá basa/thu: 800g
+- Bia: 1 lon (330ml)
+- Gừng, sả, ớt","1. Sơ chế: Cá làm sạch, để nguyên con hoặc cắt khúc.
+2. Ướp: Ướp với gừng, sả đập dập.
+3. Hấp: Đổ bia vào nồi hấp, đặt cá lên trên, hấp 20–25 phút.
+4. Hoàn thiện: Rắc ớt, hành lá.",~190.000,~270 kcal
+Cá hấp hành,Hấp,"- Cá lóc/diêu hồng: 800g
+- Hành lá, hành tím, tiêu, nước mắm","1. Sơ chế: Cá làm sạch.
+2. Phủ hành: Cắt hành lá dài, phủ kín mình cá.
+3. Hấp: Hấp 15–20 phút.
+4. Nêm: Rưới hỗn hợp nước mắm + tiêu + đường pha loãng.",~185.000,~260 kcal
+Tôm hấp bia/sả,Hấp,"- Tôm sú: 500g
+- Bia: ½ lon hoặc sả: 5 cây","1. Sơ chế: Tôm rửa sạch, để nguyên vỏ.
+2. Hấp: Xếp sả dưới đáy xửng, cho tôm lên, hấp 8–10 phút.
+3. Hoặc: Hấp với bia thay nước.
+4. Ăn kèm: Muối ớt chanh.",~240.000,~200 kcal
+Tôm hấp nước dừa,Hấp,"- Tôm sú: 500g
+- Nước dừa tươi: 300ml
+- Sả, lá chanh","1. Sơ chế: Tôm rửa sạch.
+2. Hấp: Đổ nước dừa vào nồi, cho sả + lá chanh, hấp tôm 8–10 phút.
+3. Hoàn thiện: Tôm ngọt tự nhiên, dậy mùi dừa.",~250.000,~210 kcal
+Ngao/hến hấp sả,Hấp,"- Ngao/hến: 800g
+- Sả: 5 cây
+- Ớt, lá chanh","1. Sơ chế: Ngao ngâm nước vo gạo + ớt cay 1–2 tiếng.
+2. Hấp: Xếp sả dưới xửng, cho ngao lên, hấp 5–7 phút đến khi há miệng.
+3. Ăn kèm: Nước chấm gừng hoặc mắm ớt.",~150.000,~150 kcal
+Ốc hấp lá gừng/sả,Hấp,"- Ốc bươu/ốc len: 600g
+- Lá gừng, sả, ớt","1. Sơ chế: Ốc ngâm kỹ, rửa sạch.
+2. Hấp: Xếp lá gừng + sả dưới xửng, cho ốc lên, hấp 10–12 phút.
+3. Hoàn thiện: Ốc thơm, giữ vị ngọt tự nhiên.",~160.000,~160 kcal
+Gà hấp hành gừng,Hấp,"- Gà ta: 1 con (~1.2kg)
+- Hành lá, gừng, muối, rượu","1. Sơ chế: Gà làm sạch, xát muối + rượu.
+2. Nhồi: Nhồi hành + gừng vào bụng gà.
+3. Hấp: Hấp cách thủy 45–60 phút.
+4. Ăn kèm: Muối tiêu chanh.",~320.000,~380 kcal
+Gà hấp muối sả/lá chanh,Hấp,"- Gà: 1 con
+- Muối hột, sả, lá chanh","1. Lót nồi: Rải lớp muối dày + sả + lá chanh.
+2. Đặt gà lên trên (không chạm muối).
+3. Hấp khô: Đậy kín, hấp 60–75 phút.
+4. Đặc điểm: Gà thơm, da săn, không cần nước.",~330.000,~370 kcal
+Gà hấp nấm,Hấp,"- Gà: 800g
+- Nấm đông cô/rơm: 200g
+- Gừng, hành","1. Sơ chế: Gà chặt miếng, nấm ngâm.
+2. Xếp: Trộn gà + nấm + gừng, cho vào tô.
+3. Hấp: Hấp 30–40 phút.
+4. Nêm: Rắc hành lá, tiêu.",~280.000,~350 kcal
+Sườn hấp,Hấp,"- Sườn non: 500g
+- Hành, tỏi, nước mắm, đường","1. Sơ chế: Sườn chặt miếng, ướp với hành tỏi + nước mắm + đường 30 phút.
+2. Hấp: Hấp 25–30 phút.
+3. Hoàn thiện: Rắc tiêu, hành lá.",~180.000,~320 kcal
+Thịt heo hấp mắm tôm,Hấp,"- Thịt ba chỉ: 500g
+- Mắm tôm, đường, ớt, chanh","1. Sơ chế: Thịt luộc sơ, để nguội.
+2. Pha mắm: Mắm tôm + đường + chanh + ớt đánh bọt.
+3. Hấp: Không hấp thịt, mà ăn sống với mắm tôm. Lưu ý: Đây là món ""thịt luộc chấm mắm tôm"", nhưng thường gọi là ""hấp"" trong khẩu ngữ.
+→ Nếu hấp: hấp thịt 20 phút, chấm mắm tôm.",~140.000,~350 kcal
+Mực hấp gừng,Hấp,"- Mực ống: 500g
+- Gừng, hành lá, rượu","1. Sơ chế: Mực làm sạch, để nguyên con.
+2. Ướp: Xát gừng + rượu.
+3. Hấp: Hấp 8–10 phút.
+4. Ăn kèm: Nước mắm gừng.",~260.000,~220 kcal
+Trứng hấp thịt bằm (trứng chưng),Hấp,"- Trứng: 4 quả
+- Thịt heo xay: 150g
+- Nước lọc (tỷ lệ 1:1.5 trứng:nước)","1. Đánh trứng với nước + thịt bằm.
+2. Lọc: Lược qua rây để mịn.
+3. Hấp: Hấp lửa nhỏ 15–20 phút, đậy khăn lên nắp.
+4. Hoàn thiện: Rắc hành lá, tiêu.",~80.000,~240 kcal
+Trứng hấp nấm,Hấp,"- Trứng: 4 quả
+- Nấm rơm/đùi gà: 100g
+- Nước lọc","1. Sơ chế: Nấm thái nhỏ, xào sơ.
+2. Đánh trứng với nước (tỷ lệ 1:1.5).
+3. Hấp: Cho nấm vào tô, đổ trứng lên, hấp 15–20 phút.",~90.000,~230 kcal
+Đậu hũ hấp tôm/thịt,Hấp,"- Đậu hũ non: 300g
+- Tôm/thịt: 200g
+- Trứng, hành lá","1. Sơ chế: Đậu nghiền nhuyễn, trộn với tôm/thịt + trứng.
+2. Đổ khuôn: Cho vào tô chịu nhiệt.
+3. Hấp: Hấp 20–25 phút.
+4. Rưới: Nước tương hoặc xì dầu.",~150.000,~260 kcal
+Bánh bao hấp,Hấp,"- Bột bánh bao: 500g
+- Nhân thịt/trứng muối: 300g","1. Nhào bột, ủ nở.
+2. Bao nhân, tạo hình.
+3. Hấp: Hấp 15–20 phút trên xửng sôi.
+4. Lưu ý: Dùng khăn ẩm đậy để bánh không bị vàng.",~120.000 (4 cái),~280 kcal/cái
+Bánh bò/bánh tiêu hấp,Hấp,"- Bột gạo/bột năng: 300g
+- Men nở, đường, nước cốt dừa","1. Pha bột, ủ 2–3 tiếng cho nở xốp.
+2. Đổ khuôn: Dùng khuôn nhỏ.
+3. Hấp: Hấp 20–25 phút.
+4. Đặc điểm: Bánh nở bông, mềm xốp.",~80.000 (6 cái),~180 kcal/cái
+Xôi hấp (các loại),Hấp,"- Gạo nếp: 500g
+- Nước cốt dừa, đậu xanh, lá dứa/màu thực phẩm","1. Ngâm nếp 4–6 tiếng.
+2. Trộn: Với nước cốt dừa, đậu xanh (nếu có).
+3. Hấp: Hấp 30–40 phút, xới đều giữa chừng.
+4. Ăn kèm: Muối mè hoặc chà bông.",~100.000,~420 kcal
+Cá mòi hấp thì là,Hấp,"- Cá mòi tươi: 600g
+- Thì là, hành, gừng","1. Sơ chế: Cá làm sạch.
+2. Ướp: Với gừng, hành.
+3. Hấp: Rải thì là lên cá, hấp 15 phút.
+4. Nêm: Rưới nước mắm pha.",~170.000,~250 kcal
+Hàu hấp,Hấp,"- Hàu sữa: 500g
+- Gừng, sả, lá chanh","1. Sơ chế: Rửa sạch, để nguyên vỏ.
+2. Hấp: Xếp lên xửng, hấp 5–7 phút.
+3. Ăn kèm: Muối tiêu chanh hoặc mắm gừng.",~280.000,~180 kcal
+Nghêu hấp thái,Hấp,"- Nghêu: 800g
+- Sả, ớt, lá chanh, nước cốt me","1. Sơ chế: Nghêu ngâm sạch.
+2. Hấp: Xếp sả + lá chanh, hấp 5 phút.
+3. Rưới: Nước sốt me + ớt sau khi hấp.",~160.000,~150 kcal
+Cá bống hấp,Hấp,"- Cá bống đồng: 500g
+- Gừng, hành, tiêu","1. Sơ chế: Cá làm sạch, để nguyên con.
+2. Hấp: Xếp gừng + hành lên cá, hấp 15–20 phút.
+3. Nêm: Rưới nước mắm pha.",~200.000,~220 kcal
+Bánh canh hấp,Hấp,"- Bột gạo: 300g
+- Nước, muối","1. Pha bột loãng như bột bánh cuốn.
+2. Tráng: Múc bột vào khuôn phẳng, hấp 5–7 phút.
+3. Cắt sợi: Dùng làm bánh canh tươi.",~60.000,~200 kcal
+Bánh ướt hấp,Hấp,"- Bột gạo: 300g
+- Nước, muối","1. Pha bột loãng.
+2. Tráng: Dùng xửng tròn, hấp từng lớp mỏng 2–3 phút.
+3. Cuộn: Ăn với chả, nem, rau.",~70.000,~180 kcal
+Thịt heo luộc,Luộc,"- Thịt ba chỉ/nạc vai: 600g
+- Gừng, hành tím, muối","1. Sơ chế: Thịt rửa sạch, có thể chần sơ.
+2. Luộc: Cho thịt vào nồi, đổ ngập nước, thêm gừng + hành tím + muối.
+3. Nấu: Đun sôi, vặn nhỏ lửa, luộc 25–30 phút.
+4. Vớt ra: Ngâm vào nước lạnh để thịt săn, trắng.",~170.000,~380 kcal
+Gà luộc,Luộc,"- Gà ta: 1 con (~1.2kg)
+- Gừng, hành, muối","1. Sơ chế: Gà làm sạch, xát muối.
+2. Luộc: Cho gà vào nồi, đổ ngập nước, thêm gừng + hành.
+3. Kỹ thuật: Đun sôi, tắt bếp 5 phút → bật lại → luộc 15–20 phút.
+4. Vớt ra: Nhúng vào nước đá để da giòn.",~320.000,~360 kcal
+Vịt luộc,Luộc,"- Vịt: 1 con (~1.5kg)
+- Gừng, sả, rượu trắng","1. Sơ chế: Vịt xát gừng + rượu để khử mùi.
+2. Luộc: Cho sả + gừng vào nồi, luộc 30–40 phút.
+3. Hoàn thiện: Vớt ra, chặt miếng. Ăn với gừng mắm.",~350.000,~400 kcal
+Trứng luộc,Luộc,- Trứng gà/vịt: 6 quả,"1. Luộc: Cho trứng vào nồi, đổ ngập nước.
+2. Đun sôi: Khi sôi, luộc 8–10 phút (lòng đào: 6 phút).
+3. Làm nguội: Ngâm nước lạnh, dễ bóc.",~40.000,~90 kcal/quả
+"Cá luộc (cá chép, rô...)",Luộc,"- Cá chép/rô đồng: 800g
+- Gừng, hành, thì là","1. Sơ chế: Cá làm sạch, khứa nhẹ.
+2. Luộc: Cho cá vào nồi, đổ nước xăm xắp, thêm gừng.
+3. Nấu: Đun sôi, hạ lửa luộc 15–20 phút.
+4. Rắc: Thì là, hành lá trước khi ăn.",~190.000,~240 kcal
+Tôm luộc,Luộc,"- Tôm sú: 500g
+- Rượu, gừng, muối","1. Sơ chế: Tôm rửa sạch.
+2. Luộc: Nước sôi + gừng + rượu, cho tôm vào luộc 3–5 phút.
+3. Vớt ra: Khi tôm chuyển đỏ, vớt ngay.",~240.000,~180 kcal
+Mực luộc,Luộc,"- Mực ống: 500g
+- Gừng, rượu","1. Sơ chế: Mực làm sạch, để nguyên con.
+2. Luộc: Nước sôi + gừng, cho mực vào luộc 2–3 phút.
+3. Lưu ý: Không luộc quá lâu → mực dai.",~260.000,~200 kcal
+Cua luộc bia/gừng,Luộc,"- Cua biển/cua đồng: 800g
+- Bia: ½ lon hoặc gừng","1. Sơ chế: Cua buộc chặt, rửa sạch.
+2. Luộc: Đổ bia (hoặc nước + gừng) vào nồi, cho cua vào.
+3. Nấu: Đun sôi, luộc 10–15 phút đến khi cua đỏ.
+4. Ăn kèm: Muối tiêu chanh.",~280.000,~220 kcal
+Ngao/ốc/hến luộc,Luộc,"- Ngao/hến/ốc: 800g
+- Sả, ớt","1. Sơ chế: Ngâm nước vo gạo + ớt 1–2 tiếng.
+2. Luộc: Cho sả vào nồi, đổ ngập nước, luộc 5–7 phút.
+3. Vớt ra: Khi há miệng, vớt ngay.",~150.000,~140 kcal
+Rau muống luộc,Luộc,"- Rau muống: 500g
+- Muối, tỏi","1. Sơ chế: Rau nhặt, rửa sạch.
+2. Luộc: Nước sôi + muối, cho rau vào luộc 2–3 phút.
+3. Vớt ra: Ngâm nước lạnh để giữ màu xanh.
+4. Chấm: Tỏi ớt hoặc kho quẹt.",~60.000,~80 kcal
+Rau lang luộc,Luộc,- Rau lang: 500g,"1. Sơ chế: Rau rửa sạch.
+2. Luộc: Nước sôi, luộc 3–4 phút.
+3. Vớt ra: Giữ màu xanh, chấm mắm tôm hoặc nước mắm.",~65.000,~70 kcal
+Rau cải các loại luộc,Luộc,- Cải ngọt/cải thìa: 500g,"1. Sơ chế: Rửa sạch.
+2. Luộc: Nước sôi + chút muối, luộc 2–3 phút.
+3. Vớt ra: Chấm nước mắm hoặc tương.",~55.000,~60 kcal
+Bắp cải luộc,Luộc,- Bắp cải: 500g,"1. Sơ chế: Cắt múi vừa.
+2. Luộc: Nước sôi, luộc 4–5 phút.
+3. Vớt ra: Giữ độ giòn, chấm nước mắm.",~50.000,~90 kcal
+Súp lơ/bông cải luộc,Luộc,- Bông cải xanh/trắng: 400g,"1. Sơ chế: Cắt nhỏ, ngâm muối.
+2. Luộc: Nước sôi, luộc 3–4 phút.
+3. Lưu ý: Không luộc quá → mất chất.",~70.000,~100 kcal
+Đậu que/đậu cove luộc,Luộc,- Đậu que: 400g,"1. Sơ chế: Bỏ xơ, rửa sạch.
+2. Luộc: Nước sôi + muối, luộc 4–5 phút.
+3. Vớt ra: Giữ màu xanh, chấm muối tiêu chanh.",~60.000,~110 kcal
+Khoai lang/khoai mỳ luộc,Luộc,- Khoai lang/mì: 500g,"1. Sơ chế: Gọt vỏ (hoặc để nguyên), rửa sạch.
+2. Luộc: Nước ngập, luộc 20–30 phút.
+3. Kiểm tra: Dùng đũa xiên thấy mềm là được.",~40.000,~180 kcal
+Ngô (bắp) luộc,Luộc,- Ngô ngọt: 4 trái,"1. Sơ chế: Bóc lớp ngoài, để vài lá trong.
+2. Luộc: Nước sôi, luộc 15–20 phút.
+3. Ăn nóng: Có thể chấm muối tiêu chanh.",~50.000,~150 kcal
+Củ cải luộc,Luộc,- Củ cải trắng: 400g,"1. Sơ chế: Gọt vỏ, cắt khúc.
+2. Luộc: Nước sôi, luộc 15–20 phút.
+3. Ăn kèm: Nước mắm hoặc dùng nấu canh.",~45.000,~100 kcal
+Sườn non luộc,Luộc,"- Sườn non: 500g
+- Gừng, hành","1. Sơ chế: Sườn chần sơ.
+2. Luộc: Nước sôi + gừng + hành, luộc 25–30 phút.
+3. Ăn kèm: Muối tiêu chanh hoặc mắm nêm.",~180.000,~350 kcal
+Lòng heo luộc,Luộc,"- Lòng già/non: 500g
+- Gừng, giấm, muối","1. Sơ chế: Lòng bóp kỹ với muối + giấm + chanh.
+2. Luộc: Nước sôi + gừng, luộc 10–15 phút.
+3. Vớt ra: Ngâm nước lạnh cho giòn.",~160.000,~280 kcal
+Bò luộc,Luộc,"- Bắp bò/nạm: 600g
+- Gừng, sả, hành tím","1. Sơ chế: Thịt chần sơ.
+2. Luộc: Nước sôi + gừng + sả, luộc 45–60 phút.
+3. Vớt ra: Để nguội, thái mỏng.",~280.000,~320 kcal
+Chân giò luộc,Luộc,"- Chân giò trước: 800g
+- Gừng, hành, muối","1. Sơ chế: Cạo sạch lông, chần sơ.
+2. Luộc: Nước sôi + gừng + hành, luộc 1.5–2 tiếng.
+3. Vớt ra: Ngâm nước lạnh cho da giòn.",~220.000,~420 kcal
+Thịt bò tái chanh (luộc tái),Luộc,"- Thịt bò nạc: 400g
+- Chanh, gừng","1. Sơ chế: Thịt thái lát mỏng.
+2. Chần: Nhúng vào nước sôi 10–15 giây.
+3. Vớt ra: Trộn với chanh, gừng, rau thơm.",~200.000,~250 kcal
+Bánh chưng/bánh tét (luộc),Luộc,"- Gạo nếp, đậu xanh, thịt heo: 1 bánh (~1.2kg)","1. Gói bánh chặt tay.
+2. Luộc: Nước ngập, luộc 8–10 tiếng (bánh chưng), 6–8 tiếng (bánh tét).
+3. Ép nước: Sau khi luộc, ép dưới vật nặng.",~120.000/bánh,~500 kcal/lát
+Bánh đa cua (sợi bánh đa luộc),Luộc,- Bánh đa khô: 400g,"1. Sơ chế: Ngâm nước 10 phút.
+2. Luộc: Nước sôi, luộc 3–5 phút.
+3. Xả nước lạnh: Tránh dính, dùng làm bánh đa cua.",~40.000,~280 kcal
+"Thịt heo nướng (xiên que, lá lốt, mật ong...)",Nướng,"- Thịt nạc vai/ba chỉ: 500g
+- Sả, hành, tỏi, mật ong, nước mắm, ngũ vị hương","1. Sơ chế: Thịt thái miếng/mỏng, ướp với hành tỏi băm + sả băm + mật ong + nước mắm + ngũ vị hương 2–4 tiếng.
+2. Xiên: Xiên que tre (ngâm nước trước).
+3. Nướng: Nướng than hoa hoặc lò 200°C, lật đều tay, phết sốt khi gần chín.
+4. Ăn kèm: Bún, rau sống, nước mắm chua ngọt.",~180.000,~380 kcal
+"Thịt bò nướng (lụi, mỡ chài, sa tế...)",Nướng,"- Thịt bò nạc: 500g
+- Mỡ chài (nếu có), sả, ớt, sa tế, dầu hào","1. Sơ chế: Bò xay hoặc thái mỏng, trộn với sả + sa tế + dầu hào.
+2. Quấn: Quấn quanh que hoặc bọc mỡ chài.
+3. Nướng: Nướng than/lò 180–200°C, 10–15 phút.
+4. Hoàn thiện: Phết mỡ hành khi nướng xong.",~250.000,~420 kcal
+"Gà nướng (muối ớt, mật ong, lá chanh...)",Nướng,"- Gà ta/đùi gà: 800g
+- Muối ớt, mật ong, lá chanh, gừng","1. Sơ chế: Gà làm sạch, khía nhẹ.
+2. Ướp: Với muối ớt hoặc hỗn hợp mật ong + nước mắm + lá chanh 2–3 tiếng.
+3. Nướng: Nướng than/lò 200°C, 30–40 phút, phết sốt định kỳ.
+4. Ăn kèm: Muối tiêu chanh.",~280.000,~450 kcal
+Vịt nướng,Nướng,"- Vịt: 1 con (~1.5kg)
+- Ngũ vị hương, mật ong, rượu, gừng","1. Sơ chế: Vịt xát gừng + rượu, rửa sạch.
+2. Ướp: Bên trong nhồi gừng + hành, bên ngoài phết hỗn hợp mật ong + ngũ vị hương.
+3. Nướng: Lò 180°C, 60–75 phút, quay đều.
+4. Hoàn thiện: Da vàng giòn, thịt thơm.",~360.000,~500 kcal
+"Cá nướng (riềng mẻ, muối ớt, giấy bạc...)",Nướng,"- Cá diêu hồng/lóc: 1 con (~800g)
+- Riềng, mẻ, nghệ, mắm tôm hoặc muối ớt","1. Sơ chế: Cá làm sạch, khứa vảy.
+2. Ướp: Trộn riềng giã + mẻ + nghệ + mắm tôm (hoặc muối ớt) 30–60 phút.
+3. Nướng: Bọc giấy bạc hoặc nướng trực tiếp trên than 20–25 phút.
+4. Ăn kèm: Bún, rau sống.",~220.000,~320 kcal
+"Tôm nướng (muối ớt, mỡ hành...)",Nướng,"- Tôm sú: 500g
+- Muối ớt, mỡ hành, chanh","1. Sơ chế: Tôm để nguyên vỏ, chẻ lưng.
+2. Nướng: Nướng than/lò 200°C, 8–10 phút.
+3. Phết: Rưới mỡ hành khi chín.
+4. Ăn kèm: Muối ớt chanh.",~260.000,~220 kcal
+"Mực nướng (sa tế, muối ớt...)",Nướng,"- Mực ống: 500g
+- Sa tế, muối ớt, chanh","1. Sơ chế: Mực làm sạch, để nguyên con hoặc khứa vảy.
+2. Nướng: Nướng than/lò 200°C, 6–8 phút mỗi mặt.
+3. Ăn kèm: Muối ớt chanh hoặc tương ớt.",~270.000,~230 kcal
+"Sườn nướng (sa tế, sốt BBQ...)",Nướng,"- Sườn non: 600g
+- Tỏi, hành, mật ong, nước mắm, sốt BBQ","1. Sơ chế: Sườn chặt miếng vừa.
+2. Ướp: Với hành tỏi + mật ong + nước mắm + sốt BBQ 2–4 tiếng.
+3. Nướng: Nướng than/lò 200°C, 25–30 phút, phết sốt liên tục.
+4. Hoàn thiện: Mềm, caramel hóa bề mặt.",~240.000,~480 kcal
+"Chả nướng (chả lụa, chả cá...)",Nướng,- Chả lụa/chả cá: 400g,"1. Sơ chế: Cắt lát dày hoặc để nguyên cây.
+2. Nướng: Nướng than/lò 180°C, 5–10 phút cho nóng và thơm.
+3. Ăn kèm: Bánh cuốn, cơm tấm, rau sống.",~150.000,~350 kcal
+Bánh mì nướng,Nướng,"- Bánh mì baguette: 2 ổ
+- Bơ, tỏi, hành lá","1. Pha bơ: Trộn bơ + tỏi băm + hành lá.
+2. Phết: Phết lên bánh mì.
+3. Nướng: Lò 180°C, 5–7 phút đến khi vàng giòn.
+4. Ăn kèm: Như món khai vị hoặc ăn sáng.",~50.000,~280 kcal
+Khoai lang/khoai mỳ nướng,Nướng,- Khoai lang/mì: 500g,"1. Sơ chế: Rửa sạch, để nguyên vỏ.
+2. Nướng: Nướng than/lò 200°C, 45–60 phút đến khi mềm.
+3. Ăn nóng: Bóc vỏ, chấm muối vừng.",~40.000,~180 kcal
+Ngô nướng mỡ hành,Nướng,"- Ngô ngọt: 4 trái
+- Hành lá, dầu ăn","1. Sơ chế: Ngô bóc lớp ngoài, để vài lá.
+2. Nướng: Nướng than 20–25 phút, lật đều.
+3. Phết: Rưới mỡ hành khi chín.",~60.000,~200 kcal
+Nấm nướng,Nướng,"- Nấm đùi gà/rơm: 300g
+- Dầu oliu, muối, tiêu, tỏi","1. Sơ chế: Nấm rửa sạch, để ráo.
+2. Ướp: Trộn với dầu oliu + tỏi + muối + tiêu.
+3. Nướng: Lò 200°C hoặc than, 10–15 phút.
+4. Ăn kèm: Như món chay hoặc ăn kèm thịt.",~90.000,~120 kcal
+Ốc nướng tiêu/mỡ hành,Nướng,"- Ốc len/bươu: 600g
+- Mỡ hành, tiêu, ớt","1. Sơ chế: Ốc rửa sạch.
+2. Nướng: Đặt ốc lên than, nướng 8–10 phút.
+3. Rưới: Mỡ hành + tiêu khi chín.
+4. Ăn kèm: Rau răm, muối ớt.",~180.000,~160 kcal
+Ngao nướng mỡ hành,Nướng,"- Ngao: 800g
+- Hành lá, dầu ăn","1. Sơ chế: Ngao ngâm sạch.
+2. Nướng: Đặt ngao lên vỉ, nướng 5–7 phút đến khi há miệng.
+3. Rưới: Mỡ hành khi chín.",~170.000,~150 kcal
+Hàu nướng mỡ hành/phô mai,Nướng,"- Hàu sữa: 500g
+- Hành lá, phô mai Mozzarella (nếu có)","1. Sơ chế: Hàu tách vỏ, giữ nước.
+2. Nướng: Đặt trên than/lò 200°C.
+3. Rưới: Mỡ hành hoặc rắc phô mai, nướng 5–7 phút.
+4. Ăn nóng: Với chanh hoặc muối tiêu.",~300.000,~180 kcal
+Ba chỉ nướng,Nướng,"- Thịt ba chỉ: 500g
+- Muối ớt, chanh","1. Sơ chế: Thịt cắt miếng dày.
+2. Nướng: Nướng than, lật đều đến khi cháy cạnh, mỡ chảy ra.
+3. Ăn kèm: Rau sống, bún, mắm nêm.",~170.000,~420 kcal
+Cơm nắm nướng,Nướng,"- Cơm nguội: 4 nắm
+- Muối vừng, lá chuối","1. Nắm cơm: Trộn cơm với muối vừng, nắm chặt.
+2. Bọc: Gói lá chuối.
+3. Nướng: Nướng than 10–15 phút.
+4. Ăn kèm: Mắm, cà pháo.",~50.000,~250 kcal
+Lươn nướng,Nướng,"- Lươn đồng: 500g
+- Riềng, mẻ, nghệ, mắm tôm","1. Sơ chế: Lươn làm sạch, để nguyên con.
+2. Ướp: Với riềng + mẻ + nghệ + mắm tôm 30 phút.
+3. Nướng: Nướng than 15–20 phút, phết mỡ.
+4. Ăn kèm: Bún, rau thơm.",~320.000,~350 kcal
+Chim nướng,Nướng,"- Chim cút/chim sẻ: 6 con
+- Muối ớt, lá chanh","1. Sơ chế: Chim làm sạch, để nguyên con.
+2. Ướp: Với muối ớt + lá chanh 30 phút.
+3. Nướng: Nướng than 15–20 phút.
+4. Ăn kèm: Muối tiêu chanh.",~250.000,~280 kcal
+Lẩu Thái (chua cay),Lẩu,"- Xương gà/heo: 500g
+- Tôm, mực, cá viên: 400g
+- Cà chua, dứa, me, sả, ớt, riềng, nấm rơm","1. Nấu nước dùng: Hầm xương 1 tiếng.
+2. Xào thơm: Sả + riềng + ớt + cà chua.
+3. Nấu lẩu: Cho vào nước dùng, thêm dứa + me + nấm.
+4. Ăn kèm: Bún, rau muống, bạc hà.",~380.000,~420 kcal
+Lẩu riêu cua,Lẩu,"- Cua đồng: 600g
+- Cà chua, đậu phụ, giấm bỗng, hành lá","1. Giã cua, lọc lấy nước.
+2. Riêu: Đun nước cua, để riêu nổi.
+3. Xào cà chua, cho vào nồi.
+4. Nêm: Giấm bỗng, cho đậu chiên vào. Ăn với bún.",~280.000,~320 kcal
+Lẩu cá kèo,Lẩu,"- Cá kèo sống: 600g
+- Dọc mùng, đậu bắp, cà chua, me, rau nhút","1. Làm sạch cá, ngâm nước vo gạo.
+2. Nấu nước dùng từ xương heo.
+3. Cho me + cà chua + rau vào.
+4. Nhúng cá khi ăn (cá chín rất nhanh).",~320.000,~350 kcal
+Lẩu cá diêu hồng,Lẩu,"- Cá diêu hồng: 1 con (~800g)
+- Cà chua, dọc mùng, me, thì là, dứa","1. Phi thơm cà chua + dứa.
+2. Nấu nước dùng, cho cá vào nấu 10 phút.
+3. Thêm rau, nêm me chua.
+4. Ăn kèm: Bún, rau sống.",~350.000,~360 kcal
+Lẩu cá lăng,Lẩu,"- Cá lăng: 800g
+- Măng chua, cà chua, dọc mùng, thì là","1. Cá làm sạch, cắt khúc.
+2. Xào măng + cà chua, cho vào nước dùng.
+3. Nấu cá 10–15 phút.
+4. Ăn nóng với bún.",~420.000,~380 kcal
+Lẩu gà lá é,Lẩu,"- Gà ta: 1 con (~1kg)
+- Lá é tía, sả, ớt, nấm","1. Hầm gà 45 phút.
+2. Cho lá é + sả + ớt vào cuối cùng.
+3. Ăn kèm: Bún, rau rừng. Hương vị đặc trưng Tây Nguyên.",~360.000,~370 kcal
+Lẩu gà măng cay,Lẩu,"- Gà: 1kg
+- Măng chua: 300g
+- Ớt, sả, hành","1. Hầm gà lấy nước ngọt.
+2. Xào măng + sả + ớt, cho vào nồi.
+3. Nấu 20 phút, nêm gia vị.
+4. Ăn kèm: Bún, rau sống.",~340.000,~390 kcal
+Lẩu bò,Lẩu,"- Thịt bò tái/thăn: 500g
+- Nạm/gân: 300g
+- Mắm nêm, thơm, khế, rau chuối","1. Hầm gân/nạm 1.5 tiếng.
+2. Pha mắm nêm với thơm + ớt.
+3. Nhúng thịt bò tái khi ăn.
+4. Ăn kèm: Bún, rau sống.",~450.000,~480 kcal
+Lẩu dê,Lẩu,"- Thịt dê: 800g
+- Sả, gừng, rượu, nấm, rau mồng tơi","1. Khử mùi: Xát gừng + rượu, chần sơ.
+2. Hầm dê 1 tiếng với sả.
+3. Ăn kèm: Bún, mắm tôm, rau.",~520.000,~460 kcal
+Lẩu hải sản,Lẩu,"- Tôm, mực, nghêu, cá: 800g tổng
+- Cà chua, dứa, me, nấm","1. Nấu nước dùng từ đầu cá/tép.
+2. Xào cà chua + dứa, cho vào nồi.
+3. Thêm hải sản khi ăn (tránh nấu lâu).
+4. Ăn kèm: Bún, rau.",~480.000,~400 kcal
+Lẩu nấm,Lẩu,"- Nấm các loại: 500g
+- Đậu hũ, ngô, cà rốt, rau củ","1. Nấu nước dùng rau củ hoặc xương.
+2. Cho nấm + đậu hũ vào.
+3. Nêm: Nước tương, tiêu.
+4. Ăn kèm: Bún hoặc mì.",~220.000,~280 kcal
+Lẩu cua đồng,Lẩu,"- Cua đồng: 600g
+- Rau đay, mồng tơi, mướp, mẻ","1. Giã cua, lọc nước.
+2. Đun riêu, vớt ra.
+3. Nấu nước lẩu, cho rau + mẻ.
+4. Cho riêu lên mặt khi ăn.",~260.000,~300 kcal
+Lẩu đầu cá hồi,Lẩu,"- Đầu cá hồi: 2 cái (~600g)
+- Cà chua, dứa, me, thì là","1. Chiên sơ đầu cá.
+2. Xào cà chua + dứa, cho vào nước dùng.
+3. Nấu đầu cá 15 phút.
+4. Ăn kèm: Bún, rau.",~420.000,~420 kcal
+Lẩu thập cẩm,Lẩu,"- Thịt, hải sản, nấm, đậu hũ: 1kg tổng
+- Cà chua, me, rau","1. Nấu nước dùng xương.
+2. Xào cà chua, cho vào nồi.
+3. Sắp nguyên liệu quanh nồi, nhúng khi ăn.
+4. Ăn kèm: Bún/mì.",~400.000,~450 kcal
+Lẩu vịt,Lẩu,"- Vịt: 1 con (~1.2kg)
+- Măng chua, gừng, sả","1. Khử mùi vịt bằng gừng + rượu.
+2. Hầm vịt 1 tiếng với sả.
+3. Xào măng, cho vào nồi.
+4. Ăn kèm: Bún, mắm gừng.",~460.000,~440 kcal
+Lẩu ếch,Lẩu,"- Ếch đồng: 800g
+- Cà chua, me, dọc mùng, rau nhút","1. Ếch làm sạch, ướp nhẹ.
+2. Xào ếch săn, cho vào nước dùng.
+3. Thêm rau + me, nấu 10 phút.
+4. Ăn kèm: Bún.",~380.000,~360 kcal
+Lẩu sườn sụn,Lẩu,"- Sườn sụn heo: 800g
+- Cà chua, dứa, me, nấm","1. Hầm sườn sụn 1.5 tiếng cho mềm.
+2. Xào cà chua + dứa, cho vào nồi.
+3. Nêm me, thêm nấm.
+4. Ăn kèm: Bún.",~360.000,~420 kcal
+Lẩu cháo,Lẩu,"- Gạo: 200g
+- Gà/ếch/cá: 600g
+- Gừng, hành, rau","1. Nấu cháo loãng từ nước hầm xương.
+2. Cho thịt vào nấu chín.
+3. Ăn nóng, không cần nhúng.",~300.000,~380 kcal
+Lẩu cá basa,Lẩu,"- Cá basa: 800g
+- Cà chua, dọc mùng, me, thì là","1. Cá cắt khúc, ướp nhẹ.
+2. Xào cà chua, cho vào nước dùng.
+3. Nấu cá 10 phút.
+4. Ăn kèm: Bún.",~320.000,~340 kcal
+Lẩu kim chi,Lẩu,"- Kim chi cải thảo: 300g
+- Thịt heo/thái: 400g
+- Tàu hũ, nấm, hành lá","1. Xào kim chi + thịt.
+2. Cho nước dùng, đun sôi.
+3. Thêm đậu hũ + nấm.
+4. Ăn kèm: Cơm hoặc mì.",~340.000,~400 kcal
+Lẩu tôm,Lẩu,"- Tôm sú: 600g
+- Cà chua, dứa, me, nấm rơm","1. Xào tôm + cà chua.
+2. Cho nước dùng, thêm dứa + me.
+3. Nấu 10 phút, thêm nấm.
+4. Ăn kèm: Bún.",~420.000,~380 kcal
+Lẩu cà muối,Lẩu,"- Cà pháo muối chua: 200g
+- Thịt ba chỉ, sườn non: 500g
+- Cà chua, me","1. Xào thịt + cà chua.
+2. Cho cà muối + nước dùng.
+3. Nêm me, nấu 20 phút.
+4. Ăn kèm: Bún, rau sống.",~280.000,~360 kcal
+Lẩu bò nhúng dấm,Lẩu,"- Thịt bò tái: 500g
+- Dấm, đường, tỏi, hành tây, dưa leo, chuối xanh","1. Pha nước dấm: Dấm + đường + tỏi + ớt.
+2. Luộc gân bò làm nước dùng.
+3. Nhúng bò tái vào nước dấm khi ăn.
+4. Cuốn bánh tráng với rau.",~400.000,~420 kcal
+Lẩu gà ủ muối,Lẩu,"- Gà ta: 1 con
+- Muối hột, sả, lá chanh","1. Lót nồi muối + sả + lá chanh.
+2. Đặt gà lên trên (không chạm muối).
+3. Ủ kín, hấp 60–75 phút.
+4. Lấy nước gà làm nước lẩu, nhúng rau.",~380.000,~350 kcal
+Lẩu đuôi bò,Lẩu,"- Đuôi bò: 800g
+- Cà chua, me, sả, nấm","1. Hầm đuôi bò 2–2.5 tiếng cho mềm.
+2. Xào cà chua + sả, cho vào nồi.
+3. Nêm me, thêm nấm.
+4. Ăn kèm: Bún.",~480.000,~460 kcal

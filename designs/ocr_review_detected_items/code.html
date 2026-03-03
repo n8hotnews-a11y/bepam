@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OCR Review Detected Items</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec5b",
+                        "background-light": "#f6f8f6",
+                        "background-dark": "#102216",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .ios-safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111813] dark:text-white">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 flex items-center bg-white/80 dark:bg-background-dark/80 backdrop-blur-md p-4 pb-2 justify-between border-b border-gray-100 dark:border-gray-800">
+<div class="flex size-12 shrink-0 items-center justify-start cursor-pointer">
+<span class="material-symbols-outlined text-[#111813] dark:text-white">arrow_back_ios</span>
+</div>
+<h2 class="text-[#111813] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Confirm Scanned Items</h2>
+</header>
+<main class="flex-1 flex flex-col pb-32">
+<!-- HeadlineText -->
+<div class="px-4 pt-6 pb-2">
+<h3 class="text-[#111813] dark:text-white tracking-tight text-2xl font-bold leading-tight">We found 3 items on your receipt</h3>
+<p class="text-[#61896f] dark:text-gray-400 text-sm mt-1">Check quantities and expiry dates before adding to your fridge.</p>
+</div>
+<!-- List Container -->
+<div class="flex flex-col gap-1 mt-4">
+<!-- ListItem 1 -->
+<div class="group relative flex gap-4 bg-white dark:bg-gray-900/50 px-4 py-4 justify-between transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
+<div class="flex items-start gap-4 flex-1">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-[70px] shadow-sm shrink-0" data-alt="Fresh red tomatoes in a group" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-BD7U8t29rp3mgOoC9ldN-3rnA5HHsIKj7XtmzNvLdAP3KMUNmha2RrC5oAiOfkfoZUki-J86CAR_SBNAcz1E1IQR5t2yeFmOfPmEzkkUBgv0fD3s4ibzw5juLcIF_IgkQb4pIHeLe-5Mzxwt0-QrPJH-M3FgqC9Q1RxKbx9KTTxmz5vrBvrt7v78gF1DVnp-dx0T4TR_kR0Fh_KuG0bE3SDjPM4T6oztyNH9i0_ZEoj-CGE8-Ej8jadq6Zi_-IJEbDSx_xmOIg");'>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<input class="bg-transparent border-none p-0 text-[#111813] dark:text-white text-base font-bold leading-normal focus:ring-0 w-full" type="text" value="Cà chua"/>
+<div class="flex items-center gap-1 mt-1 cursor-pointer">
+<span class="material-symbols-outlined text-sm text-primary">calendar_today</span>
+<p class="text-[#61896f] dark:text-gray-400 text-sm font-normal">Expiry: 25 Oct 2023</p>
+</div>
+<p class="text-[#61896f] dark:text-gray-500 text-xs mt-0.5">Tap to edit info</p>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between">
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+<div class="flex items-center gap-3 text-[#111813] dark:text-white bg-[#f0f4f2] dark:bg-gray-800 rounded-full px-2 py-1">
+<button class="flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-700 shadow-sm active:scale-90 transition-transform cursor-pointer">-</button>
+<input class="text-base font-semibold w-8 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield]" type="number" value="500"/>
+<button class="flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-700 shadow-sm active:scale-90 transition-transform cursor-pointer">+</button>
+</div>
+</div>
+</div>
+<!-- ListItem 2 -->
+<div class="group relative flex gap-4 bg-white dark:bg-gray-900/50 px-4 py-4 justify-between transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50">
+<div class="flex items-start gap-4 flex-1">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-[70px] shadow-sm shrink-0" data-alt="Raw marbled beef steak" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkbkp5roI8Vm5w99ZZGfvdiHvDI0PRfllQ7jv-T5FoGiDebAJDBF-mqYVYyWzW3bOh-OqRrmTYv4olSLuVm8PELMpnQHCNEcL96Mg-fPQsJ0q93utZbp6yQTNobfa11y4x1jNVX6wd-L1pEzE2qF4BUMMWDKB2oXTlDVBDT_8LQFi9EFk_xQ-bPHijhS_GKHXoTXpZ9T-TuJi29RRI8_q9dvdZvvHBMfXMrh_Zv4Wi_sXclfgbrnQ6RUUVvpFwDN1YYRUc2xfnww");'>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<input class="bg-transparent border-none p-0 text-[#111813] dark:text-white text-base font-bold leading-normal focus:ring-0 w-full" type="text" value="Thịt bò"/>
+<div class="flex items-center gap-1 mt-1 cursor-pointer">
+<span class="material-symbols-outlined text-sm text-red-400">priority_high</span>
+<p class="text-red-500 dark:text-red-400 text-sm font-semibold">Expiry: 22 Oct 2023</p>
+</div>
+<p class="text-[#61896f] dark:text-gray-500 text-xs mt-0.5">Expiring soon</p>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between">
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+<div class="flex items-center gap-3 text-[#111813] dark:text-white bg-[#f0f4f2] dark:bg-gray-800 rounded-full px-2 py-1">
+<button class="flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-700 shadow-sm active:scale-90 transition-transform cursor-pointer">-</button>
+<input class="text-base font-semibold w-6 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield]" type="number" value="1"/>
+<button class="flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-700 shadow-sm active:scale-90 transition-transform cursor-pointer">+</button>
+</div>
+</div>
+</div>
+<!-- ListItem 3 -->
+<div class="group relative flex gap-4 bg-white dark:bg-gray-900/50 px-4 py-4 justify-between transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 border-b border-gray-50 dark:border-gray-800">
+<div class="flex items-start gap-4 flex-1">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-[70px] shadow-sm shrink-0" data-alt="Glass bottle of fresh milk" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCo6g9nfWtAmIY2p-iki6BiDwVOSg0FOk3b3nBEqvj8lYfp3Kfn1cN9KDKXoVIjDjbTYJpuJ_qr9tlUwwNzMt9le6BqnhFxTq4m5RSN_1bazIwrQq2P4tpYqAHZMXtvFdMDk8F-4jDWMR9v5dFRfqsY2zcJX_GsPutk2CL9br2yMEW8R2relKabpGzyZ-gfAmGT0si0xRoYTdlEY2Zhb-5kf9jIw5eGzcRCcHg14DCLASaxjuSQjVoyuKDJM2Q7T2r8I9bCEW6f_A");'>
+</div>
+<div class="flex flex-1 flex-col justify-center min-w-0">
+<input class="bg-transparent border-none p-0 text-[#111813] dark:text-white text-base font-bold leading-normal focus:ring-0 w-full" type="text" value="Sữa tươi"/>
+<div class="flex items-center gap-1 mt-1 cursor-pointer">
+<span class="material-symbols-outlined text-sm text-primary">calendar_today</span>
+<p class="text-[#61896f] dark:text-gray-400 text-sm font-normal">Expiry: 20 Oct 2023</p>
+</div>
+<p class="text-[#61896f] dark:text-gray-500 text-xs mt-0.5">Check for seal date</p>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between">
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+<div class="flex items-center gap-3 text-[#111813] dark:text-white bg-[#f0f4f2] dark:bg-gray-800 rounded-full px-2 py-1">
+<button class="flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-700 shadow-sm active:scale-90 transition-transform cursor-pointer">-</button>
+<input class="text-base font-semibold w-6 p-0 text-center bg-transparent focus:outline-0 focus:ring-0 focus:border-none border-none [appearance:textfield]" type="number" value="1"/>
+<button class="flex h-7 w-7 items-center justify-center rounded-full bg-white dark:bg-gray-700 shadow-sm active:scale-90 transition-transform cursor-pointer">+</button>
+</div>
+</div>
+</div>
+<!-- Add Manual Button -->
+<div class="px-4 py-6">
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-primary hover:text-primary transition-all group">
+<span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">add_circle</span>
+<span class="font-semibold text-base">Add missing item manually</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Fixed Footer Action -->
+<footer class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-lg border-t border-gray-100 dark:border-gray-800 px-4 pt-4 ios-safe-bottom">
+<div class="flex flex-col gap-3 pb-6 max-w-lg mx-auto">
+<div class="flex justify-between items-center px-2">
+<span class="text-gray-500 dark:text-gray-400 text-sm">Total items to add</span>
+<span class="text-[#111813] dark:text-white font-bold text-base">3 items</span>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-[#102216] font-bold text-lg py-4 rounded-2xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined font-bold">kitchen</span>
+                    Add to Fridge
+                </button>
+</div>
+</footer>
+</div>
+</body></html>

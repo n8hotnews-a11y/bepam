@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chợ Cư Dân - Community Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e63b19",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#211411",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-[#181211] dark:text-white">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-[#e5dddc] dark:border-white/10">
+<div class="flex items-center p-4 justify-between">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-2xl">local_mall</span>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Chợ Cư Dân</h2>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex size-10 items-center justify-center rounded-full bg-gray-100 dark:bg-white/10">
+<span class="material-symbols-outlined text-xl">search</span>
+</button>
+<button class="relative flex size-10 items-center justify-center rounded-full bg-gray-100 dark:bg-white/10">
+<span class="material-symbols-outlined text-xl">notifications</span>
+<span class="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-primary"></span>
+</button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="px-4">
+<div class="flex gap-6 overflow-x-auto hide-scrollbar">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-primary text-primary pb-3 pt-2 whitespace-nowrap" href="#">
+<p class="text-sm font-bold">Món ăn hàng xóm</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-[#886963] dark:text-white/60 pb-3 pt-2 whitespace-nowrap" href="#">
+<p class="text-sm font-bold">Siêu thị gần đây</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-[#886963] dark:text-white/60 pb-3 pt-2 whitespace-nowrap" href="#">
+<p class="text-sm font-bold">Đồ tặng</p>
+</a>
+</div>
+</div>
+</header>
+<main class="p-4 flex flex-col gap-4 pb-24">
+<!-- Marketplace Feed Cards -->
+<!-- Card 1 -->
+<div class="flex flex-col items-stretch justify-start rounded-xl shadow-sm bg-white dark:bg-white/5 overflow-hidden border border-[#e5dddc] dark:border-white/10">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Traditional braised pork in clay pot on wooden table" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBqfltwMCFguQfxCI0fT1YWl14Cr8sN6JYl5o6Ad5JlAfcxSPcTVfH3jRemtmP8m0UZCMMu7blBZQ9PDzncIOfdglpp2UNKW8XWZap6JQy_U4GodvGNFAHJMhRsecIYTpSl_Y09COpGlBP3ihnMcNjufTjhJNL5NW7-BiaTLEFnoXXkbS-RyR-dbjJeCua1YvQEp14UhkEziiSZDPycuM1q3vFxIqf76eom6ou4Ng6XGJyE8pmgkc2WXcOb4VG6TUSCMbUd7kDtyQ");'>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-background-dark/90 backdrop-blur rounded-lg px-2 py-1 flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-sm">location_on</span>
+<span class="text-xs font-semibold">Landmark 81 • 200m</span>
+</div>
+</div>
+<div class="flex w-full flex-col gap-2 p-4">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden border border-primary/20">
+<span class="material-symbols-outlined text-primary text-lg">person</span>
+</div>
+<div>
+<p class="text-[#181211] dark:text-white text-xs font-bold leading-none">Chị Lan</p>
+<p class="text-[#886963] dark:text-white/50 text-[10px] leading-none mt-1">15 phút trước • Phục vụ tận nơi</p>
+</div>
+</div>
+<p class="text-[#181211] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Sườn Kho Tộ Miền Tây</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-primary text-lg font-bold">65.000đ</p>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-sm mr-1">chat</span>
+<span>Nhắn tin</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col items-stretch justify-start rounded-xl shadow-sm bg-white dark:bg-white/5 overflow-hidden border border-[#e5dddc] dark:border-white/10">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Fresh Vietnamese fish sour soup with pineapples and herbs" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwEubzdFLPwXPBpCqZm7Cll5cNGO0iSodgSv4C-Lt7r9VD2q3qzJQ8U0WURfgNuGAm77lT5xNELlBQ-rbVyZBLnHeKUscb1s3xc_-6-ARKlWmZrUHsIDSvEG9d4NAKBgKf4ZpMeVloGR1EFsQ6J2TkK8xxW1QgpFiHLr7IXlpVN3ThYlTZGDR42tuAjHPNizBeCWRv2scWTwL1A_-OF06zxFMUpYK2hkZ2_a-4TlxUqhXPIaq0NBTH_zhXtJna4YgUQVjvyhXXjg");'>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-background-dark/90 backdrop-blur rounded-lg px-2 py-1 flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-sm">location_on</span>
+<span class="text-xs font-semibold">Tòa Park 3 • 500m</span>
+</div>
+</div>
+<div class="flex w-full flex-col gap-2 p-4">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden border border-blue-200">
+<span class="material-symbols-outlined text-blue-600 text-lg">person</span>
+</div>
+<div>
+<p class="text-[#181211] dark:text-white text-xs font-bold leading-none">Anh Minh</p>
+<p class="text-[#886963] dark:text-white/50 text-[10px] leading-none mt-1">30 phút trước • Tự đến lấy</p>
+</div>
+</div>
+<p class="text-[#181211] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Canh Chua Cá Hú Chuẩn Vị</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-primary text-lg font-bold">45.000đ</p>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-sm mr-1">chat</span>
+<span>Nhắn tin</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 (Free item) -->
+<div class="flex flex-col items-stretch justify-start rounded-xl shadow-sm bg-white dark:bg-white/5 overflow-hidden border border-[#e5dddc] dark:border-white/10">
+<div class="relative w-full aspect-[16/9] bg-center bg-no-repeat bg-cover" data-alt="Homemade whole wheat bread sliced on a wooden board" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAALwNc9KXrXyrXPJ3a5L3gKFqlnhfeV1VXuhYG_-jw1Ol-RYwO0C4o3jSLY3wCqNjeOauCFbN6N30VUFbOdbrdbouyZ1Crc8vMpRQpixOv27sjbahVw0NjoMsgPoJde5L41F0430J2qUTVd7-UqrylsWVoDgbj3VNAI3arW7qlcIA3ZOZLOrGtsa-Zh4sDWve-M0v_VUmf9_t8v1ZhvFtV_y9vfubYdGDPDMj7zdkTNgsrgBqdQ7BUOGOXMfrl9vEoN3RkzbFYkg");'>
+<div class="absolute top-3 left-3 bg-white/90 dark:bg-background-dark/90 backdrop-blur rounded-lg px-2 py-1 flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-sm">location_on</span>
+<span class="text-xs font-semibold">Landmark 4 • 100m</span>
+</div>
+<div class="absolute top-3 right-3 bg-green-500 text-white rounded-lg px-2 py-1 text-[10px] font-bold uppercase tracking-wider">
+                    Đồ tặng
+                </div>
+</div>
+<div class="flex w-full flex-col gap-2 p-4">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center overflow-hidden border border-orange-200">
+<span class="material-symbols-outlined text-orange-600 text-lg">family_restroom</span>
+</div>
+<div>
+<p class="text-[#181211] dark:text-white text-xs font-bold leading-none">Gia đình Bé Bo</p>
+<p class="text-[#886963] dark:text-white/50 text-[10px] leading-none mt-1">1 giờ trước • Còn dư 2 ổ</p>
+</div>
+</div>
+<p class="text-[#181211] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Bánh Mì Nguyên Cám Tự Làm</p>
+<div class="flex items-center justify-between mt-1">
+<p class="text-green-600 text-lg font-bold">Miễn phí</p>
+<button class="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined text-sm mr-1">volunteer_activism</span>
+<span>Nhận ngay</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-4 flex items-center gap-2 px-4 py-3 bg-primary text-white rounded-full shadow-2xl shadow-primary/40 z-[60] active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="text-sm font-bold">Đăng bán/tặng</span>
+</button>
+<!-- iOS Bottom Navigation Bar (Mockup) -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-background-dark/90 backdrop-blur-lg border-t border-[#e5dddc] dark:border-white/10 px-6 pb-8 pt-2 flex justify-between items-center z-50">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl text-gray-400">home</span>
+<span class="text-[10px] font-medium text-gray-400">Trang chủ</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl text-primary font-fill">storefront</span>
+<span class="text-[10px] font-bold text-primary">Chợ cư dân</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl text-gray-400">kitchen</span>
+<span class="text-[10px] font-medium text-gray-400">Bếp thông minh</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-2xl text-gray-400">person</span>
+<span class="text-[10px] font-medium text-gray-400">Cá nhân</span>
+</div>
+</nav>
+</body></html>
