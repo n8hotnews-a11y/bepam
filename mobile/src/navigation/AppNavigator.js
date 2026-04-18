@@ -17,6 +17,7 @@ import OTPVerificationScreen from '../screens/OTPVerificationScreen';
 import OTPSuccessScreen from '../screens/OTPSuccessScreen';
 import OCRScanScreen from '../screens/OCRScanScreen';
 import SmartScanScreen from '../screens/SmartScanScreen';
+import ScanAnalyzingScreen from '../screens/ScanAnalyzingScreen';
 import OCRReviewScreen from '../screens/OCRReviewScreen';
 import RecipeDetailScreen from '../screens/RecipeDetailScreen';
 import MealPlanScreen from '../screens/MealPlanScreen';
@@ -27,7 +28,7 @@ import FamilyScreen from '../screens/FamilyScreen';
 import AIAutoScreen from '../screens/AIAutoScreen';
 import FilterScreen from '../screens/FilterScreen';
 
-import SubscriptionScreen from '../screens/SubscriptionScreen';
+
 import MarketplaceScreen from '../screens/MarketplaceScreen';
 import LocationSetupScreen from '../screens/LocationSetupScreen';
 import CommunityMapScreen from '../screens/CommunityMapScreen';
@@ -158,6 +159,7 @@ const AppNavigator = () => {
                             <Stack.Screen name="ManualAdd" component={ManualAddScreen} />
                             <Stack.Screen name="OCRScan" component={OCRScanScreen} />
                             <Stack.Screen name="SmartScan" component={SmartScanScreen} />
+                            <Stack.Screen name="ScanAnalyzing" component={ScanAnalyzingScreen} options={{ gestureEnabled: false }} />
                             <Stack.Screen name="OCRReview" component={OCRReviewScreen} />
                             <Stack.Screen name="RecipeDetail" component={RecipeDetailScreen} />
                             <Stack.Screen name="ChefChat" component={ChefChatScreen} />
@@ -167,7 +169,7 @@ const AppNavigator = () => {
                             <Stack.Screen name="AIAuto" component={AIAutoScreen} />
                             <Stack.Screen name="Filter" component={FilterScreen} />
 
-                            <Stack.Screen name="Subscription" component={SubscriptionScreen} options={{ presentation: 'modal' }} />
+
                             <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
                             <Stack.Screen name="FavoriteRecipes" component={FavoriteRecipesScreen} />
                             <Stack.Screen name="CookingHistory" component={CookingHistoryScreen} />

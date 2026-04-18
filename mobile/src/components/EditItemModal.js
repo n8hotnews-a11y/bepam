@@ -78,8 +78,9 @@ const EditItemModal = ({ visible, onClose, item, onSuccess, onVisibilityChange }
             visible={visible}
             onClose={onClose}
             onVisibilityChange={onVisibilityChange}
-            minHeight={screenHeight * 0.6}
-            maxHeight={screenHeight * 0.9}
+            minHeight={screenHeight * 0.75}
+            maxHeight={screenHeight * 0.95}
+            initialSnap="max"
         >
             <SafeAreaView style={styles.safeArea} edges={['bottom']}>
                 {/* Header */}

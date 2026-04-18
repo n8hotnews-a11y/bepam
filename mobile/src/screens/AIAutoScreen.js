@@ -21,34 +21,30 @@ import { subscriptionService } from '../services/subscriptionService';
 import { supabase } from '../services/supabaseConfig';
 import { familyRecipeMatcherService } from '../services/familyRecipeMatcherService';
 import FamilyCompatibilityBadge from '../components/FamilyCompatibilityBadge';
+import RecipeImage from '../components/RecipeImage';
 
-const AIAutoScreen = ({ navigation }) => {
-    const [prompt, setPrompt] = useState('');
+const AIAutoScreen = ({ navigation, route }) => {
+    const { initialPrompt } = route.params || {};
+    const [prompt, setPrompt] = useState(initialPrompt || '');
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState([]);
-    const [isPremium, setIsPremium] = useState(false);
 
     React.useEffect(() => {
-        checkPremium();
-    }, []);
-
-    const checkPremium = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-            const status = await subscriptionService.getSubscriptionStatus(user.id);
-            setIsPremium(status.isPremium || status.is_premium);
+        if (initialPrompt) {
+            handleSearch(initialPrompt);
         }
-    };
+    }, [initialPrompt]);
 
-    const handleSearch = async () => {
-        if (!prompt.trim()) return;
+    const handleSearch = async (overridePrompt = null) => {
+        const query = (typeof overridePrompt === 'string' ? overridePrompt : prompt);
+        if (!query || !query.trim()) return;
 
         setLoading(true);
         try {
             const { data: { user } } = await supabase.auth.getUser();
             const user_id = user?.id;
 
-            const result = await recipeService.suggestRecipesGenAI(prompt, 'AI Search', user_id);
+            const result = await recipeService.suggestRecipesGenAI(query, 'AI Search', user_id);
             if (result.success) {
                 let aiRecipes = result.recipes;
 
@@ -79,9 +75,11 @@ const AIAutoScreen = ({ navigation }) => {
                 initialRecipeData: item
             })}
         >
-            <Image
-                source={{ uri: item.image || 'https://via.placeholder.com/300x200?text=Com+Nha' }}
+            <RecipeImage
+                uri={item.image}
                 style={styles.cardImage}
+                defaultIcon="restaurant"
+                iconSize={40}
             />
             <View style={styles.cardContent}>
                 <View style={styles.cardTitleRow}>

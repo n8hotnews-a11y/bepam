@@ -1,5 +1,5 @@
 import { supabase } from './supabaseConfig';
-import { readAsStringAsync, EncodingType } from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { decode } from 'base64-arraybuffer';
 
 const COLLECTION_NAME = 'familymembers';
@@ -88,14 +88,31 @@ export const familyMemberService = {
      */
     async uploadFile(bucket, user_id, fileUri, fileName) {
         try {
-            const base64 = await readAsStringAsync(fileUri, {
-                encoding: EncodingType.Base64,
-            });
+            let base64;
+
+            // Handle different URI types
+            if (fileUri.startsWith('ph://') || fileUri.startsWith('content://')) {
+                // For iOS photo library and Android content URIs
+                // Copy to cache first, then read
+                const cacheFile = FileSystem.cacheDirectory + 'temp_' + Date.now();
+                await FileSystem.copyAsync({ from: fileUri, to: cacheFile });
+                base64 = await FileSystem.readAsStringAsync(cacheFile, {
+                    encoding: 'base64',
+                });
+                // Clean up temp file
+                await FileSystem.deleteAsync(cacheFile, { idempotent: true });
+            } else {
+                // For file:// URIs
+                base64 = await FileSystem.readAsStringAsync(fileUri, {
+                    encoding: 'base64',
+                });
+            }
+
             const arrayBuffer = decode(base64);
             const path = `${user_id}/${fileName}`;
 
             const { data, error } = await supabase.storage.from(bucket).upload(path, arrayBuffer, {
-                contentType: 'image/jpeg', // Default for now, could be dynamic
+                contentType: 'image/jpeg',
                 upsert: true
             });
 
@@ -163,15 +180,15 @@ export const familyMemberService = {
 
             members.forEach(member => {
                 // Add dietary preferences
-                member.dietaryPreferences?.forEach(pref => allPreferences.add(pref));
+                member.dietary_preferences?.forEach(pref => allPreferences.add(pref));
 
                 // Add health conditions
-                member.healthConditions?.predefined?.forEach(cond => allConditions.add(cond));
-                if (member.healthConditions?.notes) {
+                member.health_conditions?.predefined?.forEach(cond => allConditions.add(cond));
+                if (member.health_conditions?.notes) {
                     // Simple keyword extraction for notes
                     const keywords = ['tiểu đường', 'huyết áp', 'dị ứng', 'lactose'];
                     keywords.forEach(keyword => {
-                        if (member.healthConditions.notes.toLowerCase().includes(keyword)) {
+                        if (member.health_conditions.notes.toLowerCase().includes(keyword)) {
                             allConditions.add(keyword);
                         }
                     });

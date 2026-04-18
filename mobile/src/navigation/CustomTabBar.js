@@ -133,7 +133,7 @@ const getIconName = (routeName) => {
 const styles = StyleSheet.create({
     tabBarContainer: {
         position: 'absolute',
-        bottom: 0,
+        bottom: 10,
         width: width,
         height: Platform.OS === 'ios' ? 90 : 70,
         backgroundColor: 'transparent',
@@ -166,8 +166,7 @@ const styles = StyleSheet.create({
     },
     plusButtonContainer: {
         width: 70,
-        height: 70,
-        bottom: 25,
+        height: 64,
         alignItems: 'center',
         justifyContent: 'center',
     },

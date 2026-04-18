@@ -87,19 +87,8 @@ const ChefChatScreen = ({ route, navigation }) => {
         const messageText = typeof text === 'string' ? text : inputText;
         if (!messageText.trim() || loading) return;
 
-        // Gating Logic
         const userMsgCount = messages.filter(m => m.isUser).length;
-        if (!isPremium && userMsgCount >= 3) {
-            Alert.alert(
-                "Hết lượt chat miễn phí",
-                "Bạn đã dùng hết 3 lượt chat miễn phí. Nâng cấp lên Premium để trò chuyện không giới hạn!",
-                [
-                    { text: "Để sau", style: "cancel" },
-                    { text: "Nâng cấp ngay", onPress: () => navigation.navigate('Subscription') }
-                ]
-            );
-            return;
-        }
+        // Gating logic removed: All users have unlimited chat.
 
         const userMessage = {
             id: Date.now().toString(),

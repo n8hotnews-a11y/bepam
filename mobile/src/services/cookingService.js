@@ -26,17 +26,40 @@ export const cookingService = {
             }
 
             if (!result.success) {
-                return { success: false, error: result.error };
+                console.warn('[CookingService] Failed to load/reconstruct recipe:', result.error);
+                return { success: true, ingredients: [], recipe: null };
             }
 
-            const ingredients = result.data.extendedIngredients?.map(ing => ({
-                name: ing.nameClean || ing.name,
-                amount: Math.round(ing.amount * 10) / 10,
-                unit: ing.unit || '',
-                originalAmount: ing.amount,
-            })) || [];
+            const recipeData = result.data;
+            const ingredients = recipeData.extendedIngredients?.map(ing => {
+                // Try to extract amount from string if it's 0 (typical for AI transformed recipes)
+                let amount = ing.amount;
+                let unit = ing.unit || '';
+                
+                if (amount === 0 && ing.original) {
+                    const match = ing.original.match(/^([\d./]+)\s*(.*)$/);
+                    if (match) {
+                        // Handle simple fractions like 1/2
+                        if (match[1].includes('/')) {
+                            const parts = match[1].split('/');
+                            amount = parseFloat(parts[0]) / parseFloat(parts[1]);
+                        } else {
+                            amount = parseFloat(match[1]);
+                        }
+                        if (!unit && match[2]) unit = match[2].trim().split(' ')[0];
+                    }
+                }
 
-            return { success: true, ingredients };
+                return {
+                    name: ing.nameClean || ing.name,
+                    amount: Math.round(amount * 10) / 10 || 1, // Default to 1 if still 0
+                    unit: unit || 'phần',
+                    originalAmount: amount,
+                    id: ing.id
+                };
+            }) || [];
+
+            return { success: true, ingredients, recipe: recipeData };
         } catch (error) {
             console.error('Error getting recipe ingredients:', error);
             return { success: false, error: error.message };
@@ -66,15 +89,19 @@ export const cookingService = {
                     return itemName.includes(ingName) || ingName.includes(itemName);
                 });
 
+                // Default deduction is the smaller of recipe amount or available amount
+                const amountNeeded = ing.amount || 1;
+                const available = inventoryItem?.amount || 0;
+
                 return {
                     ...ing,
                     inventoryItemId: inventoryItem?.id || null,
                     inventoryItemName: inventoryItem?.item_name || null,
-                    availableAmount: inventoryItem?.amount || 0,
+                    availableAmount: available,
                     availableUnit: inventoryItem?.unit || ing.unit,
                     isAvailable: !!inventoryItem,
-                    willBeEmpty: inventoryItem ? (inventoryItem.amount <= ing.amount) : false,
-                    amountToDeduct: Math.min(ing.amount, inventoryItem?.amount || 0),
+                    willBeEmpty: inventoryItem ? (available <= amountNeeded) : false,
+                    amountToDeduct: Math.min(amountNeeded, available),
                 };
             });
 

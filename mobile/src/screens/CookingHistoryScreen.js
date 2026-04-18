@@ -134,7 +134,11 @@ const CookingHistoryScreen = ({ navigation }) => {
                     onPress={() => {
                         // Navigate to detail if we have recipe_id, or search
                         if (item.recipe_id && !item.recipe_id.startsWith('cust')) {
-                            navigation.navigate('RecipeDetail', { recipeId: item.recipe_id });
+                            navigation.navigate('RecipeDetail', { 
+                                recipeId: item.recipe_id,
+                                recipeTitle: item.recipe_title,
+                                recipeImage: item.recipe_image
+                            });
                         }
                     }}
                 >

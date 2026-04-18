@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, FONTS, TYPOGRAPHY, SPACING, RADIUS } from '../constants/theme';
 import { cookingService } from '../services/cookingService';
+import { recipeStorageService } from '../services/recipeStorageService';
 import { supabase } from '../services/supabaseConfig';
 import { showSuccessToast } from '../components/Toast';
 
@@ -22,19 +23,21 @@ import RecipeImage from '../components/RecipeImage';
 
 const CookingCompleteScreen = ({ route, navigation }) => {
     const params = route.params || {};
-    const { planId, recipeId, recipeTitle, recipeImage } = params;
+    const { planId, recipeId, recipeTitle, recipeImage, initialRecipeData } = params;
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [ingredients, setIngredients] = useState([]);
+    const [recipe, setRecipe] = useState(initialRecipeData || null);
+    const [activeTab, setActiveTab] = useState('ingredients'); // 'ingredients' or 'steps'
     const [addToShoppingList, setAddToShoppingList] = useState(true);
     const [notes, setNotes] = useState('');
 
     useEffect(() => {
-        loadIngredients();
+        loadData();
     }, []);
 
-    const loadIngredients = async () => {
+    const loadData = async () => {
         try {
             setLoading(true);
             const { data: { user } } = await supabase.auth.getUser();
@@ -44,31 +47,82 @@ const CookingCompleteScreen = ({ route, navigation }) => {
                 return;
             }
 
-            // Get recipe ingredients
-            const ingResult = await cookingService.getRecipeIngredients(recipeId, recipeTitle);
-            if (!ingResult.success) {
-                Alert.alert('Lỗi', 'Không thể tải nguyên liệu');
-                navigation.goBack();
-                return;
+            let recipeData = null;
+            let extractedIngredients = [];
+
+            // PRIORITY 1: Use initialRecipeData directly if available (passed from RecipeDetailScreen)
+            if (initialRecipeData && initialRecipeData.extendedIngredients) {
+                console.log('[CookingComplete] Using initialRecipeData directly');
+                recipeData = initialRecipeData;
+                extractedIngredients = (initialRecipeData.extendedIngredients || []).map(ing => {
+                    let amount = ing.amount;
+                    let unit = ing.unit || '';
+                    
+                    if (amount === 0 && ing.original) {
+                        const match = ing.original.match(/^([\d./]+)\s*(.*)$/);
+                        if (match) {
+                            if (match[1].includes('/')) {
+                                const parts = match[1].split('/');
+                                amount = parseFloat(parts[0]) / parseFloat(parts[1]);
+                            } else {
+                                amount = parseFloat(match[1]);
+                            }
+                            if (!unit && match[2]) unit = match[2].trim().split(' ')[0];
+                        }
+                    }
+
+                    return {
+                        name: ing.nameClean || ing.name,
+                        amount: Math.round(amount * 10) / 10 || 1,
+                        unit: unit || 'phần',
+                        originalAmount: amount,
+                        id: ing.id
+                    };
+                });
+            } else {
+                // FALLBACK: Fetch from cookingService (for non-AI or meal plan recipes)
+                console.log('[CookingComplete] Fetching from cookingService');
+                const res = await cookingService.getRecipeIngredients(recipeId, recipeTitle);
+                if (res.success) {
+                    recipeData = res.recipe;
+                    extractedIngredients = res.ingredients;
+                } else {
+                    console.warn('[CookingComplete] cookingService failed:', res.error);
+                }
             }
 
-            // Match with inventory
-            const matchResult = await cookingService.matchWithInventory(user.id, ingResult.ingredients);
+            if (recipeData) {
+                setRecipe(recipeData);
+                // Lưu vào persistent storage để xem lại bất cứ lúc nào
+                recipeStorageService.saveRecipe(recipeData);
+            }
+
+            // Match with inventory (works even with empty ingredients)
+            const matchResult = await cookingService.matchWithInventory(user.id, extractedIngredients);
             if (!matchResult.success) {
-                Alert.alert('Lỗi', 'Không thể kiểm tra tủ lạnh');
-                navigation.goBack();
-                return;
+                // Still allow cooking even if inventory match fails
+                console.warn('[CookingComplete] Inventory match failed, using raw ingredients');
+                setIngredients(extractedIngredients.map(ing => ({
+                    ...ing,
+                    inventoryItemId: null,
+                    availableAmount: 0,
+                    isAvailable: false,
+                    willBeEmpty: false,
+                    amountToDeduct: 0,
+                    editableAmount: '0',
+                    isUsed: false,
+                })));
+            } else {
+                // Set ingredients with editable amounts
+                setIngredients(matchResult.matched.map(ing => ({
+                    ...ing,
+                    editableAmount: (ing.amountToDeduct || 0).toString(),
+                    isUsed: ing.isAvailable,
+                })));
             }
-
-            // Set ingredients with editable amounts
-            setIngredients(matchResult.matched.map(ing => ({
-                ...ing,
-                editableAmount: (ing.amountToDeduct || 0).toString(),
-                isUsed: ing.isAvailable, // Default to checked if available in inventory
-            })));
 
         } catch (error) {
-            console.error('Error loading ingredients:', error);
+            console.error('Error loading data:', error);
             Alert.alert('Lỗi', 'Đã có lỗi xảy ra');
         } finally {
             setLoading(false);
@@ -156,11 +210,37 @@ const CookingCompleteScreen = ({ route, navigation }) => {
     const availableCount = ingredients.filter(i => i.isAvailable).length;
     const usedCount = ingredients.filter(i => i.isUsed).length;
 
+    // Helper to render steps
+    const renderSteps = () => {
+        const steps = recipe?.analyzedInstructions?.[0]?.steps || [];
+        if (steps.length === 0) {
+            return (
+                <View style={styles.emptyContainer}>
+                    <MaterialIcons name="description" size={48} color={COLORS.border} />
+                    <Text style={styles.emptyText}>Không tìm thấy hướng dẫn nấu.</Text>
+                </View>
+            );
+        }
+
+        return (
+            <View style={styles.stepsContainer}>
+                {steps.map((step, idx) => (
+                    <View key={idx} style={styles.stepItem}>
+                        <View style={styles.stepNumber}>
+                            <Text style={styles.stepNumberText}>{step.number || idx + 1}</Text>
+                        </View>
+                        <Text style={styles.stepText}>{step.step}</Text>
+                    </View>
+                ))}
+            </View>
+        );
+    };
+
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color={COLORS.primary} />
-                <Text style={styles.loadingText}>Đang tải nguyên liệu...</Text>
+                <Text style={styles.loadingText}>Đang chuẩn bị...</Text>
             </View>
         );
     }
@@ -172,7 +252,7 @@ const CookingCompleteScreen = ({ route, navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <MaterialIcons name="close" size={24} color={COLORS.textPrimary} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Đã nấu xong!</Text>
+                <Text style={styles.headerTitle}>Đang nấu</Text>
                 <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
                     <Text style={styles.skipText}>Bỏ qua</Text>
                 </TouchableOpacity>
@@ -182,127 +262,158 @@ const CookingCompleteScreen = ({ route, navigation }) => {
                 {/* Recipe Info */}
                 <View style={styles.recipeCard}>
                     <RecipeImage
-                        uri={recipeImage}
+                        uri={recipeImage || recipe?.image}
                         style={styles.recipeImage}
                         defaultIcon="restaurant"
                         iconSize={40}
                     />
                     <View style={styles.recipeInfo}>
-                        <Text style={styles.recipeTitle}>{recipeTitle}</Text>
+                        <Text style={styles.recipeTitle}>{recipeTitle || recipe?.title}</Text>
                         <View style={styles.statsRow}>
                             <View style={styles.statItem}>
-                                <MaterialIcons name="check-circle" size={16} color={COLORS.success} />
-                                <Text style={styles.statText}>{availableCount} có sẵn</Text>
+                                <MaterialIcons name="restaurant-menu" size={16} color={COLORS.primary} />
+                                <Text style={styles.statText}>{ingredients.length} nguyên liệu</Text>
                             </View>
-                            <View style={styles.statItem}>
-                                <MaterialIcons name="remove-shopping-cart" size={16} color={COLORS.warning} />
-                                <Text style={styles.statText}>{ingredients.length - availableCount} thiếu</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-
-                {/* Instructions */}
-                <View style={styles.instructionCard}>
-                    <MaterialIcons name="info-outline" size={20} color={COLORS.primary} />
-                    <Text style={styles.instructionText}>
-                        Điều chỉnh số lượng nguyên liệu bạn đã sử dụng. Tủ lạnh sẽ được cập nhật tự động.
-                    </Text>
-                </View>
-
-                {/* Ingredients List */}
-                <Text style={styles.sectionTitle}>Nguyên liệu đã dùng ({usedCount})</Text>
-
-                {ingredients.map((ing, index) => (
-                    <View
-                        key={index}
-                        style={[
-                            styles.ingredientCard,
-                            !ing.isAvailable && styles.ingredientCardUnavailable,
-                        ]}
-                    >
-                        <TouchableOpacity
-                            style={styles.checkbox}
-                            onPress={() => toggleIngredientUsed(index)}
-                            disabled={!ing.isAvailable}
-                        >
-                            <MaterialIcons
-                                name={ing.isUsed ? "check-box" : "check-box-outline-blank"}
-                                size={24}
-                                color={ing.isAvailable ? (ing.isUsed ? COLORS.primary : COLORS.border) : COLORS.textMuted}
-                            />
-                        </TouchableOpacity>
-
-                        <View style={styles.ingredientInfo}>
-                            <Text style={[
-                                styles.ingredientName,
-                                !ing.isAvailable && styles.ingredientNameUnavailable,
-                            ]}>
-                                {ing.name}
-                            </Text>
-                            {ing.isAvailable ? (
-                                <Text style={styles.availableText}>
-                                    Có sẵn: {ing.availableAmount} {ing.availableUnit}
-                                </Text>
-                            ) : (
-                                <Text style={styles.unavailableText}>
-                                    Không có trong tủ lạnh
-                                </Text>
+                            {recipe?.readyInMinutes && (
+                                <View style={styles.statItem}>
+                                    <MaterialIcons name="timer" size={16} color={COLORS.warning} />
+                                    <Text style={styles.statText}>{recipe.readyInMinutes} phút</Text>
+                                </View>
                             )}
                         </View>
-
-                        {ing.isAvailable && (
-                            <View style={styles.amountContainer}>
-                                <TextInput
-                                    style={styles.amountInput}
-                                    value={ing.editableAmount}
-                                    onChangeText={(val) => updateIngredientAmount(index, val)}
-                                    keyboardType="numeric"
-                                    editable={ing.isUsed}
-                                />
-                                <Text style={styles.unitText}>{ing.unit || ing.availableUnit}</Text>
-                            </View>
-                        )}
-
-                        {ing.willBeEmpty && ing.isUsed && (
-                            <View style={styles.depletedBadge}>
-                                <MaterialIcons name="warning" size={14} color={COLORS.warning} />
-                            </View>
-                        )}
                     </View>
-                ))}
+                </View>
 
-                {/* Options */}
-                <View style={styles.optionCard}>
-                    <View style={styles.optionRow}>
-                        <View style={styles.optionInfo}>
-                            <MaterialIcons name="shopping-cart" size={24} color={COLORS.primary} />
-                            <View style={styles.optionTextContainer}>
-                                <Text style={styles.optionTitle}>Thêm nguyên liệu hết vào danh sách mua sắm</Text>
-                                <Text style={styles.optionSubtitle}>Tự động thêm khi nguyên liệu đã dùng hết</Text>
+                {/* Tabs */}
+                <View style={styles.tabContainer}>
+                    <TouchableOpacity
+                        style={[styles.tab, activeTab === 'ingredients' && styles.activeTab]}
+                        onPress={() => setActiveTab('ingredients')}
+                    >
+                        <Text style={[styles.tabText, activeTab === 'ingredients' && styles.activeTabText]}>Nguyên liệu</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.tab, activeTab === 'steps' && styles.activeTab]}
+                        onPress={() => setActiveTab('steps')}
+                    >
+                        <Text style={[styles.tabText, activeTab === 'steps' && styles.activeTabText]}>Cách nấu</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {activeTab === 'ingredients' ? (
+                    <>
+                        {/* Instructions */}
+                        <View style={styles.instructionCard}>
+                            <MaterialIcons name="info-outline" size={20} color={COLORS.primary} />
+                            <Text style={styles.instructionText}>
+                                Đánh dấu nguyên liệu bạn đã dùng. Số lượng sẽ được trừ trong tủ lạnh.
+                            </Text>
+                        </View>
+
+                        {/* Ingredients List */}
+                        <Text style={styles.sectionTitle}>Nguyên liệu đã dùng ({usedCount})</Text>
+
+                        {ingredients.length === 0 ? (
+                            <View style={styles.emptyContainer}>
+                                <MaterialIcons name="list" size={48} color={COLORS.border} />
+                                <Text style={styles.emptyText}>Không tìm thấy nguyên liệu.</Text>
+                            </View>
+                        ) : (
+                            ingredients.map((ing, index) => (
+                                <View
+                                    key={index}
+                                    style={[
+                                        styles.ingredientCard,
+                                        !ing.isAvailable && styles.ingredientCardUnavailable,
+                                    ]}
+                                >
+                                    <TouchableOpacity
+                                        style={styles.checkbox}
+                                        onPress={() => toggleIngredientUsed(index)}
+                                        disabled={!ing.isAvailable}
+                                    >
+                                        <MaterialIcons
+                                            name={ing.isUsed ? "check-box" : "check-box-outline-blank"}
+                                            size={24}
+                                            color={ing.isAvailable ? (ing.isUsed ? COLORS.primary : COLORS.border) : COLORS.textMuted}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <View style={styles.ingredientInfo}>
+                                        <Text style={[
+                                            styles.ingredientName,
+                                            !ing.isAvailable && styles.ingredientNameUnavailable,
+                                        ]}>
+                                            {ing.name}
+                                        </Text>
+                                        {ing.isAvailable ? (
+                                            <Text style={styles.availableText}>
+                                                Trong tủ lạnh: {ing.availableAmount} {ing.availableUnit}
+                                            </Text>
+                                        ) : (
+                                            <Text style={styles.unavailableText}>
+                                                Không có trong tủ lạnh
+                                            </Text>
+                                        )}
+                                    </View>
+
+                                    {ing.isAvailable && (
+                                        <View style={styles.amountContainer}>
+                                            <TextInput
+                                                style={styles.amountInput}
+                                                value={ing.editableAmount}
+                                                onChangeText={(val) => updateIngredientAmount(index, val)}
+                                                keyboardType="numeric"
+                                                editable={ing.isUsed}
+                                            />
+                                            <Text style={styles.unitText}>{ing.unit || ing.availableUnit}</Text>
+                                        </View>
+                                    )}
+
+                                    {ing.willBeEmpty && ing.isUsed && (
+                                        <View style={styles.depletedBadge}>
+                                            <MaterialIcons name="warning" size={14} color={COLORS.warning} />
+                                        </View>
+                                    )}
+                                </View>
+                            ))
+                        )}
+
+                        {/* Options */}
+                        <View style={styles.optionCard}>
+                            <View style={styles.optionRow}>
+                                <View style={styles.optionInfo}>
+                                    <MaterialIcons name="shopping-cart" size={24} color={COLORS.primary} />
+                                    <View style={styles.optionTextContainer}>
+                                        <Text style={styles.optionTitle}>Tự động thêm vào danh sách mua sắm</Text>
+                                        <Text style={styles.optionSubtitle}>Khi nguyên liệu trong tủ lạnh đã dùng hết</Text>
+                                    </View>
+                                </View>
+                                <Switch
+                                    value={addToShoppingList}
+                                    onValueChange={setAddToShoppingList}
+                                    trackColor={{ false: COLORS.border, true: COLORS.primaryMuted }}
+                                    thumbColor={addToShoppingList ? COLORS.primary : COLORS.grayLight}
+                                />
                             </View>
                         </View>
-                        <Switch
-                            value={addToShoppingList}
-                            onValueChange={setAddToShoppingList}
-                            trackColor={{ false: COLORS.border, true: COLORS.primaryMuted }}
-                            thumbColor={addToShoppingList ? COLORS.primary : COLORS.grayLight}
-                        />
-                    </View>
-                </View>
 
-                {/* Notes */}
-                <View style={styles.notesContainer}>
-                    <Text style={styles.notesLabel}>Ghi chú (tùy chọn)</Text>
-                    <TextInput
-                        style={styles.notesInput}
-                        placeholder="Ví dụ: Thêm chút ớt, giảm muối..."
-                        value={notes}
-                        onChangeText={setNotes}
-                        multiline
-                        numberOfLines={2}
-                    />
-                </View>
+                        {/* Notes */}
+                        <View style={styles.notesContainer}>
+                            <Text style={styles.notesLabel}>Ghi chú bữa ăn</Text>
+                            <TextInput
+                                style={styles.notesInput}
+                                placeholder="Ví dụ: Thêm chút ớt, giảm muối..."
+                                value={notes}
+                                onChangeText={setNotes}
+                                multiline
+                                numberOfLines={2}
+                            />
+                        </View>
+                    </>
+                ) : (
+                    renderSteps()
+                )}
 
                 <View style={styles.bottomSpacer} />
             </ScrollView>
@@ -310,9 +421,9 @@ const CookingCompleteScreen = ({ route, navigation }) => {
             {/* Bottom Button */}
             <View style={styles.bottomActions}>
                 <TouchableOpacity
-                    style={[styles.confirmButton, saving && styles.buttonDisabled]}
+                    style={[styles.confirmButton, (saving || ingredients.length === 0) && styles.buttonDisabled]}
                     onPress={handleConfirm}
-                    disabled={saving}
+                    disabled={saving || ingredients.length === 0}
                 >
                     {saving ? (
                         <ActivityIndicator color={COLORS.textOnPrimary} />
@@ -406,6 +517,32 @@ const styles = StyleSheet.create({
         ...TYPOGRAPHY.caption,
         color: COLORS.textSecondary,
     },
+    tabContainer: {
+        flexDirection: 'row',
+        backgroundColor: COLORS.backgroundCard,
+        borderRadius: RADIUS.md,
+        padding: 4,
+        marginTop: SPACING.lg,
+        borderWidth: 1,
+        borderColor: COLORS.borderLight,
+    },
+    tab: {
+        flex: 1,
+        paddingVertical: SPACING.sm,
+        alignItems: 'center',
+        borderRadius: RADIUS.sm,
+    },
+    activeTab: {
+        backgroundColor: COLORS.primary,
+    },
+    tabText: {
+        ...TYPOGRAPHY.bodyRegular,
+        color: COLORS.textSecondary,
+        fontFamily: FONTS.medium,
+    },
+    activeTabText: {
+        color: COLORS.textOnPrimary,
+    },
     instructionCard: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -489,6 +626,50 @@ const styles = StyleSheet.create({
     depletedBadge: {
         marginLeft: SPACING.xs,
     },
+    stepsContainer: {
+        marginTop: SPACING.lg,
+    },
+    stepItem: {
+        flexDirection: 'row',
+        marginBottom: SPACING.lg,
+        gap: SPACING.md,
+    },
+    stepNumber: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: COLORS.primaryMuted,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 2,
+    },
+    stepNumberText: {
+        ...TYPOGRAPHY.bodySmall,
+        color: COLORS.primary,
+        fontFamily: FONTS.bold,
+    },
+    stepText: {
+        ...TYPOGRAPHY.bodyRegular,
+        color: COLORS.textPrimary,
+        flex: 1,
+        lineHeight: 22,
+    },
+    emptyContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 60,
+        backgroundColor: COLORS.backgroundCard,
+        borderRadius: RADIUS.lg,
+        marginTop: SPACING.lg,
+        borderWidth: 1,
+        borderColor: COLORS.borderLight,
+        borderStyle: 'dashed',
+    },
+    emptyText: {
+        ...TYPOGRAPHY.bodyRegular,
+        color: COLORS.textMuted,
+        marginTop: SPACING.md,
+    },
     optionCard: {
         backgroundColor: COLORS.backgroundCard,
         borderRadius: RADIUS.md,
@@ -539,7 +720,7 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
     },
     bottomSpacer: {
-        height: 100,
+        height: 120,
     },
     bottomActions: {
         position: 'absolute',
@@ -552,6 +733,11 @@ const styles = StyleSheet.create({
         paddingBottom: SPACING.xl,
         borderTopWidth: 1,
         borderTopColor: COLORS.borderLight,
+        elevation: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -3 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
     },
     confirmButton: {
         flexDirection: 'row',
@@ -564,6 +750,7 @@ const styles = StyleSheet.create({
     },
     buttonDisabled: {
         opacity: 0.7,
+        backgroundColor: COLORS.border,
     },
     confirmButtonText: {
         ...TYPOGRAPHY.bodyLarge,

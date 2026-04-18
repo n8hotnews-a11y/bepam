@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64, mimeType } = await req.json();
+    const { imageBase64, mimeType, instructions } = await req.json();
 
     const serviceAccountStr = Deno.env.get('GOOGLE_SERVICE_ACCOUNT');
     if (!serviceAccountStr) {
@@ -25,13 +25,17 @@ serve(async (req) => {
     const region = 'us-central1';
     const modelId = 'gemini-2.0-flash-001';
 
-    const prompt = `
-Analyze this food image and identify all visible ingredients or food items.
-Return a JSON array of objects with format:
-[{"name": "ingredient name", "quantity": "estimated quantity", "confidence": 0.8}]
-Be specific about types (e.g., "chicken breast" not just "chicken").
-Only include food items you can confidently identify.
+    const defaultPrompt = `
+Phân tích ảnh thực phẩm này và nhận diện tất cả nguyên liệu hoặc thực phẩm có thể nhìn thấy.
+YÊU CẦU QUAN TRỌNG:
+1. Tên thực phẩm BẮT BUỘC phải bằng TIẾNG VIỆT (Ví dụ: "Thịt ba chỉ" thay vì "Pork Belly", "Cải thìa" thay vì "Bok Choy", "Táo" thay vì "Apple").
+2. Số lượng ước tính bằng tiếng Việt (ví dụ: "1 miếng", "300g", "2 quả").
+3. category_id CHỈ ĐƯỢC CHỌN TRONG: ["vegetables", "meat", "seafood", "fruits", "dairy", "spices", "others"].
+4. Trả về JSON array với format: [{"name": "tên tiếng Việt", "quantity": "số lượng ước tính", "category_id": "phân loại", "confidence": 0.8}]
+5. Chỉ bao gồm các thực phẩm bạn tự tin nhận diện được.
 `;
+
+    const prompt = instructions ? `${defaultPrompt}\n\nHướng dẫn bổ sung: ${instructions}` : defaultPrompt;
 
     const url = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${modelId}:generateContent`;
 

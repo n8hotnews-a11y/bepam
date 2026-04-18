@@ -2,6 +2,7 @@ import Constants from "expo-constants";
 import { cacheService } from './cacheService';
 import { supabase } from './supabaseConfig';
 import { hybridRecipeService } from './hybrid/HybridRecipeService';
+import { recipeStorageService } from './recipeStorageService';
 
 const SYSTEM_INSTRUCTION = `Bạn là Bếp Trưởng AI của ứng dụng "Cơm Nhà". 
 Nhiệm vụ của bạn là hỗ trợ người dùng nấu ăn, gợi ý thực đơn, giải thích công thức và tư vấn về dinh dưỡng.
@@ -10,38 +11,61 @@ Nhiệm vụ của bạn là hỗ trợ người dùng nấu ăn, gợi ý thự
 - TRÌNH BÀY: Sử dụng ngôn ngữ tự nhiên, tránh lạm dụng quá nhiều dấu sao (**) để in đậm. Chỉ in đậm những từ khóa thực sự quan trọng.
 - Nếu câu hỏi không liên quan đến ẩm thực, hãy khéo léo dẫn dắt người dùng quay lại chủ đề bếp núc.`;
 
+const ADVANCED_RECIPE_PROMPT_TEMPLATE = `Provide recipe suggestions with rich, detailed visuals.
+
+1. Analyze fridge contents provided by the user and identify all potential ingredients present.
+
+2. Create four distinct recipe suggestions that utilize these identified ingredients. Each recipe suggestion must be comprehensive, including a unique recipe title, a clear and exhaustive list of ingredients, and step-by-step detailed instructions. 
+   Format each recipe as a JSON object with: "title", "ingredients" (array), "instructions" (string), and "image_search" (English keyword for the dish).
+
+3. For each recipe suggestion, generate an appetizing, photorealistic image of the final dish (represented by the "image_search" keyword).
+
+4. Return recipe suggestions in a "recipes" array.`;
+
 const formatError = (error) => {
-    console.log("[RecipeService] Formatting error:", JSON.stringify(error, null, 2));
+    const errorMsg = error instanceof Error ? error.message : JSON.stringify(error, null, 2);
+    console.log("[RecipeService] Error Detailed:", errorMsg);
+    if (error?.context) console.log("[RecipeService] Error Context:", JSON.stringify(error.context));
 
     const message = error.message || String(error);
+    const messageLower = message.toLowerCase();
 
     // 1. ƯU TIÊN 1: Kiểm tra mã HTTP Status (401 = Lỗi Token/Đăng nhập)
-    // Supabase thường bọc status trong error.status hoặc error.context.status
+    //    Chỉ match các chuỗi rõ ràng liên quan đến xác thực USER, không match lỗi Google Service Account.
     const statusCode = error.status || error?.context?.status;
-    if (statusCode === 401 || message.includes("authorized") || message.includes("401") || message.includes("Auth")) {
+    if (statusCode === 401 || messageLower.includes("unauthorized") || messageLower.includes("unauthenticated") || messageLower.includes("jwt expired") || messageLower.includes("invalid token")) {
         return "Phiên đăng nhập đã hết hạn hoặc bạn chưa đăng nhập. Vui lòng đăng nhập lại để dùng tính năng AI nhé!";
     }
 
     // 2. ƯU TIÊN 2: Kiểm tra lỗi quá tải/hết lượt
-    if (message.includes("resource-exhausted") || message.includes("hết lượt dùng")) {
+    if (messageLower.includes("resource-exhausted") || messageLower.includes("hết lượt dùng")) {
         return "Bạn đã hết lượt sử dụng AI trong ngày hôm nay. Hãy quay lại vào ngày mai nhé!";
     }
 
     // 3. ƯU TIÊN 3: Các lỗi server/hàm Edge Function chung chung
-    if (message.includes("FunctionsHttpError") || message.includes("non-2xx status code")) {
-        return "Máy chủ AI đang bận xử lý, bạn vui lòng thử lại sau giây lát nhé!";
+    if (messageLower.includes("functionshttperror") || messageLower.includes("non-2xx status code")) {
+        return `Máy chủ AI đang bận (${statusCode || 'EF'}). Bạn vui lòng thử lại sau giây lát nhé!`;
     }
 
     // 4. Lỗi mạng
-    if (message.includes("network") || message.includes("fetch")) {
+    if (messageLower.includes("network") || messageLower.includes("failed to fetch") || messageLower.includes("networkerror")) {
         return "Kết nối mạng không ổn định. Bạn vui lòng kiểm tra lại mạng nhé!";
     }
 
-    return "Rất tiếc, đã có lỗi xảy ra khi tải dữ liệu. Bạn thử lại sau nhé!";
+    return `Lỗi AI: ${message.slice(0, 80)}`;
 };
 
 const AI_RECIPE_CACHE_PREFIX = 'ai_recipe_';
 const AI_RECIPE_TITLE_MAP = 'ai_recipe_title_map';
+const DAILY_MEALS_CACHE = 'daily_meals_suggestions';
+const DAILY_MEALS_HISTORY = 'daily_meals_history';
+
+// Helper: tính số phút còn lại cho đến hết ngày hôm nay
+const minutesUntilEndOfDay = () => {
+    const now = new Date();
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
+    return Math.max(1, Math.round((endOfDay - now) / 60000));
+};
 
 // Helper function để lấy headers có chứa Token (Đảm bảo an toàn trên React Native)
 const getAuthHeaders = async () => {
@@ -58,17 +82,22 @@ export const recipeService = {
     async analyzeImageGenAI(base64Image) {
         try {
             console.log("[RecipeService] Calling analyzeImageGenAI...");
+            const authHeaders = await getAuthHeaders();
             const response = await supabase.functions.invoke('analyzeImageGenAI', {
                 body: {
                     imageBase64: base64Image,
                     mimeType: 'image/jpeg'
-                }
+                },
+                headers: authHeaders
             });
 
             const { data, error } = response;
 
             if (error) {
                 console.error("[RecipeService] Analysis Edge Function Error:", error);
+                if (error.status === 401 || (error.context && error.context.status === 401)) {
+                    throw new Error("Phiên đăng nhập đã hết hạn hoặc bạn chưa đăng nhập. Vui lòng đăng nhập lại để dùng tính năng AI nhé!");
+                }
                 throw error;
             }
 
@@ -83,7 +112,7 @@ export const recipeService = {
         }
     },
 
-    async suggestRecipesGenAI(ingredients, style = 'Truyền thống', user_id = null) {
+    async suggestRecipesGenAI(ingredients, style = 'Truyền thống', user_id = null, customPrompt = null) {
         try {
             let familyContext = '';
             if (user_id) {
@@ -105,8 +134,15 @@ export const recipeService = {
                 }
             }
 
+            const authHeaders = await getAuthHeaders();
             const response = await supabase.functions.invoke('suggestRecipesGenAI', {
-                body: { ingredients, style, familyContext }
+                body: {
+                    ingredients,
+                    style,
+                    familyContext,
+                    customPrompt: customPrompt || ADVANCED_RECIPE_PROMPT_TEMPLATE
+                },
+                headers: authHeaders
             });
 
             if (!response) {
@@ -117,6 +153,9 @@ export const recipeService = {
 
             if (error) {
                 console.error("[RecipeService] Edge Function Error:", error);
+                if (error.status === 401 || (error.context && error.context.status === 401)) {
+                    throw new Error("Phiên đăng nhập đã hết hạn hoặc bạn chưa đăng nhập. Vui lòng đăng nhập lại để dùng tính năng AI nhé!");
+                }
                 throw error;
             }
 
@@ -141,106 +180,233 @@ export const recipeService = {
     },
 
     /**
-         * Tự động gợi ý thực đơn ngày linh hoạt theo cấu trúc mâm cơm gia đình Việt
-         */
-    async suggestDailyMealsAI(user_id) {
+     * Tự động gợi ý thực đơn ngày linh hoạt theo cấu trúc mâm cơm gia đình Việt
+     * @param {string} user_id 
+     * @param {string} mode - 'traditional' hoặc 'creative'
+     */
+    /**
+     * Lấy cache gợi ý thực đơn trong ngày (nếu còn hạn)
+     */
+    async getDailySuggestionsCache() {
+        try {
+            const cached = await cacheService.get(DAILY_MEALS_CACHE);
+            if (cached && Array.isArray(cached) && cached.length > 0) {
+                console.log('[RecipeService] Loaded daily suggestions from cache');
+                return { success: true, suggestions: cached, fromCache: true };
+            }
+            return null;
+        } catch (error) {
+            console.warn('[RecipeService] getDailySuggestionsCache error:', error);
+            return null;
+        }
+    },
+
+    /**
+     * Lấy danh sách tên món đã gợi ý trong ngày (dùng để loại trừ khi refresh)
+     */
+    async getDailyExcludeList() {
+        try {
+            const history = await cacheService.get(DAILY_MEALS_HISTORY);
+            return Array.isArray(history) ? history : [];
+        } catch (error) {
+            return [];
+        }
+    },
+
+    /**
+     * Tự động gợi ý thực đơn ngày linh hoạt theo cấu trúc mâm cơm gia đình Việt
+     * @param {string} user_id 
+     * @param {string} mode - 'traditional' hoặc 'creative'
+     * @param {string[]} excludeTitles - Danh sách tên món cần loại trừ (khi refresh)
+     */
+    async suggestDailyMealsAI(user_id, mode = 'traditional', excludeTitles = []) {
         try {
             const { inventoryService } = await import('./inventoryService');
+            let systemIngredients = '';
+            let prompt = '';
 
-            // 1. Lấy dữ liệu nguyên liệu trong tủ lạnh
-            const inventoryRes = await inventoryService.getItems(user_id);
-            const ingredients = inventoryRes.success && inventoryRes.items.length > 0
-                ? inventoryRes.items.map(i => i.item_name).join(', ')
-                : 'Tủ lạnh hiện tại chưa có thông tin nguyên liệu, hãy đề xuất các nguyên liệu phổ thông dễ mua.';
+            // Tạo đoạn loại trừ nếu có
+            const exclusionClause = excludeTitles.length > 0
+                ? `\n\nQUAN TRỌNG - LOẠI TRỪ: TUYỆT ĐỐI KHÔNG gợi ý lại các món sau đây vì đã được gợi ý trước đó: [${excludeTitles.join(', ')}]. Hãy đề xuất các món HOÀN TOÀN KHÁC.`
+                : '';
 
-            // 2. Lấy thông tin gia đình
-            let familyDetails = 'Chưa có thông tin chi tiết các thành viên trong gia đình.';
-            if (user_id) {
+            if (mode === 'creative') {
+                // 1. Lấy dữ liệu nguyên liệu trong tủ lạnh
+                const inventoryRes = await inventoryService.getItems(user_id);
+                systemIngredients = inventoryRes.success && inventoryRes.items.length > 0
+                    ? inventoryRes.items.map(i => i.item_name).join(', ')
+                    : 'Tủ lạnh hiện tại chưa có thông tin nguyên liệu, hãy đề xuất các nguyên liệu phổ thông dễ mua.';
+
+                // 2. Lấy thông tin gia đình
+                let familyDetails = 'Chưa có thông tin chi tiết các thành viên trong gia đình.';
+                if (user_id) {
+                    try {
+                        const { familyMemberService } = await import('./familyMemberService');
+                        const membersRes = await familyMemberService.getFamilyMembers(user_id);
+                        if (membersRes.success && membersRes.data && membersRes.data.length > 0) {
+                            familyDetails = membersRes.data.map(m =>
+                                `- ${m.name || m.role} (${m.age_group || 'Không rõ tuổi'}): Thích ăn ${m.dietary_preferences?.join(', ') || 'đa dạng'}, Dị ứng/Kiêng: ${m.allergies?.join(', ') || 'Không'}, Lưu ý sức khỏe: ${m.health_conditions?.join(', ') || 'Bình thường'}.`
+                            ).join('\n');
+                        }
+                    } catch (err) {
+                        console.warn("[RecipeService] Could not fetch detailed family members:", err);
+                    }
+                }
+
+                prompt = `Hãy đóng vai một chuyên gia dinh dưỡng và đầu bếp gia đình Việt Nam. 
+                        Nhiệm vụ của bạn là lên Thực Đơn 1 Ngày SÁNG TẠO (Sáng, Trưa, Tối) dựa trên nguyên liệu hiện có trong tủ lạnh: ${systemIngredients}.
+                        Khẩu vị gia đình: ${familyDetails}
+
+                        THỰC ĐƠN PHẢI TUÂN THỦ NGHIÊM NGẶT CẤU TRÚC MÂM CƠM VIỆT NAM:
+                        - Bữa sáng: BẮT BUỘC gợi ý các món điểm tâm: Bún, Phở, Miến, Cháo, Xôi, Bánh mì... CHỈ GỢI Ý 1-2 món. Tùy biến linh hoạt nếu tủ lạnh không có đồ phù hợp thì tự đề xuất nguyên liệu ngoài.
+                        - Bữa trưa: Bữa đầy đủ năng lượng. BẮT BUỘC có 3-4 món gồm: 1 món Mặn (thịt/cá kho, đạm...), 1 món Canh, 1 món Rau/Xào, và 1 Cơm trắng.
+                        - Bữa tối: Thanh đạm, dễ ngủ. BẮT BUỘC không dưới 3 món: 1 món Mặn (nhẹ nhàng), 1 món Canh, 1 món Rau, và 1 Cơm trắng.
+
+                        YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
+                        1. SỐ LƯỢNG MÓN: Mỗi bữa chính (Trưa, Tối) BẮT BUỘC có từ 3 đến 4 món riêng biệt. 
+                        2. PHẢI TÁCH RIÊNG từng món, KHÔNG gộp chung (Ví dụ: "Cơm cá kho" -> "Cơm trắng", "Cá Kho").
+                        3. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, BẮT BUỘC mở đầu bằng từ khóa phân loại: [Bữa sáng], [Bữa trưa], hoặc [Bữa tối].
+                        4. Đề xuất thực đơn phong phú. (Mã xáo trộn ngẫu nhiên: ${Date.now()}).${exclusionClause}`;
+
+            } else {
+                // TRUYỀN THỐNG MODE — Gợi ý từ kho món truyền thống, ưu tiên theo tủ lạnh
+                const allRecipes = hybridRecipeService.getRecipes();
+                
+                // Loại bỏ các món đã gợi ý trước đó ra khỏi pool
+                const filteredRecipes = excludeTitles.length > 0
+                    ? allRecipes.filter(r => !excludeTitles.some(ex => r.title.toLowerCase().includes(ex.toLowerCase())))
+                    : [...allRecipes];
+
+                // Lấy nguyên liệu tủ lạnh để ưu tiên món phù hợp
+                let fridgeIngredients = [];
+                let fridgeContext = '';
                 try {
-                    const { familyMemberService } = await import('./familyMemberService');
-                    const membersRes = await familyMemberService.getFamilyMembers(user_id);
-                    if (membersRes.success && membersRes.data && membersRes.data.length > 0) {
-                        familyDetails = membersRes.data.map(m =>
-                            `- ${m.name || m.role} (${m.age_group || 'Không rõ tuổi'}): Thích ăn ${m.dietary_preferences?.join(', ') || 'đa dạng'}, Dị ứng/Kiêng: ${m.allergies?.join(', ') || 'Không'}, Lưu ý sức khỏe: ${m.health_conditions?.join(', ') || 'Bình thường'}.`
-                        ).join('\n');
+                    const inventoryRes = await inventoryService.getItems(user_id);
+                    if (inventoryRes.success && inventoryRes.items.length > 0) {
+                        fridgeIngredients = inventoryRes.items.map(i => i.item_name.toLowerCase().trim());
+                        fridgeContext = `\n\nNGUYÊN LIỆU HIỆN CÓ TRONG TỦ LẠNH: [${inventoryRes.items.map(i => i.item_name).join(', ')}]
+                    ƯU TIÊN TUYỆT ĐỐI chọn các món có thể nấu được từ nguyên liệu trên. Nếu không đủ món phù hợp, được phép bổ sung món khác từ danh sách.`;
                     }
                 } catch (err) {
-                    console.warn("[RecipeService] Could not fetch detailed family members:", err);
+                    console.warn('[RecipeService] Could not fetch inventory for traditional mode:', err);
                 }
+
+                // Tính điểm match cho mỗi món dựa trên nguyên liệu tủ lạnh
+                let selectedTitles;
+                if (fridgeIngredients.length > 0) {
+                    const scoredRecipes = filteredRecipes.map(recipe => {
+                        const recipeIngredients = (recipe.ingredients || []).map(ing => 
+                            (typeof ing === 'string' ? ing : '').toLowerCase().trim()
+                        );
+                        
+                        // Đếm số nguyên liệu tủ lạnh khớp với nguyên liệu món ăn
+                        let matchScore = 0;
+                        fridgeIngredients.forEach(fridgeItem => {
+                            const matched = recipeIngredients.some(recipeIng => 
+                                recipeIng.includes(fridgeItem) || fridgeItem.includes(recipeIng)
+                            );
+                            if (matched) matchScore++;
+                        });
+
+                        return { ...recipe, matchScore };
+                    });
+
+                    // Phân nhóm: món có match > 0 (ưu tiên) và món không match
+                    const matchedRecipes = scoredRecipes
+                        .filter(r => r.matchScore > 0)
+                        .sort((a, b) => b.matchScore - a.matchScore);
+                    const unmatchedRecipes = scoredRecipes
+                        .filter(r => r.matchScore === 0)
+                        .sort(() => 0.5 - Math.random());
+
+                    // Lấy tối đa 50 món match + bổ sung random đến 80
+                    const prioritized = matchedRecipes.slice(0, 50);
+                    const remaining = unmatchedRecipes.slice(0, 80 - prioritized.length);
+                    const combined = [...prioritized, ...remaining];
+                    
+                    selectedTitles = combined.map(r => r.title).join(', ');
+                    console.log(`[RecipeService] Traditional mode: ${matchedRecipes.length} matched, sent ${combined.length} to AI`);
+                } else {
+                    // Không có dữ liệu tủ lạnh → random như cũ
+                    selectedTitles = filteredRecipes
+                        .sort(() => 0.5 - Math.random())
+                        .slice(0, 80)
+                        .map(r => r.title)
+                        .join(', ');
+                }
+
+                systemIngredients = 'Sử dụng kho món ăn Truyền Thống của Cơm Nhà.';
+
+                prompt = `Hãy đóng vai một chuyên gia dinh dưỡng và đầu bếp gia đình Việt Nam. 
+                    Nhiệm vụ của bạn là chọn ra Thực Đơn 1 Ngày CHUẨN MỰC VIỆT NAM (Sáng, Trưa, Tối).
+                    ĐIỀU KIỆN KIÊN QUYẾT: Bạn CHỈ ĐƯỢC CHỌN các món ăn TỪ DANH SÁCH SAU ĐÂY:
+                    [${selectedTitles}]
+                    TUYỆT ĐỐI KHÔNG tự nghĩ ra món nào khác ngoài danh sách trên kể cả món phụ như cơm trắng (trừ khi có trong list). Nhớ linh hoạt gán thêm món Cơm nếu bạn nghĩ hợp lý để đủ 3-4 món mỗi bữa.
+                    ${fridgeContext}
+
+                    THỰC ĐƠN PHẢI TUÂN THỦ NGHIÊM NGẶT CẤU TRÚC MÂM CƠM VIỆT NAM:
+                    - Bữa sáng: 1-2 món điểm tâm truyền thống.
+                    - Bữa trưa: BẮT BUỘC 3-4 món gồm: 1 món Mặn (kho/rim/thịt cá), 1 món Canh, 1 Rau/Xào, (kèm 1 Cơm nếu có).
+                    - Bữa tối: BẮT BUỘC 3-4 món gồm: 1 món Mặn (thanh đạm), 1 Canh, 1 Rau, (kèm 1 Cơm nếu có).
+
+                    YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU:
+                    1. SỐ LƯỢNG MÓN: Sáng (1-2 món), Trưa (3-4 món), Tối (3-4 món).
+                    2. TÊN MÓN BẮT BUỘC phải khớp 100% với tên trong danh sách đã cấp. Hãy tách riêng từng món.
+                    3. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, BẮT BUỘC mở đầu bằng: [Bữa sáng], [Bữa trưa], hoặc [Bữa tối].
+                    (Mã xáo trộn ngẫu nhiên: ${Date.now()})${exclusionClause}`;
             }
 
-            // 3. Prompt định hướng cấu trúc thay vì số lượng
-            const prompt = `Hãy đóng vai một chuyên gia dinh dưỡng và đầu bếp gia đình Việt Nam. 
-Nhiệm vụ của bạn là lên Thực Đơn 1 Ngày (Sáng, Trưa, Tối) phối hợp hài hòa các nguyên liệu đang có sẵn: ${ingredients}.
-
-THỰC ĐƠN PHẢI TUÂN THỦ NGHIÊM NGẶT CẤU TRÚC BỮA ĂN VIỆT NAM:
-- Bữa sáng: Ưu tiên nhanh gọn, dễ tiêu, cung cấp năng lượng khởi đầu (ví dụ: bánh mì, phở, bún, xôi, cháo); kèm rau thơm hoặc trái cây nhẹ.
-- Bữa trưa: Bữa ăn đầy đủ năng lượng nhất. Cấu trúc mâm cơm bắt buộc hài hòa các nhóm: tinh bột (cơm/bún/miến), 1-2 món mặn đậm đà (thịt/cá kho, rim, xào), 1 món rau (luộc/xào), 1 món canh; có thể thêm trái cây tráng miệng. Các món mặn và nhạt phải hỗ trợ vị cho nhau.
-- Bữa tối: Cân bằng, thanh đạm, ít dầu mỡ hơn trưa để dễ ngủ. Thường gồm cơm, 1 món đạm nhẹ nhàng, 1-2 món rau xanh nhiều chất xơ, và món canh.
-
-HỒ SƠ GIA ĐÌNH (BẮT BUỘC TUÂN THỦ VÀ TRÁNH CÁC MÓN DỊ ỨNG):
-${familyDetails}
-
-YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
-1. Bạn tự quyết định số lượng món ăn sao cho mâm cơm đủ đầy, không gượng ép số lượng.
-2. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, bạn BẮT BUỘC phải mở đầu bằng một trong các từ khóa sau để phân loại: [Bữa sáng], [Bữa trưa], hoặc [Bữa tối].`;
-
             // 4. Gọi hàm AI
-            const result = await recipeService.suggestRecipesGenAI(prompt, 'Thực đơn gia đình Việt', user_id);
+            const result = await recipeService.suggestRecipesGenAI(systemIngredients, 'Thực đơn gia đình Việt', user_id, prompt);
 
-            // 5. Logic phân nhóm thông minh dựa vào Tag (Description)
-            if (result.success && result.recipes && result.recipes.length > 0) {
-                const breakfast = [];
-                const lunch = [];
-                const dinner = [];
-                const uncategorized = [];
-
-                result.recipes.forEach(recipe => {
-                    const desc = (recipe.description || '').toLowerCase();
-                    // Đọc từ khóa AI gắn trong description để đưa vào đúng mảng
-                    if (desc.includes('[bữa sáng]') || desc.includes('[sáng]')) {
-                        // (Tùy chọn) Xóa cái tag đi để UI nhìn đẹp hơn
-                        recipe.description = recipe.description.replace(/\[Bữa sáng\]|\[Sáng\]/gi, '').trim();
-                        breakfast.push(recipe);
-                    } else if (desc.includes('[bữa trưa]') || desc.includes('[trưa]')) {
-                        recipe.description = recipe.description.replace(/\[Bữa trưa\]|\[Trưa\]/gi, '').trim();
-                        lunch.push(recipe);
-                    } else if (desc.includes('[bữa tối]') || desc.includes('[tối]')) {
-                        recipe.description = recipe.description.replace(/\[Bữa tối\]|\[Tối\]/gi, '').trim();
-                        dinner.push(recipe);
-                    } else {
-                        uncategorized.push(recipe);
+            // POST PROCESSING CHO TRUYỀN THỐNG (Ánh xạ ID về local repo)
+            if (mode === 'traditional' && result.success && result.recipes && result.recipes.length > 0) {
+                result.recipes = result.recipes.map(aiRecipe => {
+                    const localMatches = hybridRecipeService.search(aiRecipe.title);
+                    if (localMatches && localMatches.length > 0) {
+                        const localMatched = localMatches[0];
+                        return {
+                            ...aiRecipe,
+                            id: localMatched.id,
+                            title: localMatched.title,
+                            image: localMatched.image,
+                            readyInMinutes: localMatched.readyInMinutes,
+                            healthScore: localMatched.healthScore,
+                        };
                     }
+                    return aiRecipe;
+                });
+            }
+
+            // 5. Logic xử lý Description: Xóa các Tag của AI để UI sạch sẽ
+            if (result.success && result.recipes && result.recipes.length > 0) {
+                const cleanRecipes = result.recipes.map(recipe => {
+                    if (recipe.description) {
+                        recipe.description = recipe.description.replace(/\[Bữa sáng\]|\[Sáng\]|\[Bữa trưa\]|\[Trưa\]|\[Bữa tối\]|\[Tối\]/gi, '').trim();
+                    }
+                    return recipe;
                 });
 
-                // Fallback: Nếu AI quên gắn tag, ta chia đều danh sách món ăn ra 3 bữa
-                if (breakfast.length === 0 && lunch.length === 0 && dinner.length === 0) {
-                    const total = result.recipes.length;
-                    const third = Math.floor(total / 3);
-                    return {
-                        success: true,
-                        meals: {
-                            breakfast: result.recipes.slice(0, third || 1),
-                            lunch: result.recipes.slice(third || 1, third * 2 || 2),
-                            dinner: result.recipes.slice(third * 2 || 2)
-                        }
-                    };
-                }
+                // 6. Cache kết quả (TTL = đến hết ngày hôm nay)
+                const ttl = minutesUntilEndOfDay();
+                await cacheService.set(DAILY_MEALS_CACHE, cleanRecipes, ttl);
 
-                // Ghép các món AI quên gắn tag vào bữa trưa hoặc tối để không bị mất data
-                if (uncategorized.length > 0) {
-                    const splitIdx = Math.floor(uncategorized.length / 2);
-                    lunch.push(...uncategorized.slice(0, splitIdx));
-                    dinner.push(...uncategorized.slice(splitIdx));
-                }
+                // 7. Append tên món vào history để dùng cho lần refresh tiếp theo
+                const newTitles = cleanRecipes.map(r => r.title);
+                const existingHistory = await cacheService.get(DAILY_MEALS_HISTORY) || [];
+                const updatedHistory = [...new Set([...existingHistory, ...newTitles])];
+                await cacheService.set(DAILY_MEALS_HISTORY, updatedHistory, ttl);
+
+                console.log(`[RecipeService] Cached ${cleanRecipes.length} suggestions, history now has ${updatedHistory.length} titles`);
 
                 return {
                     success: true,
-                    meals: { breakfast, lunch, dinner }
+                    suggestions: cleanRecipes
                 };
             }
 
-            throw new Error(result.error || "Không thể lấy gợi ý thực đơn.");
+            // Nếu result.error đã được formatError rồi (từ suggestRecipesGenAI), trả thẳng về
+            return { success: false, error: result.error || "Không thể lấy gợi ý thực đơn." };
         } catch (error) {
             console.error("[RecipeService] suggestDailyMealsAI Error:", error);
             return { success: false, error: formatError(error) };
@@ -249,14 +415,44 @@ YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
 
     async reconstructAIRecipe(title) {
         try {
+            const titleLower = title.toLowerCase().trim();
             const titleMap = await cacheService.get(AI_RECIPE_TITLE_MAP) || {};
-            const cachedId = titleMap[title.toLowerCase().trim()];
+            const cachedId = titleMap[titleLower];
+
             if (cachedId) {
                 const cachedRecipe = await cacheService.get(AI_RECIPE_CACHE_PREFIX + cachedId);
                 if (cachedRecipe) {
                     console.log('[RecipeService] Reconstructed from cache (title):', title);
                     return { success: true, data: cachedRecipe };
                 }
+            }
+
+            // Fallback 1: Tìm trong persistent storage (vĩnh viễn)
+            const persistedRecipe = await recipeStorageService.getRecipeByTitle(title);
+            if (persistedRecipe) {
+                console.log('[RecipeService] Reconstructed from persistent storage (title):', title);
+                return { success: true, data: persistedRecipe };
+            }
+
+            // Fallback: Tìm trong MealPlan (có thể dữ liệu gốc nằm ở đó)
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    const { data: plans } = await supabase
+                        .from('mealplans')
+                        .select('*')
+                        .eq('recipe_title', title)
+                        .limit(1);
+
+                    if (plans && plans.length > 0 && plans[0].recipe_data) {
+                        console.log('[RecipeService] Reconstructed from MealPlan data:', title);
+                        const recipe = plans[0].recipe_data;
+                        this.saveAIRecipeToCache(recipe);
+                        return { success: true, data: recipe };
+                    }
+                }
+            } catch (pErr) {
+                console.warn('[RecipeService] MealPlan fallback check failed:', pErr);
             }
 
             const prompt = `Hãy tạo lại công thức chi tiết cho món: "${title}". Chỉ cần trả về duy nhất món này.`;
@@ -425,24 +621,58 @@ YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
     transformAIRecipe(aiRecipe) {
         try {
             if (!aiRecipe) return null;
-            const steps = recipeService.parseInstructions(aiRecipe.instructions); // Đổi this thành recipeService
+            const steps = recipeService.parseInstructions(aiRecipe.instructions);
 
-            const extendedIngredients = (aiRecipe.ingredients || []).map((ing, idx) => {
+            // Handle ingredients (could be string or array)
+            let rawIngredients = [];
+            if (Array.isArray(aiRecipe.ingredients)) {
+                rawIngredients = aiRecipe.ingredients;
+            } else if (typeof aiRecipe.ingredients === 'string') {
+                // Try to split by lines and clean up markers like "-", "*", "1."
+                rawIngredients = aiRecipe.ingredients.split('\n').map(i => i.replace(/^[-*•\d.]+\s+/, '').trim()).filter(i => !!i);
+            }
+
+            const extendedIngredients = rawIngredients.map((ing, idx) => {
+                // Parse quantity from ingredient string (e.g. "200g Thịt heo", "2 muỗng canh Nước mắm", "1/2 thìa Tiêu")
+                let amount = 0;
+                let unit = '';
+                let name = ing;
+
+                // Pattern: number(+fraction) + optional unit + ingredient name
+                // Matches: "200g Thịt", "2 muỗng canh Đường", "1/2 thìa cà phê Tiêu", "500ml Nước"
+                const quantityMatch = ing.match(/^([\d]+(?:[./][\d]+)?)\s*(g|kg|ml|l|lít|muỗng canh|muỗng cà phê|muỗng|thìa cà phê|thìa canh|thìa|chén|bát|tô|củ|quả|trái|lá|nhánh|cây|miếng|lát|con|bó|gói|hộp|lon|chai|ít|chút|nhúm)?\s*(.+)/i);
+
+                if (quantityMatch) {
+                    // Handle fractions like 1/2
+                    const numStr = quantityMatch[1];
+                    if (numStr.includes('/')) {
+                        const parts = numStr.split('/');
+                        amount = parseFloat(parts[0]) / parseFloat(parts[1]);
+                    } else {
+                        amount = parseFloat(numStr);
+                    }
+                    unit = (quantityMatch[2] || '').trim();
+                    name = (quantityMatch[3] || ing).trim();
+                }
+
                 return {
                     id: idx,
                     original: ing,
                     originalName: ing,
-                    name: ing,
-                    nameClean: ing,
-                    amount: 0,
-                    unit: ''
+                    name: name,
+                    nameClean: name,
+                    amount: amount || 0,
+                    unit: unit || ''
                 };
             });
 
-            return {
+            // AI recipes use placeholder image (handled by RecipeImage component)
+            const imageUrl = aiRecipe.image || null;
+
+            const transformedRecipe = {
                 id: aiRecipe.id || `ai_${aiRecipe.title.toLowerCase().trim().replace(/\s+/g, '_')}`,
                 title: aiRecipe.title,
-                image: aiRecipe.image,
+                image: imageUrl,
                 readyInMinutes: aiRecipe.readyInMinutes || 30,
                 servings: 4,
                 healthScore: aiRecipe.healthScore || 80,
@@ -453,6 +683,11 @@ YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
                 spoonacularScore: aiRecipe.healthScore || 80,
                 nutrition: { nutrients: [{ name: "Calories", amount: 300, unit: "kcal" }] }
             };
+
+            // Auto-save vào persistent storage (vĩnh viễn)
+            recipeStorageService.saveRecipe(transformedRecipe);
+
+            return transformedRecipe;
         } catch (error) {
             console.error("Transform AI Recipe Error:", error);
             return null;
@@ -461,42 +696,120 @@ YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
 
     async getRecipeDetails(id) {
         try {
+            // 1. Tìm trong kho món truyền thống (local)
             const localRecipe = hybridRecipeService.getRecipeById(id);
             if (localRecipe) {
                 const steps = recipeService.parseInstructions(localRecipe.instructions || '');
 
-                return {
-                    success: true,
-                    data: {
-                        id: localRecipe.id,
-                        title: localRecipe.title,
-                        image: localRecipe.image,
-                        readyInMinutes: localRecipe.readyInMinutes,
-                        servings: 4,
-                        healthScore: localRecipe.healthScore,
-                        extendedIngredients: localRecipe.ingredients.map((ing, idx) => ({
-                            id: idx, original: ing, originalName: ing, name: ing, amount: 1, unit: 'phần', nameClean: ing
-                        })),
-                        analyzedInstructions: [{ name: "", steps: steps }],
-                        instructions: localRecipe.instructions,
-                        sourceUrl: "https://comnha.app",
-                        spoonacularScore: localRecipe.healthScore,
-                        nutrition: { nutrients: [{ name: "Calories", amount: parseInt(localRecipe.calories) || 300, unit: "kcal" }] }
-                    }
+                const result = {
+                    id: localRecipe.id,
+                    title: localRecipe.title,
+                    image: localRecipe.image,
+                    readyInMinutes: localRecipe.readyInMinutes,
+                    servings: 4,
+                    healthScore: localRecipe.healthScore,
+                    extendedIngredients: localRecipe.ingredients.map((ing, idx) => ({
+                        id: idx, original: ing, originalName: ing, name: ing, amount: 1, unit: 'phần', nameClean: ing
+                    })),
+                    analyzedInstructions: [{ name: "", steps: steps }],
+                    instructions: localRecipe.instructions,
+                    sourceUrl: "https://comnha.app",
+                    spoonacularScore: localRecipe.healthScore,
+                    nutrition: { nutrients: [{ name: "Calories", amount: parseInt(localRecipe.calories) || 300, unit: "kcal" }] }
                 };
+                // Auto-save vào persistent storage
+                recipeStorageService.saveRecipe(result);
+                return { success: true, data: result };
             }
 
+            // 2. Tìm trong cache AI (có TTL)
             if (typeof id === 'string' && id.startsWith('ai_')) {
                 const cachedAIRecipe = await cacheService.get(AI_RECIPE_CACHE_PREFIX + id);
                 if (cachedAIRecipe) {
                     console.log('[RecipeService] Loaded AI recipe from cache:', id);
+                    // Auto-save vào persistent storage
+                    recipeStorageService.saveRecipe(cachedAIRecipe);
                     return { success: true, data: cachedAIRecipe };
                 }
+            }
+
+            // 3. FALLBACK: Tìm trong persistent storage (vĩnh viễn, không TTL)
+            const persistedRecipe = await recipeStorageService.getRecipe(id);
+            if (persistedRecipe) {
+                console.log('[RecipeService] Loaded recipe from persistent storage:', id);
+                return { success: true, data: persistedRecipe };
             }
 
             throw new Error("Recipe not found");
         } catch (error) {
             return { success: false, error: formatError(error) };
         }
+    },
+
+    /**
+     * Get a curated food image URL based on recipe title keywords.
+     * Uses direct Unsplash CDN URLs (no redirect) for reliable loading in React Native.
+     * If searchKeyword (English) is provided by AI, uses it for dynamic high-accuracy search.
+     */
+    getFoodImageUrl(title, searchKeyword) {
+        // 1. If AI provided a high-quality English keyword, use it with a reliable search service
+        if (searchKeyword && searchKeyword.length > 2) {
+            const cleanKeyword = searchKeyword.toLowerCase().replace(/[^a-z0-9 ]/g, '').replace(/\s+/g, ',');
+            // Using loremflickr as fallback search with English keywords is very accurate
+            return `https://loremflickr.com/400/300/${encodeURIComponent(cleanKeyword)},food,vietnamese`;
+        }
+
+        const t = title.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+
+        // Curated Vietnamese food images from Unsplash (direct CDN URLs)
+        const foodImages = {
+            pho: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?w=400&h=300&fit=crop',
+            bun: 'https://images.unsplash.com/photo-1576577445504-6af96477db52?w=400&h=300&fit=crop',
+            com: 'https://images.unsplash.com/photo-1596560548464-f010549b84d7?w=400&h=300&fit=crop',
+            chao: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=400&h=300&fit=crop',
+            ga: 'https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=400&h=300&fit=crop',
+            ca: 'https://images.unsplash.com/photo-1534766555764-ce878a5e3a2b?w=400&h=300&fit=crop',
+            thit: 'https://images.unsplash.com/photo-1588168333986-5078d3ae3976?w=400&h=300&fit=crop',
+            canh: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop',
+            rau: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
+            xoi: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=300&fit=crop',
+            banh: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&h=300&fit=crop',
+            mi: 'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=400&h=300&fit=crop',
+            tom: 'https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=400&h=300&fit=crop',
+            trung: 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&h=300&fit=crop',
+            dau: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=400&h=300&fit=crop',
+            xao: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop',
+            kho: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&h=300&fit=crop',
+            nuong: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop',
+            lau: 'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=300&fit=crop',
+            goi: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop',
+            che: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop',
+        };
+
+        // Match keywords from title
+        for (const [keyword, url] of Object.entries(foodImages)) {
+            if (t.includes(keyword)) {
+                return url;
+            }
+        }
+
+        // Fallback: pick from general food images based on title hash
+        const fallbackImages = [
+            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1493770348161-369560ae357d?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop',
+        ];
+        let hash = 0;
+        for (let i = 0; i < title.length; i++) {
+            hash = ((hash << 5) - hash) + title.charCodeAt(i);
+            hash |= 0;
+        }
+        return fallbackImages[Math.abs(hash) % fallbackImages.length];
     }
 };

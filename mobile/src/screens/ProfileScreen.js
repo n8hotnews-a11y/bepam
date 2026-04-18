@@ -78,16 +78,9 @@ const ProfileScreen = ({ navigation }) => {
                     <Text style={styles.userName}>{user?.email?.split('@')[0] || 'Người dùng'}</Text>
                     <Text style={styles.userEmail}>{user?.email}</Text>
 
-                    {subscription?.is_premium ? (
-                        <View style={styles.planBadge}>
-                            <Text style={styles.planText}>Bếp Ấm +</Text>
-                        </View>
-                    ) : (
-                        <TouchableOpacity onPress={() => navigation.navigate('Subscription')} style={styles.upgradeBanner}>
-                            <MaterialIcons name="auto-awesome" size={20} color={COLORS.white} />
-                            <Text style={styles.upgradeText}>Nâng cấp Premium</Text>
-                        </TouchableOpacity>
-                    )}
+                    <View style={styles.planBadge}>
+                        <Text style={styles.planText}>Bếp Ấm +</Text>
+                    </View>
                 </View>
 
                 {/* ... existing stats row ... */}
@@ -104,17 +97,7 @@ const ProfileScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.menuSection}>
-                    {!subscription?.is_premium && (
-                        <View style={{ marginBottom: 20 }}>
-                            <MenuItem
-                                icon="star"
-                                title="Nâng cấp gói thành viên"
-                                color="#D97706"
-                                onPress={() => navigation.navigate('Subscription')}
-                                badge="HOT"
-                            />
-                        </View>
-                    )}
+
 
                     <Text style={styles.sectionTitle}>Tài khoản</Text>
                     <MenuItem icon="person-outline" title="Thông tin cá nhân" onPress={() => navigation.navigate('UserInfo')} />

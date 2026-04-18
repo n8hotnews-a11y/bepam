@@ -130,13 +130,15 @@ const MealPlanScreen = ({ navigation, route }) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
+        // Pass full item as recipeData to preserve instruction and other fields in mealplans table
         const result = await mealPlanService.addToPlan(
             user.id,
             item.id,
             item.title,
             item.image,
             targetSlot.date,
-            targetSlot.mealType
+            targetSlot.mealType,
+            item 
         );
 
         if (result.success) {
@@ -160,6 +162,7 @@ const MealPlanScreen = ({ navigation, route }) => {
             recipeId: item.recipe_id || item.recipeId,
             recipeTitle: item.recipe_title || item.recipeTitle,
             recipeImage: item.recipe_image || item.recipeImage,
+            initialRecipeData: item.recipe_data // Use data already in the plan object
         });
     };
 
@@ -317,7 +320,12 @@ const MealPlanScreen = ({ navigation, route }) => {
                     </ScrollView>
                 </View>
             ) : activeTab === 'recipes' ? (
-                <ExplorationView navigation={navigation} />
+                <ExplorationView 
+                    navigation={navigation} 
+                    selectedDate={selectedDate}
+                    existingPlans={plans.filter(p => p.date === selectedDate)}
+                    onPlanUpdated={fetchPlans}
+                />
             ) : (
                 <RecipesScreen
                     navigation={navigation}

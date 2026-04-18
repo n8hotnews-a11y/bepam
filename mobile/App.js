@@ -22,6 +22,20 @@ export default function App() {
   React.useEffect(() => {
     hybridRecipeService.initialize();
     notificationService.initialize();
+    
+    // Setup meal reminders on app start
+    const setupNotifications = async () => {
+        try {
+            const settings = await notificationService.getSettings();
+            if (settings) {
+                await notificationService.setupMealReminders(settings);
+                console.log('[App] Meal reminders configured on startup');
+            }
+        } catch (error) {
+            console.warn('[App] Failed to setup meal reminders:', error);
+        }
+    };
+    setupNotifications();
   }, []);
 
   console.log('Constants.expoConfig:', Constants.expoConfig);

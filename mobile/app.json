@@ -7,6 +7,10 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#E67E22"
+    },
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -19,12 +23,10 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFF3E8"
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
@@ -45,7 +47,10 @@
     ],
     "extra": {
       "supabaseUrl": "https://vfegrafhwrpepdcuqnms.supabase.co",
-      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmZWdyYWZod3JwZXBkY3Vxbm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwNTUwMzYsImV4cCI6MjA4NDYzMTAzNn0.U1-lTNNkn_UMWY9qzlH7L2sQ5nfI6AdF62UVHqcRZKM"
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmZWdyYWZod3JwZXBkY3Vxbm1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwNTUwMzYsImV4cCI6MjA4NDYzMTAzNn0.U1-lTNNkn_UMWY9qzlH7L2sQ5nfI6AdF62UVHqcRZKM",
+      "eas": {
+        "projectId": "c28b7f16-60cc-4251-abdb-5f4eb4f76c70"
+      }
     }
   }
 }

@@ -203,8 +203,8 @@ const styles = StyleSheet.create({
         borderTopColor: COLORS.backgroundCard,
     },
     fab: {
-        width: 64,
-        height: 64,
+        width: 60,
+        height: 60,
         borderRadius: 32,
         backgroundColor: COLORS.primaryMuted,
         justifyContent: 'center',

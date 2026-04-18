@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { ingredients, style, familyContext } = await req.json();
+    const { ingredients, style, familyContext, customPrompt } = await req.json();
 
     // Handle ingredients if it's a string (from AI Search) or array (from Fridge list)
     const ingredientsList = Array.isArray(ingredients) ? ingredients.join(', ') : ingredients;
@@ -28,30 +28,33 @@ serve(async (req) => {
     const region = 'us-central1';
     const modelId = 'gemini-2.0-flash-001';
 
-    const prompt = `
-Bạn là Bếp trưởng AI của ứng dụng "Cơm Nhà". 
-Dựa vào yêu cầu/nguyên liệu này: ${ingredientsList}
-Hãy gợi ý 3-5 món ăn theo phong cách: ${style}.
-${familyContext ? `Bối cảnh gia đình: ${familyContext}` : ''}
+    const jsonFormatSpec = `
+                YÊU CẦU QUAN TRỌNG: Chỉ trả về duy nhất dữ liệu định dạng JSON theo cấu trúc sau, không kèm văn bản giải thích:
+                {
+                  "recipes": [
+                    {
+                      "id": "ai_unique_id",
+                      "title": "Tên món ăn",
+                      "description": "Mô tả ngắn gọn",
+                      "ingredients": ["200g Thịt heo", "2 muỗng canh Nước mắm", "100g Rau muống"],
+                      "instructions": "Hướng dẫn các bước nấu nướng cụ thể",
+                      "readyInMinutes": 30,
+                      "healthScore": 80
+                    }
+                  ]
+                }
+                QUY TẮC NGUYÊN LIỆU: Mỗi nguyên liệu trong mảng "ingredients" BẮT BUỘC phải bắt đầu bằng ĐỊNH LƯỢNG CỤ THỂ (số + đơn vị) rồi mới đến tên nguyên liệu. Ví dụ: "300g Thịt gà", "2 muỗng canh Đường", "1/2 thìa cà phê Tiêu", "500ml Nước dùng". TUYỆT ĐỐI KHÔNG viết nguyên liệu mà thiếu định lượng.
+                Hãy viết mô tả và tên món bằng tiếng Việt thân thiện.`;
 
-YÊU CẦU QUAN TRỌNG: Chỉ trả về duy nhất dữ liệu định dạng JSON theo cấu trúc sau, không kèm văn bản giải thích:
-{
-  "recipes": [
-    {
-      "id": "ai_unique_id",
-      "title": "Tên món ăn",
-      "description": "Mô tả ngắn gọn",
-      "ingredients": ["Nguyên liệu 1", "Nguyên liệu 2"],
-      "instructions": "Hướng dẫn các bước nấu nướng cụ thể",
-      "readyInMinutes": 30,
-      "healthScore": 80,
-      "image": "https://via.placeholder.com/300x200?text=Mon+Viet"
-    }
-  ]
-}
-
-Hãy viết mô tả và tên món bằng tiếng Việt thân thiện.
-`;
+    const prompt = customPrompt
+      ? `${customPrompt}\n${familyContext ? `\nBối cảnh gia đình: ${familyContext}` : ''}\n${jsonFormatSpec}`
+      : `
+                Bạn là Bếp trưởng AI của ứng dụng "Cơm Nhà". 
+                Dựa vào yêu cầu/nguyên liệu này: ${ingredientsList}
+                Hãy gợi ý 3-5 món ăn theo phong cách: ${style}.
+                ${familyContext ? `Bối cảnh gia đình: ${familyContext}` : ''}
+                ${jsonFormatSpec}
+                `;
 
     const url = `https://${region}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${region}/publishers/google/models/${modelId}:generateContent`;
 
@@ -88,8 +91,36 @@ Hãy viết mô tả và tên món bằng tiếng Việt thân thiện.
 
     try {
       const parsedData = JSON.parse(text);
+      const recipes = parsedData.recipes || [];
+
+      // Lấy cấu hình Google Custom Search từ biến môi trường
+      const googleSearchApiKey = Deno.env.get('GOOGLE_SEARCH_API_KEY');
+      const googleSearchCx = Deno.env.get('GOOGLE_SEARCH_CX');
+
+      if (googleSearchApiKey && googleSearchCx && recipes.length > 0) {
+        // Chạy song song tìm kiếm ảnh cho các món ăn
+        const imagePromises = recipes.map(async (recipe: any) => {
+          try {
+            const query = encodeURIComponent(`${recipe.title} món ăn Việt Nam`);
+            const searchUrl = `https://www.googleapis.com/customsearch/v1?q=${query}&cx=${googleSearchCx}&key=${googleSearchApiKey}&searchType=image&num=1&imgSize=large`;
+            
+            const imgRes = await fetch(searchUrl);
+            if (imgRes.ok) {
+              const imgData = await imgRes.json();
+              if (imgData.items && imgData.items.length > 0) {
+                recipe.image = imgData.items[0].link;
+              }
+            }
+          } catch (err) {
+            console.error(`[Google Custom Search] Error fetching image for ${recipe.title}:`, err);
+          }
+        });
+
+        await Promise.allSettled(imagePromises);
+      }
+
       return new Response(
-        JSON.stringify({ success: true, recipes: parsedData.recipes || [] }),
+        JSON.stringify({ success: true, recipes }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } catch (parseError) {

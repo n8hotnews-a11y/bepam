@@ -1,33 +1,49 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+// Text input for ingredient-based recipe suggestions
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator, TextInput, Animated, Keyboard, Platform, ScrollView, Modal, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { COLORS, FONTS, TYPOGRAPHY, SPACING, RADIUS } from '../constants/theme';
-
-
 import { shoppingListService } from '../services/shoppingListService';
 import { inventoryService } from '../services/inventoryService';
 import { supabase } from '../services/supabaseConfig';
 import { showSuccessToast } from '../components/Toast';
-import { Modal, TextInput } from 'react-native';
-
-// Mock data (sẽ thay bằng Firebase/Service sau)
-const NEEDED_ITEMS = [
-    { id: '1', name: 'Trứng gà', quantity: '10 quả', category: 'Cần mua gấp' },
-    { id: '2', name: 'Sữa tươi', quantity: '2 hộp', category: 'Dự kiến' },
-    { id: '3', name: 'Rau muống', quantity: '1 bó', category: 'Cần mua gấp' },
-];
-
 
 const ShoppingListScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectionMode, setSelectionMode] = useState(false);
+    const [activeTab, setActiveTab] = useState('all');
     const [selectedItems, setSelectedItems] = useState(new Set());
-    const [addItemModalVisible, setAddItemModalVisible] = useState(false);
+    const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
     const [newItemName, setNewItemName] = useState('');
     const [newItemQuantity, setNewItemQuantity] = useState('');
+    const [ingredientInput, setIngredientInput] = useState('');
+    const bottomSheetAnim = useRef(new Animated.Value(0)).current;
+
+    const openBottomSheet = () => {
+        bottomSheetAnim.setValue(0);
+        setNewItemName('');
+        setNewItemQuantity('');
+        setBottomSheetVisible(true);
+        Animated.spring(bottomSheetAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 65,
+            friction: 11,
+        }).start();
+    };
+
+    const closeBottomSheet = () => {
+        Keyboard.dismiss();
+        Animated.timing(bottomSheetAnim, {
+            toValue: 0,
+            duration: 200,
+            useNativeDriver: true,
+        }).start(() => setBottomSheetVisible(false));
+    };
 
     const fetchShoppingList = async () => {
         setLoading(true);
@@ -47,74 +63,53 @@ const ShoppingListScreen = ({ navigation }) => {
         }, [])
     );
 
-    const toggleSelection = (id) => {
-        const newSelected = new Set(selectedItems);
-        if (newSelected.has(id)) {
-            newSelected.delete(id);
-            if (newSelected.size === 0) setSelectionMode(false);
-        } else {
-            newSelected.add(id);
-            setSelectionMode(true);
-        }
-        setSelectedItems(newSelected);
+    const filteredItems = items.filter(item => {
+        if (activeTab === 'pending') return !item.checked;
+        if (activeTab === 'purchased') return item.checked;
+        return true;
+    });
+
+    const pendingCount = items.filter(i => !i.checked).length;
+    const purchasedCount = items.filter(i => i.checked).length;
+
+    const toggleItemPurchased = async (item) => {
+        const newStatus = !item.checked;
+        await shoppingListService.updateItem(item.id, { checked: newStatus });
+        setItems(prev => prev.map(i => i.id === item.id ? { ...i, checked: newStatus } : i));
     };
 
-    const handleBulkDelete = async () => {
-        const itemsToDelete = Array.from(selectedItems);
-        if (itemsToDelete.length === 0) return;
-
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
-
-            const count = itemsToDelete.length;
-
-            // Optimistic update: remove from local state immediately
-            const previousItems = [...items];
-            setItems(prev => prev.filter(item => !selectedItems.has(item.id)));
-            setSelectionMode(false);
-            setSelectedItems(new Set());
-
-            // Perform deletions in parallel
-            const results = await Promise.all(itemsToDelete.map(id => shoppingListService.deleteItem(id)));
-
-            const failed = results.filter(r => !r.success);
-
-            if (failed.length > 0) {
-                console.error('Some deletions failed:', failed);
-                Alert.alert(
-                    "Không thể xoá",
-                    `Không thể xoá ${failed.length} sản phẩm. Vui lòng kiểm tra lại quyền hạn hoặc RLS Policy trên Supabase cho bảng 'shoppinglist'.`,
-                    [{ text: "OK", onPress: fetchShoppingList }]
-                );
-            } else {
-                showSuccessToast(`Đã xoá ${count} món`);
-                // Refresh to ensure sync with server
-                fetchShoppingList();
-            }
-        } catch (error) {
-            console.error('Error in handleBulkDelete:', error);
-            Alert.alert("Lỗi", "Đã có lỗi xảy ra khi xoá sản phẩm.");
-            fetchShoppingList(); // Refresh to restore correct state
-        }
+    const handleDeleteItem = async (itemId) => {
+        Alert.alert(
+            'Xóa món',
+            'Bạn có chắc muốn xóa món này?',
+            [
+                { text: 'Hủy', style: 'cancel' },
+                {
+                    text: 'Xóa',
+                    style: 'destructive',
+                    onPress: async () => {
+                        await shoppingListService.deleteItem(itemId);
+                        setItems(prev => prev.filter(i => i.id !== itemId));
+                    }
+                }
+            ]
+        );
     };
 
     const handleBulkAddToFridge = async () => {
-        const itemsToProcess = Array.from(selectedItems);
-        if (itemsToProcess.length === 0) return;
+        if (selectedItems.size === 0) return;
 
         try {
+            setLoading(true);
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) return;
 
-            setLoading(true);
             let successCount = 0;
-            const processedIds = [];
+            const selectedIds = Array.from(selectedItems);
 
-            for (const itemId of itemsToProcess) {
+            for (const itemId of selectedIds) {
                 const item = items.find(i => i.id === itemId);
                 if (item) {
-                    // Add to inventory
                     const addResult = await inventoryService.addItem(user.id, {
                         item_name: item.item_name,
                         amount: parseFloat(item.amount) || 1,
@@ -124,29 +119,19 @@ const ShoppingListScreen = ({ navigation }) => {
                     });
 
                     if (addResult.success) {
-                        // Mark for deletion from shopping list
-                        const delResult = await shoppingListService.deleteItem(itemId);
-                        if (delResult.success) {
-                            processedIds.push(itemId);
-                            successCount++;
-                        }
+                        await shoppingListService.deleteItem(itemId);
+                        successCount++;
                     }
                 }
             }
 
             if (successCount > 0) {
                 showSuccessToast(`Đã thêm ${successCount} món vào tủ lạnh`);
+                setSelectedItems(new Set());
+                fetchShoppingList();
             }
-
-            if (successCount < itemsToProcess.length) {
-                Alert.alert("Thông báo", `Chỉ có ${successCount}/${itemsToProcess.length} món được xử lý thành công.`);
-            }
-
-            setSelectionMode(false);
-            setSelectedItems(new Set());
-            fetchShoppingList();
         } catch (error) {
-            console.error('Error in handleBulkAddToFridge:', error);
+            console.error('Error:', error);
             fetchShoppingList();
         } finally {
             setLoading(false);
@@ -158,18 +143,19 @@ const ShoppingListScreen = ({ navigation }) => {
 
         let parsedAmount = 1;
         let parsedUnit = 'cái';
-
         const quantityInput = newItemQuantity.trim();
+        
         if (quantityInput) {
             const match = quantityInput.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
             if (match) {
                 parsedAmount = parseFloat(match[1]);
                 const unitPart = match[2].trim();
                 if (unitPart) parsedUnit = unitPart;
-            } else {
-                parsedUnit = quantityInput;
             }
         }
+
+        closeBottomSheet();
+        showSuccessToast('Đã thêm món vào danh sách');
 
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -180,190 +166,323 @@ const ShoppingListScreen = ({ navigation }) => {
             });
             fetchShoppingList();
         }
-
-        setAddItemModalVisible(false);
-        setNewItemName('');
-        setNewItemQuantity('');
-        showSuccessToast('Đã thêm món vào danh sách');
     };
 
-    const renderItem = ({ item, isLast }) => {
+    const renderSwipeableItem = ({ item }) => {
+        const isPurchased = item.checked;
         const isSelected = selectedItems.has(item.id);
-        return (
+
+        const renderRightActions = () => (
             <TouchableOpacity
-                style={[
-                    styles.itemRow,
-                    !isLast && styles.itemBorder,
-                    isSelected && styles.itemSelected
-                ]}
-                onLongPress={() => toggleSelection(item.id)}
-                onPress={() => {
-                    if (selectionMode) toggleSelection(item.id);
-                }}
+                style={styles.swipeDeleteBtn}
+                onPress={() => handleDeleteItem(item.id)}
             >
-                <View style={styles.itemLeft}>
+                <MaterialIcons name="delete" size={22} color={COLORS.white} />
+                <Text style={styles.swipeDeleteText}>Xoá</Text>
+            </TouchableOpacity>
+        );
+
+        return (
+            <Swipeable renderRightActions={renderRightActions} overshootRight={false}>
+                <TouchableOpacity
+                    style={[styles.itemRow, isPurchased && styles.itemPurchased, isSelected && styles.itemSelected]}
+                    onPress={() => {
+                        if (selectedItems.size > 0) {
+                            const newSelected = new Set(selectedItems);
+                            if (newSelected.has(item.id)) newSelected.delete(item.id);
+                            else newSelected.add(item.id);
+                            setSelectedItems(newSelected);
+                        }
+                    }}
+                    onLongPress={() => {
+                        const newSelected = new Set(selectedItems);
+                        newSelected.add(item.id);
+                        setSelectedItems(newSelected);
+                    }}
+                >
                     <TouchableOpacity
-                        style={[styles.checkbox, isSelected && styles.checkboxChecked]}
-                        onPress={() => toggleSelection(item.id)}
+                        style={[styles.checkbox, isPurchased && styles.checkboxChecked]}
+                        onPress={() => toggleItemPurchased(item)}
                     >
-                        {isSelected && <MaterialIcons name="check" size={18} color={COLORS.white} />}
+                        {isPurchased && <MaterialIcons name="check" size={16} color={COLORS.white} />}
                     </TouchableOpacity>
-                    <View>
-                        <Text style={styles.itemName}>{item.item_name}</Text>
+                    
+                    <View style={styles.itemInfo}>
+                        <Text style={[styles.itemName, isPurchased && styles.itemNamePurchased]}>
+                            {item.item_name}
+                        </Text>
                         <Text style={styles.itemQuantity}>{item.amount} {item.unit}</Text>
                     </View>
-                </View>
 
-            </TouchableOpacity>
+                    {/* GrabMart Hint */}
+                    {!isPurchased && selectedItems.size === 0 && (
+                        <TouchableOpacity style={styles.grabMartBtn} onPress={() => showSuccessToast("Tính năng liên kết siêu thị đang phát triển!")}>
+                            <MaterialIcons name="local-mall" size={16} color={COLORS.primary} />
+                        </TouchableOpacity>
+                    )}
+
+                    {selectedItems.size > 0 && (
+                        <View style={[styles.selectIndicator, isSelected && styles.selectIndicatorActive]}>
+                            {isSelected && <MaterialIcons name="check" size={16} color={COLORS.white} />}
+                        </View>
+                    )}
+                </TouchableOpacity>
+            </Swipeable>
         );
     };
 
-    const renderEmptyNeeded = () => (
-        <View style={styles.emptyStateContainer}>
-            <View style={styles.emptyStateIconContainer}>
-                <MaterialIcons name="shopping-basket" size={100} color={COLORS.primaryMuted} />
+    const renderEmptyState = () => (
+        <View style={styles.emptyState}>
+            <View style={styles.emptyIconContainer}>
+                <MaterialIcons name="add-shopping-cart" size={64} color={COLORS.primaryMuted} />
             </View>
-            <Text style={styles.emptyStateTitle}>Giỏ hàng đang trống</Text>
-            <Text style={styles.emptyStateSubtitle}>
-                Có vẻ như bạn chưa cần mua gì. Hãy thêm món mới vào danh sách hoặc quét hóa đơn để AI tự động lên danh sách nhé!
+            <Text style={styles.emptyTitle}>Giỏ hàng rỗng</Text>
+            <Text style={styles.emptySubtitle}>
+                Bạn có thể thêm món thủ công, hoặc dùng tính năng Quét bằng AI ở trên để tìm thêm ý tưởng!
             </Text>
-            <TouchableOpacity
-                style={styles.emptyStateButton}
-                onPress={() => setAddItemModalVisible(true)}
-            >
-                <Text style={styles.emptyStateButtonText}>Thêm món ngay</Text>
+            <TouchableOpacity style={styles.emptyButton} onPress={() => setBottomSheetVisible(true)}>
+                <MaterialIcons name="add" size={20} color={COLORS.white} />
+                <Text style={styles.emptyButtonText}>Thêm món</Text>
             </TouchableOpacity>
         </View>
     );
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                {selectionMode ? (
-                    <View style={styles.selectionHeader}>
-                        <TouchableOpacity onPress={() => {
-                            setSelectionMode(false);
-                            setSelectedItems(new Set());
-                        }}>
-                            <MaterialIcons name="close" size={24} color={COLORS.textPrimary} />
-                        </TouchableOpacity>
-                        <Text style={styles.selectionTitle}>{selectedItems.size} đã chọn</Text>
-                        <View style={styles.selectionActions}>
-                            <TouchableOpacity onPress={handleBulkDelete} style={styles.actionBtn}>
-                                <MaterialIcons name="delete" size={24} color={COLORS.danger} />
+    const handleIngredientSearch = () => {
+        const text = ingredientInput.trim();
+        if (!text) return;
+        Keyboard.dismiss();
+        const prompt = `Gợi ý các món ăn ngon từ nguyên liệu: ${text} phù hợp với khẩu vị gia đình Việt Nam`;
+        navigation.navigate('AIAuto', { initialPrompt: prompt });
+        setIngredientInput('');
+    };
+
+    const handleQuickChip = (chipText) => {
+        const prompt = `Gợi ý các món ăn ngon từ nguyên liệu: ${chipText} phù hợp với khẩu vị gia đình Việt Nam`;
+        navigation.navigate('AIAuto', { initialPrompt: prompt });
+    };
+
+    const renderHeader = () => (
+        <View style={styles.heroSection}>
+            {/* Action Hero Banner - Camera Scan */}
+            <TouchableOpacity 
+                style={styles.heroBanner}
+                onPress={() => navigation.navigate('SmartScan')}
+            >
+                <View style={styles.heroContent}>
+                    <Text style={styles.heroTitle}>Khám phá siêu thị bằng AI</Text>
+                    <Text style={styles.heroSubtitle}>Chụp nguyên liệu để nhận công thức & thêm những thứ còn thiếu vào giỏ hàng!</Text>
+                </View>
+                <View style={styles.heroIconContainer}>
+                    <MaterialIcons name="document-scanner" size={32} color={COLORS.white} />
+                </View>
+            </TouchableOpacity>
+
+            {/* Text Input for Ingredient-based Recipe Suggestions */}
+            <View style={styles.ingredientInputSection}>
+                <View style={styles.ingredientInputHeader}>
+                    <MaterialIcons name="restaurant-menu" size={18} color={COLORS.primary} />
+                    <Text style={styles.ingredientInputLabel}>Hoặc gõ tên nguyên liệu</Text>
+                </View>
+                <View style={styles.ingredientInputRow}>
+                    <View style={styles.ingredientInputWrapper}>
+                        <MaterialIcons name="search" size={20} color={COLORS.textMuted} />
+                        <TextInput
+                            style={styles.ingredientInput}
+                            placeholder="VD: Thịt bò, cà chua, hành tây..."
+                            placeholderTextColor={COLORS.textMuted}
+                            value={ingredientInput}
+                            onChangeText={setIngredientInput}
+                            onSubmitEditing={handleIngredientSearch}
+                            returnKeyType="search"
+                        />
+                        {ingredientInput.length > 0 && (
+                            <TouchableOpacity onPress={() => setIngredientInput('')} style={styles.ingredientClearBtn}>
+                                <MaterialIcons name="close" size={16} color={COLORS.textMuted} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={handleBulkAddToFridge} style={styles.actionBtn}>
-                                <MaterialIcons name="kitchen" size={24} color={COLORS.primary} />
-                            </TouchableOpacity>
-                        </View>
+                        )}
                     </View>
-                ) : (
-                    <>
-                        <Text style={styles.headerTitle}>Danh sách mua sắm</Text>
-                        <TouchableOpacity style={styles.actionBtn}>
-                            <MaterialIcons name="more-horiz" size={28} color={COLORS.textPrimary} />
+                    <TouchableOpacity
+                        style={[styles.ingredientSearchBtn, !ingredientInput.trim() && styles.ingredientSearchBtnDisabled]}
+                        onPress={handleIngredientSearch}
+                        disabled={!ingredientInput.trim()}
+                    >
+                        <MaterialIcons name="auto-awesome" size={20} color={COLORS.white} />
+                    </TouchableOpacity>
+                </View>
+                {/* Quick suggestion chips */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickChipsScroll}>
+                    {['Thịt bò', 'Cá hồi', 'Gà', 'Tôm', 'Đậu hũ', 'Rau cải'].map((chip) => (
+                        <TouchableOpacity
+                            key={chip}
+                            style={styles.quickChip}
+                            onPress={() => handleQuickChip(chip)}
+                        >
+                            <Text style={styles.quickChipText}>{chip}</Text>
                         </TouchableOpacity>
-                    </>
-                )}
+                    ))}
+                </ScrollView>
             </View>
 
+            {/* AI Grocery Categories Mockup */}
+            <View style={styles.promoCarousel}>
+                <Text style={styles.promoTitle}>Đi chợ hôm nay</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
+                    <View style={styles.promoCard}><Text style={styles.promoEmoji}>🥩</Text><Text style={styles.promoText}>Thịt tươi</Text></View>
+                    <View style={styles.promoCard}><Text style={styles.promoEmoji}>🥬</Text><Text style={styles.promoText}>Rau xanh</Text></View>
+                    <View style={styles.promoCard}><Text style={styles.promoEmoji}>🍎</Text><Text style={styles.promoText}>Hoa quả</Text></View>
+                    <View style={styles.promoCard}><Text style={styles.promoEmoji}>🥚</Text><Text style={styles.promoText}>Trứng Sữa</Text></View>
+                    <View style={styles.promoCard}><Text style={styles.promoEmoji}>🌶️</Text><Text style={styles.promoText}>Gia vị</Text></View>
+                </ScrollView>
+            </View>
+        </View>
+    );
+
+    const renderTabs = () => (
+        <View style={styles.filterChipContainer}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterChipScroll}>
+                <TouchableOpacity
+                    style={[styles.filterChip, activeTab === 'all' && styles.filterChipActive]}
+                    onPress={() => setActiveTab('all')}
+                >
+                    <Text style={[styles.filterChipText, activeTab === 'all' && styles.filterChipTextActive]}>Tất cả ({items.length})</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.filterChip, activeTab === 'pending' && styles.filterChipActive]}
+                    onPress={() => setActiveTab('pending')}
+                >
+                    <Text style={[styles.filterChipText, activeTab === 'pending' && styles.filterChipTextActive]}>Cần mua ({pendingCount})</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.filterChip, activeTab === 'purchased' && styles.filterChipActive]}
+                    onPress={() => setActiveTab('purchased')}
+                >
+                    <Text style={[styles.filterChipText, activeTab === 'purchased' && styles.filterChipTextActive]}>Đã mua ({purchasedCount})</Text>
+                </TouchableOpacity>
+            </ScrollView>
+        </View>
+    );
+
+    return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>Mua sắm</Text>
+                <View style={styles.headerActions}>
+                    <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('SmartScan')}>
+                        <MaterialIcons name="camera-alt" size={24} color={COLORS.primary} />
+                    </TouchableOpacity>
+                    {selectedItems.size > 0 && (
+                        <TouchableOpacity style={styles.headerBtn} onPress={handleBulkAddToFridge}>
+                            <MaterialIcons name="kitchen" size={24} color={COLORS.success} />
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </View>
+
+            {selectedItems.size > 0 && (
+                <View style={styles.selectionBar}>
+                    <Text style={styles.selectionText}>{selectedItems.size} đã chọn</Text>
+                    <TouchableOpacity onPress={() => setSelectedItems(new Set())}>
+                        <MaterialIcons name="close" size={20} color={COLORS.textSecondary} />
+                    </TouchableOpacity>
+                </View>
+            )}
+
             <View style={styles.content}>
+                {renderTabs()}
                 {loading ? (
                     <View style={styles.loadingContainer}>
                         <ActivityIndicator size="large" color={COLORS.primary} />
                     </View>
                 ) : (
                     <FlatList
-                        data={items}
-                        renderItem={({ item, index }) => renderItem({ item, isLast: index === items.length - 1 })}
+                        data={filteredItems}
+                        renderItem={renderSwipeableItem}
                         keyExtractor={item => item.id}
-                        contentContainerStyle={[styles.listContent, items.length === 0 && { flex: 1, justifyContent: 'center' }]}
-                        ListHeaderComponent={
-                            items.length > 0 ? (
-                                <View style={styles.sectionContainer}>
-                                    <View style={styles.sectionHeader}>
-                                        <Text style={styles.sectionTitle}>Chưa mua</Text>
-                                        <View style={styles.badge}>
-                                            <Text style={styles.badgeText}>{items.length} món</Text>
-                                        </View>
-                                    </View>
-                                    <View style={styles.card}>
-                                        {/* Items are rendered by FlatList */}
-                                    </View>
-                                </View>
-                            ) : null
-                        }
-                        ListEmptyComponent={renderEmptyNeeded}
+                        ListHeaderComponent={renderHeader}
+                        ListEmptyComponent={renderEmptyState}
+                        contentContainerStyle={styles.listContent}
                         showsVerticalScrollIndicator={false}
                     />
                 )}
             </View>
 
+            <TouchableOpacity style={styles.fab} onPress={openBottomSheet}>
+                <MaterialIcons name="add" size={28} color={COLORS.white} />
+            </TouchableOpacity>
 
-
-            <View style={styles.fabContainer}>
-                <TouchableOpacity
-                    style={styles.manualFab}
-                    onPress={() => setAddItemModalVisible(true)}
-                >
-                    <MaterialIcons name="add" size={20} color={COLORS.primary} />
-                    <Text style={styles.manualFabText}>Thêm món</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.smartScanFab}
-                    onPress={() => navigation.navigate('SmartScan')}
-                >
-                    <MaterialIcons name="camera" size={24} color={COLORS.white} />
-                    <Text style={styles.smartScanText}>Quét thông minh</Text>
-                </TouchableOpacity>
-
-
-            </View>
-
-            {/* Quick Add Modal */}
             <Modal
-                transparent={true}
-                visible={addItemModalVisible}
-                animationType="fade"
-                onRequestClose={() => setAddItemModalVisible(false)}
+                visible={bottomSheetVisible}
+                transparent
+                animationType="none"
+                onRequestClose={closeBottomSheet}
+                statusBarTranslucent
             >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.quickAddModal}>
-                        <Text style={styles.modalTitle}>Thêm nhanh món cần mua</Text>
+                <KeyboardAvoidingView
+                    style={{ flex: 1 }}
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                >
+                    <Animated.View
+                        style={[styles.bottomSheetBackdropModal, { opacity: bottomSheetAnim }]}
+                    >
+                        <TouchableOpacity
+                            style={{ flex: 1 }}
+                            activeOpacity={1}
+                            onPress={closeBottomSheet}
+                        />
+                    </Animated.View>
+                    <Animated.View
+                        style={[
+                            styles.bottomSheet,
+                            {
+                                transform: [{
+                                    translateY: bottomSheetAnim.interpolate({
+                                        inputRange: [0, 1],
+                                        outputRange: [400, 0]
+                                    })
+                                }],
+                                opacity: bottomSheetAnim.interpolate({
+                                    inputRange: [0, 1],
+                                    outputRange: [0, 1]
+                                })
+                            }
+                        ]}
+                    >
+                        <View style={styles.bottomSheetHandle} />
+                        <Text style={styles.bottomSheetTitle}>Thêm món cần mua</Text>
+
                         <TextInput
-                            style={styles.modalInput}
+                            style={styles.bottomSheetInput}
                             placeholder="Tên món (ví dụ: Thịt bò)"
+                            placeholderTextColor={COLORS.textMuted}
                             value={newItemName}
                             onChangeText={setNewItemName}
-                            autoFocus
+                            autoFocus={Platform.OS === 'ios'}
+                            returnKeyType="next"
                         />
                         <TextInput
-                            style={styles.modalInput}
+                            style={styles.bottomSheetInput}
                             placeholder="Số lượng (ví dụ: 500g)"
+                            placeholderTextColor={COLORS.textMuted}
                             value={newItemQuantity}
                             onChangeText={setNewItemQuantity}
+                            returnKeyType="done"
+                            onSubmitEditing={handleQuickAdd}
                         />
-                        <View style={styles.modalActions}>
-                            <TouchableOpacity
-                                style={styles.modalCancelBtn}
-                                onPress={() => setAddItemModalVisible(false)}
-                            >
-                                <Text style={styles.modalCancelText}>Hủy</Text>
+
+                        <View style={styles.bottomSheetActions}>
+                            <TouchableOpacity style={styles.bottomSheetCancelBtn} onPress={closeBottomSheet}>
+                                <Text style={styles.bottomSheetCancelText}>Hủy</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.modalAddBtn}
-                                onPress={handleQuickAdd}
-                            >
-                                <Text style={styles.modalAddText}>Thêm</Text>
+                            <TouchableOpacity style={styles.bottomSheetAddBtn} onPress={handleQuickAdd}>
+                                <Text style={styles.bottomSheetAddText}>Thêm</Text>
                             </TouchableOpacity>
                         </View>
-                    </View>
-                </View>
+                    </Animated.View>
+                </KeyboardAvoidingView>
             </Modal>
-
-
-        </SafeAreaView >
+        </SafeAreaView>
+        </GestureHandlerRootView>
     );
 };
 
@@ -376,289 +495,439 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: SPACING.xl,
+        paddingHorizontal: SPACING.lg,
         paddingVertical: SPACING.md,
         backgroundColor: COLORS.backgroundCard,
         borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
+        borderBottomColor: COLORS.borderLight,
     },
     headerTitle: {
         ...TYPOGRAPHY.heading1,
         color: COLORS.textPrimary,
     },
-    actionBtn: {
+    headerActions: {
+        flexDirection: 'row',
+        gap: SPACING.sm,
+    },
+    headerBtn: {
         padding: SPACING.xs,
+    },
+    selectionBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: COLORS.primaryMuted,
+        paddingHorizontal: SPACING.lg,
+        paddingVertical: SPACING.sm,
+    },
+    selectionText: {
+        ...TYPOGRAPHY.bodyMedium,
+        color: COLORS.primary,
+        fontFamily: FONTS.bold,
     },
     content: {
         flex: 1,
-    },
-    listContent: {
-        paddingHorizontal: SPACING.xl,
-        paddingBottom: 120,
-    },
-    sectionContainer: {
-        marginBottom: SPACING.lg,
-    },
-    sectionHeader: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: SPACING.md,
-    },
-    sectionTitle: {
-        ...TYPOGRAPHY.heading2,
-        color: COLORS.textPrimary,
-    },
-    badge: {
-        backgroundColor: 'rgba(230, 126, 34, 0.1)',
-        paddingHorizontal: SPACING.sm,
-        paddingVertical: SPACING.xs,
-        borderRadius: RADIUS.sm,
-        borderWidth: 1,
-        borderColor: COLORS.primaryMuted,
-    },
-    badgeText: {
-        color: COLORS.primary,
-        ...TYPOGRAPHY.caption,
-        fontFamily: FONTS.bold,
-    },
-    card: {
-        backgroundColor: COLORS.backgroundCard,
-        borderRadius: RADIUS.xl,
-        shadowColor: COLORS.primary,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 2,
-        borderWidth: 1,
-        borderColor: COLORS.borderLight,
-        overflow: 'hidden',
-    },
-    itemRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: SPACING.md,
-    },
-    itemBorder: {
-        borderBottomWidth: 1,
-        borderBottomColor: COLORS.borderLight,
-    },
-    itemLeft: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: SPACING.md,
-    },
-    checkbox: {
-        width: 26,
-        height: 26,
-        borderRadius: RADIUS.sm,
-        borderWidth: 2,
-        borderColor: COLORS.border,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: COLORS.background,
-    },
-    checkboxChecked: {
-        backgroundColor: COLORS.primary,
-        borderColor: COLORS.primary,
-    },
-    itemSelected: {
-        backgroundColor: COLORS.primaryMuted,
-    },
-    itemName: {
-        ...TYPOGRAPHY.bodyLarge,
-        color: COLORS.textPrimary,
-    },
-    itemCheckedText: {
-        color: COLORS.textMuted,
-        textDecorationLine: 'line-through',
-    },
-    itemQuantity: {
-        ...TYPOGRAPHY.caption,
-        color: COLORS.textSecondary,
-        marginTop: SPACING.xs,
-    },
-    moveButton: {
-        width: 44,
-        height: 44,
-        borderRadius: RADIUS.md,
-        backgroundColor: COLORS.primaryMuted,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    fabContainer: {
-        position: 'absolute',
-        bottom: 90,
-        right: SPACING.xl,
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        gap: SPACING.md,
-    },
-    manualFab: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: COLORS.backgroundCard,
-        paddingVertical: 12,
-        paddingHorizontal: SPACING.lg,
-        borderRadius: RADIUS.pill,
-        borderWidth: 2,
-        borderColor: COLORS.primary,
-        shadowColor: COLORS.primary,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
-        gap: SPACING.sm,
-    },
-    manualFabText: {
-        fontFamily: FONTS.bold,
-        color: COLORS.primary,
-        ...TYPOGRAPHY.bodyRegular,
-    },
-    smartScanFab: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: COLORS.primaryDark,
-        paddingVertical: 12,
-        paddingHorizontal: SPACING.lg,
-        borderRadius: RADIUS.pill,
-        shadowColor: COLORS.primary,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
-        gap: SPACING.sm,
-    },
-    smartScanText: {
-        fontFamily: FONTS.bold,
-        color: COLORS.white,
-        ...TYPOGRAPHY.bodyRegular,
-    },
-
-    selectionHeader: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    selectionTitle: {
-        ...TYPOGRAPHY.heading2,
-        color: COLORS.textPrimary,
-    },
-    selectionActions: {
-        flexDirection: 'row',
-        gap: SPACING.md,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        justifyContent: 'center',
-        padding: SPACING.xl,
-    },
-    quickAddModal: {
-        backgroundColor: COLORS.backgroundCard,
-        borderRadius: RADIUS.xl,
-        padding: SPACING.lg,
-        shadowColor: COLORS.primary,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 10,
-        elevation: 10,
-    },
-    modalTitle: {
-        ...TYPOGRAPHY.heading2,
-        marginBottom: SPACING.lg,
-        textAlign: 'center',
-        color: COLORS.textPrimary,
-    },
-    modalInput: {
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        borderRadius: RADIUS.md,
-        padding: SPACING.md,
-        marginBottom: SPACING.md,
-        ...TYPOGRAPHY.bodyRegular,
-    },
-    modalActions: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: SPACING.sm,
-    },
-    modalCancelBtn: {
-        flex: 1,
-        padding: SPACING.md,
-        alignItems: 'center',
-        marginRight: SPACING.sm,
-        backgroundColor: COLORS.background,
-        borderRadius: RADIUS.md,
-    },
-    modalAddBtn: {
-        flex: 1,
-        padding: SPACING.md,
-        alignItems: 'center',
-        marginLeft: SPACING.sm,
-        backgroundColor: COLORS.primary,
-        borderRadius: RADIUS.md,
-    },
-    modalCancelText: {
-        color: COLORS.textSecondary,
-        fontFamily: FONTS.bold,
-    },
-    modalAddText: {
-        color: COLORS.white,
-        fontFamily: FONTS.bold,
-    },
-    // Empty State Styles
-    emptyStateContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingHorizontal: SPACING.xxl,
-    },
-    emptyStateIconContainer: {
-        width: 160,
-        height: 160,
-        borderRadius: 80,
-        backgroundColor: COLORS.primaryMuted,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: SPACING.xl,
-        opacity: 0.8,
-    },
-    emptyStateTitle: {
-        ...TYPOGRAPHY.heading2,
-        color: COLORS.textPrimary,
-        marginBottom: SPACING.sm,
-        textAlign: 'center',
-    },
-    emptyStateSubtitle: {
-        ...TYPOGRAPHY.bodyRegular,
-        color: COLORS.textSecondary,
-        textAlign: 'center',
-        lineHeight: 22,
-        marginBottom: SPACING.xxl,
-    },
-    emptyStateButton: {
-        backgroundColor: COLORS.primary,
-        paddingVertical: SPACING.md,
-        paddingHorizontal: SPACING.xxl,
-        borderRadius: RADIUS.pill,
-        shadowColor: COLORS.primary,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    emptyStateButtonText: {
-        color: COLORS.white,
-        fontFamily: FONTS.bold,
-        fontSize: 16,
     },
     loadingContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    listContent: {
+        paddingHorizontal: SPACING.lg,
+        paddingBottom: 100,
+    },
+    heroSection: {
+        marginBottom: SPACING.md,
+    },
+    heroBanner: {
+        backgroundColor: COLORS.primary,
+        borderRadius: RADIUS.lg,
+        padding: SPACING.lg,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: SPACING.sm,
+        shadowColor: COLORS.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 6,
+    },
+    heroContent: {
+        flex: 1,
+        paddingRight: SPACING.md,
+    },
+    heroTitle: {
+        ...TYPOGRAPHY.heading2,
+        color: COLORS.white,
+        marginBottom: SPACING.xs,
+    },
+    heroSubtitle: {
+        ...TYPOGRAPHY.caption,
+        color: COLORS.white,
+        opacity: 0.9,
+    },
+    heroIconContainer: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    ingredientInputSection: {
+        marginTop: SPACING.md,
+        backgroundColor: COLORS.backgroundCard,
+        borderRadius: RADIUS.lg,
+        padding: SPACING.md,
+        borderWidth: 1,
+        borderColor: COLORS.borderLight,
+    },
+    ingredientInputHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.xs,
+        marginBottom: SPACING.sm,
+    },
+    ingredientInputLabel: {
+        ...TYPOGRAPHY.caption,
+        fontFamily: FONTS.bold,
+        color: COLORS.primary,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+    },
+    ingredientInputRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: SPACING.sm,
+    },
+    ingredientInputWrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: COLORS.background,
+        borderRadius: RADIUS.md,
+        paddingHorizontal: SPACING.sm,
+        paddingVertical: Platform.OS === 'ios' ? SPACING.sm : 0,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+    },
+    ingredientInput: {
+        flex: 1,
+        marginLeft: SPACING.xs,
+        ...TYPOGRAPHY.bodyRegular,
+        color: COLORS.textPrimary,
+        paddingVertical: SPACING.sm,
+    },
+    ingredientClearBtn: {
+        padding: 4,
+    },
+    ingredientSearchBtn: {
+        width: 44,
+        height: 44,
+        borderRadius: RADIUS.md,
+        backgroundColor: COLORS.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: COLORS.primary,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    ingredientSearchBtnDisabled: {
+        backgroundColor: COLORS.grayLight,
+        shadowOpacity: 0,
+        elevation: 0,
+    },
+    quickChipsScroll: {
+        marginTop: SPACING.sm,
+        flexDirection: 'row',
+    },
+    quickChip: {
+        backgroundColor: COLORS.primaryMuted,
+        borderRadius: RADIUS.pill,
+        paddingHorizontal: SPACING.md,
+        paddingVertical: 6,
+        marginRight: SPACING.sm,
+    },
+    quickChipText: {
+        ...TYPOGRAPHY.caption,
+        fontFamily: FONTS.medium,
+        color: COLORS.primaryDark,
+    },
+    promoCarousel: {
+        marginTop: SPACING.lg,
+    },
+    promoTitle: {
+        ...TYPOGRAPHY.heading3,
+        color: COLORS.textPrimary,
+        marginBottom: SPACING.sm,
+    },
+    promoScroll: {
+        flexDirection: 'row',
+        paddingBottom: SPACING.sm,
+    },
+    promoCard: {
+        backgroundColor: COLORS.backgroundCard,
+        borderRadius: RADIUS.lg,
+        padding: SPACING.md,
+        marginRight: SPACING.md,
+        alignItems: 'center',
+        width: 80,
+        borderWidth: 1,
+        borderColor: COLORS.borderLight,
+    },
+    promoEmoji: {
+        fontSize: 24,
+        marginBottom: SPACING.xs,
+    },
+    promoText: {
+        ...TYPOGRAPHY.caption,
+        fontFamily: FONTS.medium,
+        color: COLORS.textSecondary,
+    },
+    grabMartBtn: {
+        width: 32,
+        height: 32,
+        borderRadius: 16,
+        backgroundColor: COLORS.primaryMuted,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: SPACING.sm,
+    },
+    filterChipContainer: {
+        backgroundColor: COLORS.background,
+        paddingVertical: SPACING.sm,
+        paddingHorizontal: SPACING.lg,
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.borderLight,
+        zIndex: 10,
+    },
+    filterChipScroll: {
+        flexDirection: 'row',
+        gap: SPACING.sm,
+    },
+    filterChip: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: RADIUS.pill,
+        backgroundColor: COLORS.backgroundCard,
+        borderWidth: 1,
+        borderColor: COLORS.borderLight,
+    },
+    filterChipActive: {
+        backgroundColor: COLORS.primary,
+        borderColor: COLORS.primary,
+    },
+    filterChipText: {
+        ...TYPOGRAPHY.caption,
+        fontFamily: FONTS.medium,
+        color: COLORS.textSecondary,
+    },
+    filterChipTextActive: {
+        color: COLORS.white,
+        fontFamily: FONTS.bold,
+    },
+    itemRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: COLORS.backgroundCard,
+        padding: SPACING.md,
+        marginBottom: SPACING.sm,
+        borderRadius: RADIUS.md,
+        borderWidth: 1,
+        borderColor: COLORS.borderLight,
+    },
+    itemPurchased: {
+        backgroundColor: COLORS.background,
+        opacity: 0.7,
+    },
+    itemSelected: {
+        borderColor: COLORS.primary,
+        backgroundColor: COLORS.primaryMuted,
+    },
+    checkbox: {
+        width: 24,
+        height: 24,
+        borderRadius: RADIUS.sm,
+        borderWidth: 2,
+        borderColor: COLORS.border,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: SPACING.md,
+    },
+    checkboxChecked: {
+        backgroundColor: COLORS.success,
+        borderColor: COLORS.success,
+    },
+    itemInfo: {
+        flex: 1,
+    },
+    itemName: {
+        ...TYPOGRAPHY.bodyMedium,
+        color: COLORS.textPrimary,
+        fontFamily: FONTS.medium,
+    },
+    itemNamePurchased: {
+        textDecorationLine: 'line-through',
+        color: COLORS.textMuted,
+    },
+    itemQuantity: {
+        ...TYPOGRAPHY.caption,
+        color: COLORS.textSecondary,
+        marginTop: 2,
+    },
+    selectIndicator: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: COLORS.border,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    selectIndicatorActive: {
+        backgroundColor: COLORS.primary,
+        borderColor: COLORS.primary,
+    },
+    swipeDeleteBtn: {
+        backgroundColor: COLORS.danger,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 80,
+        borderRadius: RADIUS.md,
+        marginBottom: SPACING.sm,
+        marginLeft: SPACING.sm,
+        gap: 4,
+    },
+    swipeDeleteText: {
+        color: COLORS.white,
+        fontSize: 11,
+        fontFamily: FONTS.bold,
+    },
+    emptyState: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: SPACING.xl,
+        paddingVertical: 40,
+        opacity: 0.6,
+    },
+    emptyIconContainer: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: COLORS.primaryMuted,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: SPACING.lg,
+    },
+    emptyTitle: {
+        ...TYPOGRAPHY.heading2,
+        color: COLORS.textPrimary,
+        marginBottom: SPACING.sm,
+    },
+    emptySubtitle: {
+        ...TYPOGRAPHY.bodyRegular,
+        color: COLORS.textSecondary,
+        textAlign: 'center',
+        marginBottom: SPACING.xl,
+    },
+    emptyButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: COLORS.primary,
+        paddingVertical: SPACING.md,
+        paddingHorizontal: SPACING.xl,
+        borderRadius: RADIUS.pill,
+        gap: SPACING.sm,
+    },
+    emptyButtonText: {
+        color: COLORS.white,
+        fontFamily: FONTS.bold,
+    },
+    fab: {
+        position: 'absolute',
+        bottom: 90,
+        right: SPACING.lg,
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: COLORS.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: COLORS.primary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 6,
+    },
+    bottomSheetBackdropModal: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    },
+    bottomSheet: {
+        backgroundColor: COLORS.backgroundCard,
+        borderTopLeftRadius: RADIUS.xl,
+        borderTopRightRadius: RADIUS.xl,
+        padding: SPACING.lg,
+        paddingBottom: SPACING.xxl + 20,
+    },
+    bottomSheetHandle: {
+        width: 40,
+        height: 4,
+        backgroundColor: COLORS.border,
+        borderRadius: 2,
+        alignSelf: 'center',
+        marginBottom: SPACING.lg,
+    },
+    bottomSheetTitle: {
+        ...TYPOGRAPHY.heading2,
+        color: COLORS.textPrimary,
+        textAlign: 'center',
+        marginBottom: SPACING.lg,
+    },
+    bottomSheetInput: {
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        borderRadius: RADIUS.md,
+        padding: SPACING.md,
+        marginBottom: SPACING.md,
+        ...TYPOGRAPHY.bodyRegular,
+        color: COLORS.textPrimary,
+    },
+    bottomSheetActions: {
+        flexDirection: 'row',
+        gap: SPACING.md,
+        marginTop: SPACING.sm,
+    },
+    bottomSheetCancelBtn: {
+        flex: 1,
+        padding: SPACING.md,
+        alignItems: 'center',
+        backgroundColor: COLORS.background,
+        borderRadius: RADIUS.md,
+    },
+    bottomSheetCancelText: {
+        color: COLORS.textSecondary,
+        fontFamily: FONTS.bold,
+    },
+    bottomSheetAddBtn: {
+        flex: 1,
+        padding: SPACING.md,
+        alignItems: 'center',
+        backgroundColor: COLORS.primary,
+        borderRadius: RADIUS.md,
+    },
+    bottomSheetAddText: {
+        color: COLORS.white,
+        fontFamily: FONTS.bold,
     },
 });
 

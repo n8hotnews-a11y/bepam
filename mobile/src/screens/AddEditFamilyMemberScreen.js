@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, ActivityIndicator, Dimensions, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Alert, ActivityIndicator, Dimensions, Platform, KeyboardAvoidingView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import * as DocumentPicker from 'expo-document-picker';
 import { COLORS, FONTS, TYPOGRAPHY, SPACING, RADIUS } from '../constants/theme';
 import { familyMemberService } from '../services/familyMemberService';
 import { supabase } from '../services/supabaseConfig';
@@ -41,8 +40,7 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
             predefined: [],
             notes: ''
         },
-        avatarUrl: null,
-        medicalRecords: [] // Array of { uri, name, type, size }
+        avatarUrl: null
     });
 
     const [loading, setLoading] = useState(false);
@@ -55,10 +53,9 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
                 relationship: member.relationship || 'Con trai',
                 age: member.age?.toString() || '',
                 gender: member.gender || 'Nam',
-                dietaryPreferences: member.dietaryPreferences || [],
-                healthConditions: member.healthConditions || { predefined: [], notes: '' },
-                avatarUrl: member.avatarUrl || null,
-                medicalRecords: member.medicalRecords || []
+                dietaryPreferences: member.dietary_preferences || [],
+                healthConditions: member.health_conditions || { predefined: [], notes: '' },
+                avatarUrl: member.avatar_url || null
             });
         }
     }, [member, isEditing]);
@@ -71,9 +68,8 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaType.IMAGE,
-            allowsEditing: true,
-            aspect: [1, 1],
+            mediaTypes: ['images'],
+            allowsEditing: false,
             quality: 0.8,
         });
 
@@ -90,45 +86,13 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
         }
 
         const result = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [1, 1],
+            allowsEditing: false,
             quality: 0.8,
         });
 
         if (!result.canceled) {
             setFormData(prev => ({ ...prev, avatarUrl: result.assets[0].uri }));
         }
-    };
-
-    const pickDocument = async () => {
-        try {
-            const result = await DocumentPicker.getDocumentAsync({
-                type: ['image/*', 'application/pdf'],
-                multiple: true
-            });
-
-            if (!result.canceled) {
-                const newRecords = result.assets.map(asset => ({
-                    uri: asset.uri,
-                    name: asset.name,
-                    size: asset.size,
-                    mimeType: asset.mimeType
-                }));
-                setFormData(prev => ({
-                    ...prev,
-                    medicalRecords: [...prev.medicalRecords, ...newRecords]
-                }));
-            }
-        } catch (err) {
-            console.error('Pick document error:', err);
-        }
-    };
-
-    const removeMedicalRecord = (index) => {
-        setFormData(prev => ({
-            ...prev,
-            medicalRecords: prev.medicalRecords.filter((_, i) => i !== index)
-        }));
     };
 
     const toggleDietaryPreference = (preference) => {
@@ -172,8 +136,14 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
         try {
             let avatarUrl = formData.avatarUrl;
 
-            // 1. Upload new avatar if it's a local URI
-            if (avatarUrl && avatarUrl.startsWith('file://')) {
+            // 1. Upload new avatar if it's a local URI (file://, ph://, content://)
+            const isLocalUri = avatarUrl && (
+                avatarUrl.startsWith('file://') ||
+                avatarUrl.startsWith('ph://') ||
+                avatarUrl.startsWith('content://')
+            );
+
+            if (isLocalUri) {
                 const fileName = `avatar_${Date.now()}.jpg`;
                 const uploadResult = await familyMemberService.uploadAvatar(user_id, avatarUrl, fileName);
                 if (uploadResult.success) {
@@ -185,23 +155,6 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
                 }
             }
 
-            // 2. Upload medical records
-            const uploadedMedicalRecords = [];
-            for (const record of formData.medicalRecords) {
-                if (record.uri.startsWith('http')) {
-                    uploadedMedicalRecords.push(record);
-                } else {
-                    const fileName = `medical_${Date.now()}_${record.name}`;
-                    const uploadRes = await familyMemberService.uploadMedicalRecord(user_id, record.uri, fileName);
-                    if (uploadRes.success) {
-                        uploadedMedicalRecords.push({
-                            ...record,
-                            uri: uploadRes.url
-                        });
-                    }
-                }
-            }
-
             // Combine predefined preferences with "Other" preference
             let finalDietPreferences = [...formData.dietaryPreferences];
             if (formData.otherDietary && formData.otherDietary.trim()) {
@@ -210,11 +163,17 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
 
             const memberData = {
                 ...formData,
-                dietaryPreferences: finalDietPreferences,
+                dietary_preferences: finalDietPreferences,
+                health_conditions: formData.healthConditions,
                 age: parseInt(formData.age),
-                avatarUrl,
-                medicalRecords: uploadedMedicalRecords
+                avatar_url: avatarUrl
             };
+
+            // Delete camelCase fields so they won't cause Supabase schema errors
+            delete memberData.dietaryPreferences;
+            delete memberData.healthConditions;
+            delete memberData.avatarUrl;
+            delete memberData.otherDietary;
 
             let result;
             if (isEditing) {
@@ -292,35 +251,6 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                 ))}
             </View>
-        </View>
-    );
-
-    const renderFileUpload = () => (
-        <View style={styles.inputGroup}>
-            <View style={styles.labelRow}>
-                <MaterialIcons name="attachment" size={18} color={COLORS.primary} style={{ marginRight: 6 }} />
-                <Text style={styles.label}>Tải lên hồ sơ bệnh án (Ảnh/PDF)</Text>
-            </View>
-            <Text style={styles.sectionDesc}>Cung cấp hồ sơ để AI phân tích chế độ dinh dưỡng chuyên sâu cho thành viên này.</Text>
-
-            <TouchableOpacity style={styles.uploadBtn} onPress={pickDocument}>
-                <MaterialIcons name="cloud-upload" size={24} color={COLORS.primary} />
-                <Text style={styles.uploadBtnText}>Chọn tệp hoặc chụp ảnh</Text>
-            </TouchableOpacity>
-
-            {formData.medicalRecords.length > 0 && (
-                <View style={styles.fileList}>
-                    {formData.medicalRecords.map((file, index) => (
-                        <View key={index} style={styles.fileItem}>
-                            <MaterialIcons name="insert-drive-file" size={20} color={COLORS.textSecondary} />
-                            <Text style={styles.fileName} numberOfLines={1}>{file.name}</Text>
-                            <TouchableOpacity onPress={() => removeMedicalRecord(index)}>
-                                <MaterialIcons name="cancel" size={20} color={COLORS.danger} />
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-                </View>
-            )}
         </View>
     );
 
@@ -413,10 +343,10 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
                         {/* Health Profile */}
                         <View style={styles.section}>
                             <View style={styles.titleRow}>
-                                <Text style={styles.sectionTitle}>Hồ sơ bệnh án & Lưu ý</Text>
+                                <Text style={styles.sectionTitle}>Tình trạng sức khỏe</Text>
                                 <FontAwesome5 name="shield-alt" size={16} color={COLORS.primary} />
                             </View>
-                            <Text style={styles.sectionDesc}>Thông tin quan trọng để hệ thống loại bỏ các nguyên liệu gây hại.</Text>
+                            <Text style={styles.sectionDesc}>Thông tin để hệ thống loại bỏ các nguyên liệu gây hại.</Text>
                             <View style={styles.card}>
                                 {renderTagSelector('Tình trạng sức khỏe / Dị ứng', formData.healthConditions.predefined, HEALTH_CONDITIONS_LIST, toggleHealthCondition, 'health-and-safety')}
 
@@ -435,8 +365,6 @@ const AddEditFamilyMemberScreen = ({ navigation, route }) => {
                                         numberOfLines={4}
                                     />
                                 </View>
-
-                                {renderFileUpload()}
                             </View>
                         </View>
 

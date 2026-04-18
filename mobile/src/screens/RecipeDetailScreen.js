@@ -22,10 +22,12 @@ import { shoppingListService } from '../services/shoppingListService';
 import { mealPlanService } from '../services/mealPlanService';
 import { inventoryService } from '../services/inventoryService';
 import { favoriteService } from '../services/favoriteService';
+import { recipeStorageService } from '../services/recipeStorageService';
 import { supabase } from '../services/supabaseConfig';
 import ChefFAB from '../components/ChefFAB';
 import { WebView } from 'react-native-webview';
 
+const placeholderImage = require('../../assets/recipe-placeholder.png');
 const { width } = Dimensions.get('window');
 
 const RecipeDetailScreen = ({ route, navigation }) => {
@@ -95,12 +97,16 @@ const RecipeDetailScreen = ({ route, navigation }) => {
                     }
 
                     setRecipe(detailData);
+                    // Auto-save vào persistent storage để xem lại bất cứ lúc nào
+                    recipeStorageService.saveRecipe(detailData);
 
                     // 3. Mark Missing Ingredients
                     // Auto-select ingredients that are MISSING from inventory
                     const missingIndices = [];
-                    if (detailData.extendedIngredients && Array.isArray(detailData.extendedIngredients)) {
-                        detailData.extendedIngredients.forEach((ing, idx) => {
+                    const ingredientsArr = detailData.extendedIngredients || [];
+                    
+                    if (Array.isArray(ingredientsArr)) {
+                        ingredientsArr.forEach((ing, idx) => {
                             const rawName = ing.nameClean || ing.name || "";
                             const ingName = rawName.toLowerCase();
 
@@ -162,7 +168,13 @@ const RecipeDetailScreen = ({ route, navigation }) => {
                 title: recipe.title,
                 image: recipe.image
             });
-            if (result.success) setIsFavorite(true);
+            if (result.success) {
+                setIsFavorite(true);
+                // Lưu toàn bộ recipe data vào persistent storage
+                if (recipe) {
+                    recipeStorageService.saveRecipe(recipe);
+                }
+            }
         }
     };
 
@@ -304,12 +316,10 @@ const RecipeDetailScreen = ({ route, navigation }) => {
         <View style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.imageContainer}>
-                    {recipe.image && !recipe.image.includes('placeholder') ? (
+                    {recipe.image ? (
                         <Image source={{ uri: recipe.image }} style={styles.headerImage} />
                     ) : (
-                        <View style={[styles.headerImage, styles.placeholderContainer]}>
-                            <MaterialIcons name="restaurant-menu" size={80} color={COLORS.white} />
-                        </View>
+                        <Image source={placeholderImage} style={styles.headerImage} resizeMode="cover" />
                     )}
                     <SafeAreaView style={styles.headerOverlay}>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
@@ -392,26 +402,40 @@ const RecipeDetailScreen = ({ route, navigation }) => {
                                         </Text>
                                     </View>
                                 )}
-                                {recipe.extendedIngredients.map((ing, idx) => (
-                                    <TouchableOpacity
-                                        key={idx}
-                                        style={styles.ingredientRow}
-                                        onPress={() => toggleIngredient(idx)}
-                                    >
-                                        <MaterialIcons
-                                            name={selectedIngredients.includes(idx) ? "check-circle" : "radio-button-unchecked"}
-                                            size={24}
-                                            color={selectedIngredients.includes(idx) ? COLORS.primary : COLORS.border}
-                                        />
-                                        <Text style={[
-                                            styles.ingredientText,
-                                            !selectedIngredients.includes(idx) && styles.ingredientDisabledText
-                                        ]}>
-                                            {ing.amount > 0 && <Text style={styles.ingAmount}>{Math.round(ing.amount)} {ing.unit} </Text>}
-                                            {ing.nameClean || ing.name}
-                                        </Text>
-                                    </TouchableOpacity>
-                                ))}
+                                {(recipe.extendedIngredients || []).map((ing, idx) => {
+                                    const isMissing = selectedIngredients.includes(idx);
+                                    return (
+                                        <TouchableOpacity
+                                            key={idx}
+                                            style={[
+                                                styles.ingredientRow,
+                                                !isMissing && styles.ingredientRowAvailable
+                                            ]}
+                                            onPress={() => toggleIngredient(idx)}
+                                        >
+                                            <MaterialIcons
+                                                name={isMissing ? "add-circle-outline" : "check-circle"}
+                                                size={24}
+                                                color={isMissing ? COLORS.primary : COLORS.success}
+                                            />
+                                            <View style={styles.ingredientInfo}>
+                                                <Text style={[
+                                                    styles.ingredientText,
+                                                    !isMissing && styles.ingredientDisabledText
+                                                ]}>
+                                                    {ing.amount > 0 && <Text style={styles.ingAmount}>{Math.round(ing.amount)} {ing.unit} </Text>}
+                                                    {ing.nameClean || ing.name}
+                                                </Text>
+                                                {!isMissing && (
+                                                    <Text style={styles.availableLabel}>Sẵn có trong tủ lạnh</Text>
+                                                )}
+                                                {isMissing && (
+                                                    <Text style={styles.missingLabel}>Đang thiếu - Bấm để thêm đi chợ</Text>
+                                                )}
+                                            </View>
+                                        </TouchableOpacity>
+                                    );
+                                })}
 
                                 <TouchableOpacity
                                     style={[styles.addShoppingBtn, addingToCart && { opacity: 0.7 }]}
@@ -459,7 +483,8 @@ const RecipeDetailScreen = ({ route, navigation }) => {
                             planId: null, // No planId because it might be a direct cook
                             recipeId: recipeId,
                             recipeTitle: recipe.title,
-                            recipeImage: recipe.image
+                            recipeImage: recipe.image,
+                            initialRecipeData: recipe
                         });
                     }}
                 >
@@ -747,14 +772,32 @@ const styles = StyleSheet.create({
         borderColor: COLORS.borderLight,
         gap: SPACING.md,
     },
+    ingredientRowAvailable: {
+        borderColor: COLORS.successMuted || '#ECFDF5',
+        backgroundColor: '#F9FAFB',
+    },
+    ingredientInfo: {
+        flex: 1,
+    },
     ingredientText: {
         ...TYPOGRAPHY.bodyLarge,
         color: COLORS.textPrimary,
-        flex: 1,
     },
     ingredientDisabledText: {
         color: COLORS.textMuted,
         textDecorationLine: 'line-through',
+    },
+    availableLabel: {
+        ...TYPOGRAPHY.caption,
+        color: COLORS.success,
+        fontFamily: FONTS.medium,
+        marginTop: 2,
+    },
+    missingLabel: {
+        ...TYPOGRAPHY.caption,
+        color: COLORS.primary,
+        fontFamily: FONTS.medium,
+        marginTop: 2,
     },
     ingAmount: {
         fontFamily: FONTS.bold,

@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import { notificationReadService } from './notificationReadService';
+import { inventoryService } from './inventoryService';
 
 const NOTIFICATION_SETTINGS_KEY = '@ComNha_NotificationSettings';
 
@@ -14,8 +15,6 @@ const isAndroidExpoGo = Platform.OS === 'android' && isExpoGo;
 // Lazy load expo-notifications to avoid initialization crashes
 let Notifications = null;
 try {
-    // Only require if not on Android Expo Go to avoid any chance of native module access failure
-    // However, requiring it inside try-catch is usually safe.
     Notifications = require('expo-notifications');
 } catch (error) {
     console.warn('Failed to load expo-notifications module. Notifications will be disabled.', error);
@@ -220,6 +219,139 @@ export const notificationService = {
         } catch (error) {
             console.error("Cooking Suggestion Error:", error);
             return false;
+        }
+    },
+
+    /**
+     * Cancel all scheduled notifications
+     */
+    async cancelAllScheduledNotifications() {
+        if (!Notifications || isAndroidExpoGo) return;
+
+        try {
+            const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+            for (const notification of scheduled) {
+                await Notifications.cancelScheduledNotificationAsync(notification.identifier);
+            }
+            console.log('[NotificationService] All scheduled notifications cancelled');
+        } catch (error) {
+            console.warn('Failed to cancel scheduled notifications:', error);
+        }
+    },
+
+    /**
+     * Schedule a daily meal reminder at a specific time
+     */
+    async scheduleMealReminder(type, time, enabled) {
+        if (!Notifications || isAndroidExpoGo) return;
+
+        try {
+            // Cancel existing notification for this meal type
+            await Notifications.cancelScheduledNotificationAsync(`meal_${type}`);
+
+            if (!enabled) {
+                console.log(`[NotificationService] ${type} reminder disabled`);
+                return;
+            }
+
+            const hour = time.getHours();
+            const minute = time.getMinutes();
+
+            const titles = {
+                breakfast: '🌅 Bữa sáng',
+                lunch: '☀️ Bữa trưa',
+                dinner: '🌙 Bữa tối'
+            };
+
+            const bodies = {
+                breakfast: 'Sáng nay bạn muốn ăn gì? Hãy lên thực đơn cho gia đình nhé!',
+                lunch: 'Trưa nay nấu gì đây? Khám phá các công thức mới nào!',
+                dinner: 'Tối nay gia đình ăn gì? Để Bếp Trưởng AI gợi ý cho bạn!'
+            };
+
+            await Notifications.scheduleNotificationAsync({
+                content: {
+                    title: titles[type] || '🍽️ Nhắc nhở bữa ăn',
+                    body: bodies[type] || 'Đã đến giờ lên kế hoạch bữa ăn cho gia đình!',
+                    data: { screen: 'Home' },
+                },
+                trigger: {
+                    type: Notifications.SchedulableTriggerInputTypes.DAILY,
+                    hour,
+                    minute,
+                },
+                identifier: `meal_${type}`,
+            });
+
+            console.log(`[NotificationService] ${type} reminder scheduled at ${hour}:${minute}`);
+        } catch (error) {
+            console.warn(`Failed to schedule ${type} reminder:`, error);
+        }
+    },
+
+    /**
+     * Setup all meal reminders based on settings
+     */
+    async setupMealReminders(settings) {
+        if (!settings) return;
+
+        try {
+            // Cancel all first to avoid duplicates
+            await this.cancelAllScheduledNotifications();
+
+            // Schedule each meal if enabled
+            if (settings.breakfastTime) {
+                await this.scheduleMealReminder('breakfast', settings.breakfastTime, settings.breakfastRemind);
+            }
+            if (settings.lunchTime) {
+                await this.scheduleMealReminder('lunch', settings.lunchTime, settings.lunchRemind);
+            }
+            if (settings.dinnerTime) {
+                await this.scheduleMealReminder('dinner', settings.dinnerTime, settings.dinnerRemind);
+            }
+
+            console.log('[NotificationService] All meal reminders configured');
+        } catch (error) {
+            console.warn('Failed to setup meal reminders:', error);
+        }
+    },
+
+    /**
+     * Send immediate notification for empty fridge
+     */
+    async notifyEmptyFridge() {
+        if (!Notifications || isAndroidExpoGo) return;
+
+        try {
+            const settings = await this.getSettings();
+            if (!settings || !settings.refrigeratorEmpty) return;
+
+            await Notifications.scheduleNotificationAsync({
+                content: {
+                    title: '🛒 Tủ lạnh đang trống',
+                    body: 'Hãy lên danh sách mua sắm để bổ sung thực phẩm cho gia đình nhé!',
+                    data: { screen: 'Shopping' },
+                },
+                trigger: null, // Send immediately
+            });
+        } catch (error) {
+            console.warn('Failed to send empty fridge notification:', error);
+        }
+    },
+
+    /**
+     * Check fridge inventory and notify if empty
+     */
+    async checkAndNotifyEmptyFridge(userId, minItems = 3) {
+        if (!Notifications || isAndroidExpoGo) return;
+
+        try {
+            const result = await inventoryService.getItems(userId);
+            if (result.success && result.items.length < minItems) {
+                await this.notifyEmptyFridge();
+            }
+        } catch (error) {
+            console.warn('Failed to check fridge:', error);
         }
     }
 };

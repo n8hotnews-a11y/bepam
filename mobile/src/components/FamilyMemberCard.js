@@ -53,8 +53,8 @@ const FamilyMemberCard = ({ member, onPress, onDelete }) => {
             <View style={styles.cardContent}>
                 {/* Avatar */}
                 <View style={styles.avatarContainer}>
-                    {member.avatarUrl ? (
-                        <Image source={{ uri: member.avatarUrl }} style={styles.avatar} />
+                    {member.avatar_url ? (
+                        <Image source={{ uri: member.avatar_url }} style={styles.avatar} />
                     ) : (
                         <View style={[styles.avatarPlaceholder, { backgroundColor: getRelationshipColor(member.relationship) }]}>
                             <MaterialIcons name={getGenderIcon(member.gender)} size={32} color={COLORS.white} />
@@ -76,22 +76,22 @@ const FamilyMemberCard = ({ member, onPress, onDelete }) => {
                     </Text>
 
                     {/* Dietary preferences preview */}
-                    {member.dietaryPreferences && member.dietaryPreferences.length > 0 && (
+                    {member.dietary_preferences && member.dietary_preferences.length > 0 && (
                         <View style={styles.preferencesRow}>
                             <MaterialIcons name="restaurant" size={16} color={COLORS.textMuted} />
                             <Text style={styles.preferencesText} numberOfLines={1}>
-                                {member.dietaryPreferences.slice(0, 2).join(', ')}
-                                {member.dietaryPreferences.length > 2 && ` +${member.dietaryPreferences.length - 2} nữa`}
+                                {member.dietary_preferences.slice(0, 2).join(', ')}
+                                {member.dietary_preferences.length > 2 && ` +${member.dietary_preferences.length - 2} nữa`}
                             </Text>
                         </View>
                     )}
 
                     {/* Health conditions indicator */}
-                    {(member.healthConditions?.predefined?.length > 0 || member.healthConditions?.notes) && (
+                    {(member.health_conditions?.predefined?.length > 0 || member.health_conditions?.notes) && (
                         <View style={styles.healthRow}>
                             <MaterialIcons name="health-and-safety" size={16} color={COLORS.warningDark} />
                             <Text style={styles.healthText}>
-                                {member.healthConditions.predefined?.length > 0 ? 'Có lưu ý sức khỏe' : 'Có ghi chú sức khỏe'}
+                                {member.health_conditions?.predefined?.length > 0 ? 'Có lưu ý sức khỏe' : 'Có ghi chú sức khỏe'}
                             </Text>
                         </View>
                     )}

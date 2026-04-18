@@ -3,6 +3,8 @@ import { View, Image, StyleSheet, Text } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, RADIUS, FONTS, TYPOGRAPHY } from '../constants/theme';
 
+const placeholderImage = require('../../assets/recipe-placeholder.png');
+
 const RecipeImage = ({
     uri,
     style,
@@ -14,15 +16,14 @@ const RecipeImage = ({
 }) => {
     const [error, setError] = useState(false);
 
-    // If no URI or error loading, show fallback
+    // If no URI or error loading, show placeholder image
     if (!uri || error) {
         return (
-            <View style={[styles.placeholderContainer, style]}>
-                <MaterialIcons name={defaultIcon} size={iconSize} color={COLORS.primary} />
-                {showPlaceholderText && (
-                    <Text style={styles.placeholderText}>{placeholderText}</Text>
-                )}
-            </View>
+            <Image
+                source={placeholderImage}
+                style={style}
+                resizeMode="cover"
+            />
         );
     }
 

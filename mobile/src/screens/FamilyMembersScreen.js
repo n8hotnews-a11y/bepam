@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, FONTS, TYPOGRAPHY, SPACING, RADIUS } from '../constants/theme';
 import { familyMemberService } from '../services/familyMemberService';
@@ -11,9 +12,11 @@ const FamilyMembersScreen = ({ navigation }) => {
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchMembers();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchMembers();
+        }, [])
+    );
 
     const fetchMembers = async () => {
         const { data: { user } } = await supabase.auth.getUser();

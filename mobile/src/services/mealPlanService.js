@@ -22,19 +22,18 @@ export const mealPlanService = {
     /**
      * Add a recipe to meal plan for a specific date
      */
-    async addToPlan(userId, recipeId, recipeTitle, recipeImage, date, mealType = 'lunch') {
+    async addToPlan(userId, recipeId, recipeTitle, recipeImage, date, mealType = 'lunch', recipeData = null) {
         try {
             const scope = await this.getScope(userId);
 
-            // Put main payload in a variable
-            // Note: Keys must match Supabase table columns exactly (snake_case)
             const payload = {
                 user_id: userId,
                 recipe_id: recipeId,
                 recipe_title: recipeTitle,
                 recipe_image: recipeImage,
-                date, // YYYY-MM-DD
-                mealType, // Needs migration to add this column
+                recipe_data: recipeData, // Save the full recipe object
+                date,
+                mealType,
                 created_at: new Date().toISOString(),
             };
 
@@ -49,10 +48,19 @@ export const mealPlanService = {
                 .single();
 
             if (error) {
-                // If error is "Column not found" (PGRST204), try again without mealType
+                // If error is "Column not found" (PGRST204), try again without missing columns
                 if (error.code === 'PGRST204') {
-                    console.warn("Database missing 'mealType' column. Retrying gracefully...");
-                    delete payload.mealType;
+                    console.warn("Database missing some columns. Retrying gracefully...");
+                    
+                    // Identify which column failed from message if possible, or just strip both problematic ones
+                    if (error.message.includes('recipe_data')) delete payload.recipe_data;
+                    if (error.message.includes('mealType')) delete payload.mealType;
+                    
+                    // Final fallback: remove both if we're not sure
+                    if (!error.message.includes('recipe_data') && !error.message.includes('mealType')) {
+                        delete payload.recipe_data;
+                        delete payload.mealType;
+                    }
 
                     const { data: retryData, error: retryError } = await supabase
                         .from(COLLECTION_NAME)

@@ -1,17 +1,14 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Camera, CameraView, useCameraPermissions } from 'expo-camera';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, TYPOGRAPHY, SPACING, RADIUS, FONTS } from '../constants/theme';
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system/legacy';
-import { aiService } from '../services/aiService';
 
 const SmartScanScreen = ({ navigation }) => {
     const [permission, requestPermission] = useCameraPermissions();
     const [flash, setFlash] = useState('off');
-    const [analyzing, setAnalyzing] = useState(false);
     const cameraRef = useRef(null);
 
     // If permissions not granted/loaded yet
@@ -27,60 +24,10 @@ const SmartScanScreen = ({ navigation }) => {
         );
     }
 
-    const processImage = async (uri) => {
-        setAnalyzing(true);
-        try {
-            console.log('Processing image:', uri);
-            const base64 = await FileSystem.readAsStringAsync(uri, {
-                encoding: 'base64',
-            });
-
-            // Call AI Service (unified logic)
-            const items = await aiService.extractFromImage(base64);
-
-            if (items && items.length > 0) {
-                // items is array of objects {name, quantity...} from aiService
-                navigateToSuggestions(items);
-            } else {
-                Alert.alert("Không nhận diện được", "Xin lỗi, tôi không nhận ra thực phẩm này. Hãy thử lại gần hơn hoặc rõ nét hơn.");
-            }
-
-        } catch (error) {
-            console.error('Scan Error:', error);
-            Alert.alert("Lỗi", "Đã có lỗi xảy ra khi phân tích ảnh: " + error.message);
-        } finally {
-            setAnalyzing(false);
-        }
-    };
-
-    const navigateToSuggestions = (items) => {
-        const mainItem = items[0];
-        const itemName = mainItem.name || mainItem; // Handle object or string
-
-        Alert.alert(
-            "Đã thấy!",
-            `Có vẻ đây là ${itemName}. Bạn có muốn xem thêm các món ngon từ nguyên liệu này không?`,
-            [
-                { text: "Thử lại", style: 'cancel' },
-                {
-                    text: "Xem công thức", onPress: () => {
-                        navigation.navigate('Main', {
-                            screen: 'Recipes',
-                            params: {
-                                searchQuery: itemName,
-                                cuisine: 'vietnamese'
-                            }
-                        });
-                    }
-                }
-            ]
-        );
-    };
-
     const handleCapture = async () => {
         if (cameraRef.current) {
             const photo = await cameraRef.current.takePictureAsync({ quality: 0.5 });
-            processImage(photo.uri);
+            navigation.replace('ScanAnalyzing', { imageUri: photo.uri });
         }
     };
 
@@ -92,7 +39,7 @@ const SmartScanScreen = ({ navigation }) => {
         });
 
         if (!result.canceled) {
-            processImage(result.assets[0].uri);
+            navigation.replace('ScanAnalyzing', { imageUri: result.assets[0].uri });
         }
     };
 
@@ -125,13 +72,8 @@ const SmartScanScreen = ({ navigation }) => {
                         <TouchableOpacity
                             style={styles.captureBtn}
                             onPress={handleCapture}
-                            disabled={analyzing}
                         >
-                            {analyzing ? (
-                                <ActivityIndicator size="large" color={COLORS.primary} />
-                            ) : (
-                                <View style={styles.captureInner} />
-                            )}
+                            <View style={styles.captureInner} />
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => setFlash(f => f === 'off' ? 'on' : 'off')} style={styles.flashBtn}>

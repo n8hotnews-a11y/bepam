@@ -63,8 +63,25 @@ const OCRReviewScreen = ({ navigation, route }) => {
             }
 
             if (successCount > 0) {
-                Alert.alert('Thành công', `Đã thêm ${successCount} nguyên liệu vào tủ lạnh!`);
-                navigation.navigate('Fridge');
+                Alert.alert(
+                    'Thành công',
+                    `Đã thêm ${successCount} nguyên liệu vào tủ lạnh!\n\nBạn có muốn Bếp trưởng gợi ý món ngon từ các nguyên liệu này không?`,
+                    [
+                        { 
+                            text: 'Gợi ý món', 
+                            onPress: () => {
+                                // Mở màn AI Auto với câu lệnh mặc định
+                                const prompt = "Các món ăn ngon từ nguyên liệu vừa quét phù hợp với khẩu vị của gia đình";
+                                navigation.navigate('AIAuto', { initialPrompt: prompt });
+                            }
+                        },
+                        { 
+                            text: 'Trở về Tủ lạnh', 
+                            style: 'cancel',
+                            onPress: () => navigation.navigate('Fridge') 
+                        }
+                    ]
+                );
             }
         } catch (error) {
             console.error(error);

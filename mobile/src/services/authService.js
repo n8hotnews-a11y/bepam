@@ -12,7 +12,19 @@ export const authService = {
             return { success: true, user: data.user };
         } catch (error) {
             console.error('Login error:', error);
-            return { success: false, error: error.message };
+
+            let errorMessage = 'Đã có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.';
+            if (error.message.includes('Invalid login credentials')) {
+                errorMessage = 'Email hoặc mật khẩu không chính xác.';
+            } else if (error.message.includes('Email not confirmed')) {
+                errorMessage = 'Vui lòng xác thực email của bạn trước khi đăng nhập.';
+            } else if (error.message.includes('Invalid email')) {
+                errorMessage = 'Định dạng email không hợp lệ.';
+            } else if (error.message.includes('Network request failed') || error.name === 'AuthRetryableFetchError') {
+                errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng của bạn và thử lại.';
+            }
+            
+            return { success: false, error: errorMessage };
         }
     },
 
@@ -43,6 +55,8 @@ export const authService = {
                 errorMessage = 'Mật khẩu quá yếu. Vui lòng nhập ít nhất 6 ký tự.';
             } else if (error.message.includes('only request this after')) {
                 errorMessage = 'Vui lòng chờ một chút trước khi thử lại.';
+            } else if (error.message.includes('Network request failed') || error.name === 'AuthRetryableFetchError') {
+                errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng và thử lại.';
             } else {
                 errorMessage = error.message;
             }

@@ -60,6 +60,11 @@ const NotificationSettingsScreen = ({ navigation }) => {
         const newSettings = { ...settings, [key]: !settings[key] };
         setSettings(newSettings);
         await notificationService.saveSettings(newSettings);
+        
+        // Setup meal reminders when any meal-related setting changes
+        if (['breakfastRemind', 'lunchRemind', 'dinnerRemind', 'breakfastTime', 'lunchTime', 'dinnerTime'].includes(key)) {
+            await notificationService.setupMealReminders(newSettings);
+        }
     };
 
     const handleTimeChange = async (event, selectedDate) => {
@@ -75,6 +80,9 @@ const NotificationSettingsScreen = ({ navigation }) => {
             const newSettings = { ...settings, [key]: selectedDate };
             setSettings(newSettings);
             await notificationService.saveSettings(newSettings);
+            
+            // Update meal reminders when time changes
+            await notificationService.setupMealReminders(newSettings);
         }
     };
 

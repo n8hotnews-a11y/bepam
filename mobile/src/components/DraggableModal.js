@@ -18,33 +18,39 @@ const DraggableModal = ({
     onClose,
     children,
     minHeight = screenHeight * 0.4,
-    maxHeight = screenHeight * 0.66, // 2/3 screen height
+    maxHeight = screenHeight * 0.66,
+    initialSnap = 'min', // 'min' or 'max' — cho phép caller chọn trạng thái mở đầu
     onVisibilityChange
 }) => {
-    // Current Y position 
-    // 0 = Expanded (maxHeight)
-    // baseTranslateY = Minimum visible (minHeight)
-    // screenHeight = Closed
     const baseTranslateY = maxHeight - minHeight;
     const translateY = useRef(new Animated.Value(screenHeight)).current;
-
-    // Track current state: 'min', 'max'
     const [state, setState] = useState('min');
+    // Track if we're scrolling content (not dragging the sheet)
+    const isScrolling = useRef(false);
 
     const panResponder = useRef(
         PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
+            onStartShouldSetPanResponder: () => false,
             onMoveShouldSetPanResponder: (evt, gestureState) => {
-                // Only take control if there is actual movement
-                return Math.abs(gestureState.dy) > 10;
+                // Take over when dragging vertically with enough movement
+                // But only if dragging DOWN or we're at the top of scroll
+                return Math.abs(gestureState.dy) > 10 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
             },
             onPanResponderGrant: () => {
-                // Stop any ongoing animations
                 translateY.stopAnimation();
                 translateY.extractOffset();
             },
             onPanResponderMove: (evt, gestureState) => {
-                translateY.setValue(gestureState.dy);
+                // Only allow dragging DOWN (to collapse/close), prevent dragging UP past maxHeight
+                const currentOffset = translateY._offset || 0;
+                const newY = currentOffset + gestureState.dy;
+                
+                // Clamp: don't allow dragging above maxHeight (translateY = 0)
+                if (newY < 0) {
+                    translateY.setValue(0 - currentOffset);
+                } else {
+                    translateY.setValue(gestureState.dy);
+                }
             },
             onPanResponderRelease: (evt, gestureState) => {
                 translateY.flattenOffset();
@@ -52,18 +58,13 @@ const DraggableModal = ({
                 const currentY = translateY._value;
                 const gestureVelocity = gestureState.vy;
 
-                // Determine snap point
                 if (gestureVelocity > 0.5 || (state === 'min' && currentY > baseTranslateY + 80)) {
-                    // Dragged down fast or far from min -> Close
                     handleClose();
                 } else if (currentY < baseTranslateY / 2 || gestureVelocity < -0.5) {
-                    // Dragged up fast or far -> Expand to Max
                     snapTo('max');
                 } else if (currentY > baseTranslateY + 50) {
-                    // Intermediate drag down -> close
                     handleClose();
                 } else {
-                    // Snap back to Min
                     snapTo('min');
                 }
             },
@@ -72,7 +73,7 @@ const DraggableModal = ({
 
     useEffect(() => {
         if (visible) {
-            snapTo('min');
+            snapTo(initialSnap);
             onVisibilityChange && onVisibilityChange(true);
         } else {
             handleClose();
@@ -124,9 +125,10 @@ const DraggableModal = ({
                             height: maxHeight,
                         }
                     ]}
+                    {...panResponder.panHandlers}
                 >
-                    {/* Gesture Handle - Area to grab and drag */}
-                    <View {...panResponder.panHandlers} style={styles.grabArea}>
+                    {/* Grab Handle */}
+                    <View style={styles.grabArea}>
                         <View style={styles.handle} />
                     </View>
 
@@ -165,7 +167,7 @@ const styles = StyleSheet.create({
     },
     grabArea: {
         width: '100%',
-        height: 36,
+        height: 28,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: COLORS.backgroundCard,

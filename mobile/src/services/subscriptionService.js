@@ -24,47 +24,12 @@ export const subscriptionService = {
      * Get current user subscription status
      */
     async getSubscriptionStatus(user_id) {
-        try {
-            if (!user_id) return { is_premium: false, tier: 'free' };
-
-            const { data, error } = await supabase
-                .from('users')
-                .select('is_premium, subscription_tier, subscription_end_date')
-                .eq('id', user_id)
-                .maybeSingle(); // Use maybeSingle to avoid 0 rows error
-
-            if (error) {
-                // Handle case where columns don't exist yet (42703 is Undefined Column in Postgres)
-                if (error.code === '42703') {
-                    console.warn('Database missing subscription columns. Defaulting to Free tier.');
-                    return { is_premium: false, tier: 'free' };
-                }
-                throw error;
-            }
-
-            if (!data) return { is_premium: false, tier: 'free' };
-
-            // Check if expired
-            if (data.is_premium && data.subscription_end_date) {
-                const endDate = new Date(data.subscription_end_date);
-                const now = new Date();
-                if (endDate < now) {
-                    // Expired, update DB (background) and return free
-                    // In real app, database trigger or edge function should handle this
-                    return { is_premium: false, tier: 'free', message: 'Expired' };
-                }
-            }
-
-            return {
-                is_premium: data.is_premium,
-                tier: data.subscription_tier,
-                endDate: data.subscription_end_date
-            };
-        } catch (error) {
-            console.error('Get Subscription Error:', error);
-            // Default to free on error to be safe
-            return { is_premium: false, tier: 'free' };
-        }
+        // ALWAYS return premium status as per user request to remove subscription plan
+        return { 
+            is_premium: true, 
+            tier: 'premium',
+            endDate: '2099-12-31T23:59:59Z' 
+        };
     },
 
     /**
