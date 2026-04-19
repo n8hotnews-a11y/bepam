@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 // Text input for ingredient-based recipe suggestions
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator, TextInput, Animated, Keyboard, Platform, ScrollView, Modal, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,21 +12,125 @@ import { inventoryService } from '../services/inventoryService';
 import { supabase } from '../services/supabaseConfig';
 import { showSuccessToast } from '../components/Toast';
 
+const AddItemModal = ({
+    visible,
+    onClose,
+    onAdd,
+    bottomSheetAnim
+}) => {
+    const [name, setName] = useState('');
+    const [quantity, setQuantity] = useState('');
+
+    useEffect(() => {
+        if (visible) {
+            setName('');
+            setQuantity('');
+        }
+    }, [visible]);
+
+    const handleAdd = () => {
+        onAdd(name, quantity);
+    };
+
+    const scale = useMemo(() => bottomSheetAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0.9, 1]
+    }), [bottomSheetAnim]);
+
+    const translateY = useMemo(() => bottomSheetAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [20, 0]
+    }), [bottomSheetAnim]);
+
+    const opacity = useMemo(() => bottomSheetAnim.interpolate({
+        inputRange: [0.01, 1],
+        outputRange: [0, 1]
+    }), [bottomSheetAnim]);
+
+    const KeyboardWrapper = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
+
+    return (
+        <Modal
+            visible={visible}
+            transparent
+            animationType="none"
+            onRequestClose={onClose}
+            statusBarTranslucent
+        >
+            <KeyboardWrapper
+                style={{ flex: 1, justifyContent: 'center', padding: SPACING.lg }}
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+            >
+                <Animated.View
+                    style={[styles.bottomSheetBackdropModal, { opacity: bottomSheetAnim }]}
+                >
+                    <TouchableOpacity
+                        style={{ flex: 1 }}
+                        activeOpacity={1}
+                        onPress={onClose}
+                    />
+                </Animated.View>
+                <Animated.View
+                    style={[
+                        styles.centerModal,
+                        {
+                            transform: [{ scale }, { translateY }],
+                            opacity
+                        }
+                    ]}
+                >
+                    <Text style={styles.bottomSheetTitle}>Thêm món cần mua</Text>
+
+                    <TextInput
+                        style={styles.bottomSheetInput}
+                        placeholder="Tên món (ví dụ: Thịt bò)"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={name}
+                        onChangeText={setName}
+                        autoFocus={Platform.OS === 'ios'}
+                        returnKeyType="next"
+                        blurOnSubmit={false}
+                    />
+                    <TextInput
+                        style={styles.bottomSheetInput}
+                        placeholder="Số lượng (ví dụ: 500g)"
+                        placeholderTextColor={COLORS.textMuted}
+                        value={quantity}
+                        onChangeText={setQuantity}
+                        returnKeyType="done"
+                        onSubmitEditing={handleAdd}
+                    />
+
+                    <View style={styles.bottomSheetActions}>
+                        <TouchableOpacity style={styles.bottomSheetCancelBtn} onPress={onClose}>
+                            <Text style={styles.bottomSheetCancelText}>Hủy</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.bottomSheetAddBtn, !name.trim() && { opacity: 0.5 }]}
+                            onPress={handleAdd}
+                            disabled={!name.trim()}
+                        >
+                            <Text style={styles.bottomSheetAddText}>Thêm</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Animated.View>
+            </KeyboardWrapper>
+        </Modal>
+    );
+};
+
 const ShoppingListScreen = ({ navigation }) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('all');
     const [selectedItems, setSelectedItems] = useState(new Set());
     const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
-    const [newItemName, setNewItemName] = useState('');
-    const [newItemQuantity, setNewItemQuantity] = useState('');
     const [ingredientInput, setIngredientInput] = useState('');
     const bottomSheetAnim = useRef(new Animated.Value(0)).current;
 
-    const openBottomSheet = () => {
+    const openBottomSheet = useCallback(() => {
         bottomSheetAnim.setValue(0);
-        setNewItemName('');
-        setNewItemQuantity('');
         setBottomSheetVisible(true);
         Animated.spring(bottomSheetAnim, {
             toValue: 1,
@@ -34,18 +138,18 @@ const ShoppingListScreen = ({ navigation }) => {
             tension: 65,
             friction: 11,
         }).start();
-    };
+    }, [bottomSheetAnim]);
 
-    const closeBottomSheet = () => {
+    const closeBottomSheet = useCallback(() => {
         Keyboard.dismiss();
         Animated.timing(bottomSheetAnim, {
             toValue: 0,
             duration: 200,
             useNativeDriver: true,
         }).start(() => setBottomSheetVisible(false));
-    };
+    }, [bottomSheetAnim]);
 
-    const fetchShoppingList = async () => {
+    const fetchShoppingList = useCallback(async () => {
         setLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -55,30 +159,30 @@ const ShoppingListScreen = ({ navigation }) => {
             }
         }
         setLoading(false);
-    };
+    }, []);
 
     useFocusEffect(
         useCallback(() => {
             fetchShoppingList();
-        }, [])
+        }, [fetchShoppingList])
     );
 
-    const filteredItems = items.filter(item => {
+    const filteredItems = useMemo(() => items.filter(item => {
         if (activeTab === 'pending') return !item.checked;
         if (activeTab === 'purchased') return item.checked;
         return true;
-    });
+    }), [items, activeTab]);
 
-    const pendingCount = items.filter(i => !i.checked).length;
-    const purchasedCount = items.filter(i => i.checked).length;
+    const pendingCount = useMemo(() => items.filter(i => !i.checked).length, [items]);
+    const purchasedCount = useMemo(() => items.filter(i => i.checked).length, [items]);
 
-    const toggleItemPurchased = async (item) => {
+    const toggleItemPurchased = useCallback(async (item) => {
         const newStatus = !item.checked;
         await shoppingListService.updateItem(item.id, { checked: newStatus });
         setItems(prev => prev.map(i => i.id === item.id ? { ...i, checked: newStatus } : i));
-    };
+    }, []);
 
-    const handleDeleteItem = async (itemId) => {
+    const handleDeleteItem = useCallback(async (itemId) => {
         Alert.alert(
             'Xóa món',
             'Bạn có chắc muốn xóa món này?',
@@ -94,9 +198,9 @@ const ShoppingListScreen = ({ navigation }) => {
                 }
             ]
         );
-    };
+    }, []);
 
-    const handleBulkAddToFridge = async () => {
+    const handleBulkAddToFridge = useCallback(async () => {
         if (selectedItems.size === 0) return;
 
         try {
@@ -136,15 +240,15 @@ const ShoppingListScreen = ({ navigation }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [selectedItems, items, fetchShoppingList]);
 
-    const handleQuickAdd = async () => {
-        if (!newItemName.trim()) return;
+    const handleAddFromModal = useCallback(async (name, quantity) => {
+        if (!name.trim()) return;
 
         let parsedAmount = 1;
         let parsedUnit = 'cái';
-        const quantityInput = newItemQuantity.trim();
-        
+        const quantityInput = quantity.trim();
+
         if (quantityInput) {
             const match = quantityInput.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
             if (match) {
@@ -160,15 +264,15 @@ const ShoppingListScreen = ({ navigation }) => {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
             await shoppingListService.addItem(user.id, {
-                item_name: newItemName,
+                item_name: name,
                 amount: parsedAmount,
                 unit: parsedUnit,
             });
             fetchShoppingList();
         }
-    };
+    }, [closeBottomSheet, fetchShoppingList]);
 
-    const renderSwipeableItem = ({ item }) => {
+    const renderSwipeableItem = useCallback(({ item }) => {
         const isPurchased = item.checked;
         const isSelected = selectedItems.has(item.id);
 
@@ -206,7 +310,7 @@ const ShoppingListScreen = ({ navigation }) => {
                     >
                         {isPurchased && <MaterialIcons name="check" size={16} color={COLORS.white} />}
                     </TouchableOpacity>
-                    
+
                     <View style={styles.itemInfo}>
                         <Text style={[styles.itemName, isPurchased && styles.itemNamePurchased]}>
                             {item.item_name}
@@ -214,7 +318,6 @@ const ShoppingListScreen = ({ navigation }) => {
                         <Text style={styles.itemQuantity}>{item.amount} {item.unit}</Text>
                     </View>
 
-                    {/* GrabMart Hint */}
                     {!isPurchased && selectedItems.size === 0 && (
                         <TouchableOpacity style={styles.grabMartBtn} onPress={() => showSuccessToast("Tính năng liên kết siêu thị đang phát triển!")}>
                             <MaterialIcons name="local-mall" size={16} color={COLORS.primary} />
@@ -229,9 +332,9 @@ const ShoppingListScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </Swipeable>
         );
-    };
+    }, [selectedItems, toggleItemPurchased, handleDeleteItem]);
 
-    const renderEmptyState = () => (
+    const renderEmptyState = useCallback(() => (
         <View style={styles.emptyState}>
             <View style={styles.emptyIconContainer}>
                 <MaterialIcons name="add-shopping-cart" size={64} color={COLORS.primaryMuted} />
@@ -240,31 +343,49 @@ const ShoppingListScreen = ({ navigation }) => {
             <Text style={styles.emptySubtitle}>
                 Bạn có thể thêm món thủ công, hoặc dùng tính năng Quét bằng AI ở trên để tìm thêm ý tưởng!
             </Text>
-            <TouchableOpacity style={styles.emptyButton} onPress={() => setBottomSheetVisible(true)}>
+            <TouchableOpacity style={styles.emptyButton} onPress={openBottomSheet}>
                 <MaterialIcons name="add" size={20} color={COLORS.white} />
                 <Text style={styles.emptyButtonText}>Thêm món</Text>
             </TouchableOpacity>
         </View>
-    );
+    ), [openBottomSheet]);
+
+    const getStrictAIPrompt = (ingredient) => `Bạn là một chuyên gia ẩm thực chuyên lên thực đơn cho các gia đình Việt Nam.
+            Nhiệm vụ của bạn là gợi ý các món ăn ngon, thiết thực và bắt buộc phải sử dụng nguyên liệu đầu vào.
+
+            NGUYÊN LIỆU CHÍNH: "${ingredient}"
+
+            RÀNG BUỘC TỐI THƯỢNG:
+            1. Bạn TUYỆT ĐỐI KHÔNG được gợi ý bất kỳ món ăn nào không có chứa nguyên liệu "${ingredient}".
+            2. Nguyên liệu "${ingredient}" phải đóng vai trò là thành phần chính hoặc linh hồn của món ăn, không phải gia vị trang trí.
+            3. Các món ăn phải thực tế, dễ nấu và phù hợp với khẩu vị bữa cơm gia đình Việt Nam.
+
+            ĐỊNH DẠNG ĐẦU RA BẮT BUỘC (JSON):
+            Trình bày danh sách các món ăn trong 1 đối tượng JSON duy nhất có dạng { "recipes": [ ... ] }.
+            Với mỗi món ăn, hãy trình bày theo cấu trúc JSON sau:
+            - "title": Tên món ăn
+            - "reason": Giải thích ngắn gọn 1 câu về cách "${ingredient}" làm nên hương vị món ăn. Tại sao món này phù hợp.
+            - "ingredients": Mảng các chuỗi, bắt buộc liệt kê "${ingredient}" đầu tiên.
+            - "instructions": Chuỗi mô tả các bước nấu, trong đó chỉ rõ bước chế biến "${ingredient}".
+            - "image_search": Từ khóa tiếng Anh ngắn gọn để tìm ảnh thực tế của món ăn.`;
 
     const handleIngredientSearch = () => {
         const text = ingredientInput.trim();
         if (!text) return;
         Keyboard.dismiss();
-        const prompt = `Gợi ý các món ăn ngon từ nguyên liệu: ${text} phù hợp với khẩu vị gia đình Việt Nam`;
-        navigation.navigate('AIAuto', { initialPrompt: prompt });
+        const systemPrompt = getStrictAIPrompt(text);
+        navigation.navigate('AIAuto', { initialPrompt: text, systemPrompt: systemPrompt });
         setIngredientInput('');
     };
 
     const handleQuickChip = (chipText) => {
-        const prompt = `Gợi ý các món ăn ngon từ nguyên liệu: ${chipText} phù hợp với khẩu vị gia đình Việt Nam`;
-        navigation.navigate('AIAuto', { initialPrompt: prompt });
+        const systemPrompt = getStrictAIPrompt(chipText);
+        navigation.navigate('AIAuto', { initialPrompt: chipText, systemPrompt: systemPrompt });
     };
 
-    const renderHeader = () => (
+    const renderHeader = useCallback(() => (
         <View style={styles.heroSection}>
-            {/* Action Hero Banner - Camera Scan */}
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={styles.heroBanner}
                 onPress={() => navigation.navigate('SmartScan')}
             >
@@ -277,7 +398,6 @@ const ShoppingListScreen = ({ navigation }) => {
                 </View>
             </TouchableOpacity>
 
-            {/* Text Input for Ingredient-based Recipe Suggestions */}
             <View style={styles.ingredientInputSection}>
                 <View style={styles.ingredientInputHeader}>
                     <MaterialIcons name="restaurant-menu" size={18} color={COLORS.primary} />
@@ -309,7 +429,6 @@ const ShoppingListScreen = ({ navigation }) => {
                         <MaterialIcons name="auto-awesome" size={20} color={COLORS.white} />
                     </TouchableOpacity>
                 </View>
-                {/* Quick suggestion chips */}
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickChipsScroll}>
                     {['Thịt bò', 'Cá hồi', 'Gà', 'Tôm', 'Đậu hũ', 'Rau cải'].map((chip) => (
                         <TouchableOpacity
@@ -323,7 +442,6 @@ const ShoppingListScreen = ({ navigation }) => {
                 </ScrollView>
             </View>
 
-            {/* AI Grocery Categories Mockup */}
             <View style={styles.promoCarousel}>
                 <Text style={styles.promoTitle}>Đi chợ hôm nay</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.promoScroll}>
@@ -335,9 +453,9 @@ const ShoppingListScreen = ({ navigation }) => {
                 </ScrollView>
             </View>
         </View>
-    );
+    ), [ingredientInput, navigation]);
 
-    const renderTabs = () => (
+    const renderTabs = useCallback(() => (
         <View style={styles.filterChipContainer}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterChipScroll}>
                 <TouchableOpacity
@@ -360,128 +478,65 @@ const ShoppingListScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </ScrollView>
         </View>
-    );
+    ), [activeTab, items.length, pendingCount, purchasedCount]);
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>Mua sắm</Text>
-                <View style={styles.headerActions}>
-                    <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('SmartScan')}>
-                        <MaterialIcons name="camera-alt" size={24} color={COLORS.primary} />
-                    </TouchableOpacity>
-                    {selectedItems.size > 0 && (
-                        <TouchableOpacity style={styles.headerBtn} onPress={handleBulkAddToFridge}>
-                            <MaterialIcons name="kitchen" size={24} color={COLORS.success} />
+            <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>Mua sắm</Text>
+                    <View style={styles.headerActions}>
+                        <TouchableOpacity style={styles.headerBtn} onPress={() => navigation.navigate('SmartScan')}>
+                            <MaterialIcons name="camera-alt" size={24} color={COLORS.primary} />
                         </TouchableOpacity>
+                        {selectedItems.size > 0 && (
+                            <TouchableOpacity style={styles.headerBtn} onPress={handleBulkAddToFridge}>
+                                <MaterialIcons name="kitchen" size={24} color={COLORS.success} />
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                </View>
+
+                {selectedItems.size > 0 && (
+                    <View style={styles.selectionBar}>
+                        <Text style={styles.selectionText}>{selectedItems.size} đã chọn</Text>
+                        <TouchableOpacity onPress={() => setSelectedItems(new Set())}>
+                            <MaterialIcons name="close" size={20} color={COLORS.textSecondary} />
+                        </TouchableOpacity>
+                    </View>
+                )}
+
+                <View style={styles.content}>
+                    {renderTabs()}
+                    {loading ? (
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color={COLORS.primary} />
+                        </View>
+                    ) : (
+                        <FlatList
+                            data={filteredItems}
+                            renderItem={renderSwipeableItem}
+                            keyExtractor={item => item.id}
+                            ListHeaderComponent={renderHeader()}
+                            ListEmptyComponent={renderEmptyState()}
+                            contentContainerStyle={styles.listContent}
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps="handled"
+                        />
                     )}
                 </View>
-            </View>
 
-            {selectedItems.size > 0 && (
-                <View style={styles.selectionBar}>
-                    <Text style={styles.selectionText}>{selectedItems.size} đã chọn</Text>
-                    <TouchableOpacity onPress={() => setSelectedItems(new Set())}>
-                        <MaterialIcons name="close" size={20} color={COLORS.textSecondary} />
-                    </TouchableOpacity>
-                </View>
-            )}
+                <TouchableOpacity style={styles.fab} onPress={openBottomSheet}>
+                    <MaterialIcons name="add" size={28} color={COLORS.white} />
+                </TouchableOpacity>
 
-            <View style={styles.content}>
-                {renderTabs()}
-                {loading ? (
-                    <View style={styles.loadingContainer}>
-                        <ActivityIndicator size="large" color={COLORS.primary} />
-                    </View>
-                ) : (
-                    <FlatList
-                        data={filteredItems}
-                        renderItem={renderSwipeableItem}
-                        keyExtractor={item => item.id}
-                        ListHeaderComponent={renderHeader}
-                        ListEmptyComponent={renderEmptyState}
-                        contentContainerStyle={styles.listContent}
-                        showsVerticalScrollIndicator={false}
-                    />
-                )}
-            </View>
-
-            <TouchableOpacity style={styles.fab} onPress={openBottomSheet}>
-                <MaterialIcons name="add" size={28} color={COLORS.white} />
-            </TouchableOpacity>
-
-            <Modal
-                visible={bottomSheetVisible}
-                transparent
-                animationType="none"
-                onRequestClose={closeBottomSheet}
-                statusBarTranslucent
-            >
-                <KeyboardAvoidingView
-                    style={{ flex: 1 }}
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                >
-                    <Animated.View
-                        style={[styles.bottomSheetBackdropModal, { opacity: bottomSheetAnim }]}
-                    >
-                        <TouchableOpacity
-                            style={{ flex: 1 }}
-                            activeOpacity={1}
-                            onPress={closeBottomSheet}
-                        />
-                    </Animated.View>
-                    <Animated.View
-                        style={[
-                            styles.bottomSheet,
-                            {
-                                transform: [{
-                                    translateY: bottomSheetAnim.interpolate({
-                                        inputRange: [0, 1],
-                                        outputRange: [400, 0]
-                                    })
-                                }],
-                                opacity: bottomSheetAnim.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [0, 1]
-                                })
-                            }
-                        ]}
-                    >
-                        <View style={styles.bottomSheetHandle} />
-                        <Text style={styles.bottomSheetTitle}>Thêm món cần mua</Text>
-
-                        <TextInput
-                            style={styles.bottomSheetInput}
-                            placeholder="Tên món (ví dụ: Thịt bò)"
-                            placeholderTextColor={COLORS.textMuted}
-                            value={newItemName}
-                            onChangeText={setNewItemName}
-                            autoFocus={Platform.OS === 'ios'}
-                            returnKeyType="next"
-                        />
-                        <TextInput
-                            style={styles.bottomSheetInput}
-                            placeholder="Số lượng (ví dụ: 500g)"
-                            placeholderTextColor={COLORS.textMuted}
-                            value={newItemQuantity}
-                            onChangeText={setNewItemQuantity}
-                            returnKeyType="done"
-                            onSubmitEditing={handleQuickAdd}
-                        />
-
-                        <View style={styles.bottomSheetActions}>
-                            <TouchableOpacity style={styles.bottomSheetCancelBtn} onPress={closeBottomSheet}>
-                                <Text style={styles.bottomSheetCancelText}>Hủy</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.bottomSheetAddBtn} onPress={handleQuickAdd}>
-                                <Text style={styles.bottomSheetAddText}>Thêm</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </Animated.View>
-                </KeyboardAvoidingView>
-            </Modal>
-        </SafeAreaView>
+                <AddItemModal
+                    visible={bottomSheetVisible}
+                    onClose={closeBottomSheet}
+                    onAdd={handleAddFromModal}
+                    bottomSheetAnim={bottomSheetAnim}
+                />
+            </SafeAreaView>
         </GestureHandlerRootView>
     );
 };
@@ -872,20 +927,15 @@ const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
-    bottomSheet: {
+    centerModal: {
         backgroundColor: COLORS.backgroundCard,
-        borderTopLeftRadius: RADIUS.xl,
-        borderTopRightRadius: RADIUS.xl,
+        borderRadius: RADIUS.xl,
         padding: SPACING.lg,
-        paddingBottom: SPACING.xxl + 20,
-    },
-    bottomSheetHandle: {
-        width: 40,
-        height: 4,
-        backgroundColor: COLORS.border,
-        borderRadius: 2,
-        alignSelf: 'center',
-        marginBottom: SPACING.lg,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        elevation: 8,
     },
     bottomSheetTitle: {
         ...TYPOGRAPHY.heading2,

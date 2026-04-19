@@ -265,7 +265,8 @@ export const recipeService = {
                         YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU TRẢ VỀ:
                         1. SỐ LƯỢNG MÓN: Mỗi bữa chính (Trưa, Tối) BẮT BUỘC có từ 3 đến 4 món riêng biệt. 
                         2. PHẢI TÁCH RIÊNG từng món, KHÔNG gộp chung (Ví dụ: "Cơm cá kho" -> "Cơm trắng", "Cá Kho").
-                        3. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, BẮT BUỘC mở đầu bằng từ khóa phân loại: [Bữa sáng], [Bữa trưa], hoặc [Bữa tối].
+                        3. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, BẮT BUỘC tuân thủ ĐÚNG định dạng sau (bao gồm cả ngoặc vuông):
+                           [Bữa sáng/Bữa trưa/Bữa tối] - Tại sao món này phù hợp: [Giải thích ngắn gọn 1 câu về lý do]
                         4. Đề xuất thực đơn phong phú. (Mã xáo trộn ngẫu nhiên: ${Date.now()}).${exclusionClause}`;
 
             } else {
@@ -352,7 +353,8 @@ export const recipeService = {
                     YÊU CẦU QUAN TRỌNG VỀ DỮ LIỆU:
                     1. SỐ LƯỢNG MÓN: Sáng (1-2 món), Trưa (3-4 món), Tối (3-4 món).
                     2. TÊN MÓN BẮT BUỘC phải khớp 100% với tên trong danh sách đã cấp. Hãy tách riêng từng món.
-                    3. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, BẮT BUỘC mở đầu bằng: [Bữa sáng], [Bữa trưa], hoặc [Bữa tối].
+                    3. TRONG PHẦN "description" CỦA MỖI MÓN ĂN, BẮT BUỘC tuân thủ ĐÚNG định dạng sau (bao gồm cả ngoặc vuông):
+                       [Bữa sáng/Bữa trưa/Bữa tối] - Tại sao món này phù hợp: [Giải thích ngắn gọn 1 câu về lý do]
                     (Mã xáo trộn ngẫu nhiên: ${Date.now()})${exclusionClause}`;
             }
 
@@ -672,6 +674,7 @@ export const recipeService = {
             const transformedRecipe = {
                 id: aiRecipe.id || `ai_${aiRecipe.title.toLowerCase().trim().replace(/\s+/g, '_')}`,
                 title: aiRecipe.title,
+                reason: aiRecipe.reason || null,
                 image: imageUrl,
                 readyInMinutes: aiRecipe.readyInMinutes || 30,
                 servings: 4,

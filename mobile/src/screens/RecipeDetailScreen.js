@@ -111,9 +111,23 @@ const RecipeDetailScreen = ({ route, navigation }) => {
                             const ingName = rawName.toLowerCase();
 
                             // Simple check: if ingredient name contains inventory item or vice versa
-                            const isAvailable = currentInventory.some(invItem =>
+                            let isAvailable = currentInventory.some(invItem =>
                                 ingName.includes(invItem) || invItem.includes(ingName)
                             );
+
+                            const isStaple = [
+                                'nước', 'nước lọc', 'nước sôi', 'nước lạnh', 'nước ấm',
+                                'gạo', 'gạo tẻ', 'gạo nếp', 
+                                'muối', 'muối trắng', 'đường', 'đường trắng', 'đường cát',
+                                'nước mắm', 'mắm', 'hạt nêm', 'bột nêm', 'bột ngọt', 'mì chính',
+                                'tiêu', 'hạt tiêu', 'tiêu đen', 'tiêu xay',
+                                'dầu ăn', 'nước tương', 'xì dầu', 'dầu hào', 'giấm', 'dấm'
+                            ].includes(ingName.trim());
+
+                            if (isStaple) {
+                                isAvailable = true;
+                                ing.isStaple = true;
+                            }
 
                             if (!isAvailable) {
                                 missingIndices.push(idx);
@@ -205,7 +219,7 @@ const RecipeDetailScreen = ({ route, navigation }) => {
                 .filter((_, idx) => selectedIngredients.includes(idx))
                 .map(ing => ({
                     name: ing.nameClean || ing.name,
-                    amount: Math.round(ing.amount),
+                    amount: Number(ing.amount.toFixed(2)),
                     unit: ing.unit,
                     recipeId: recipeId,
                     recipeTitle: recipe.title
@@ -423,11 +437,13 @@ const RecipeDetailScreen = ({ route, navigation }) => {
                                                     styles.ingredientText,
                                                     !isMissing && styles.ingredientDisabledText
                                                 ]}>
-                                                    {ing.amount > 0 && <Text style={styles.ingAmount}>{Math.round(ing.amount)} {ing.unit} </Text>}
+                                                    {ing.amount > 0 && <Text style={styles.ingAmount}>{Number(ing.amount.toFixed(2))} {ing.unit} </Text>}
                                                     {ing.nameClean || ing.name}
                                                 </Text>
                                                 {!isMissing && (
-                                                    <Text style={styles.availableLabel}>Sẵn có trong tủ lạnh</Text>
+                                                    <Text style={styles.availableLabel}>
+                                                        {ing.isStaple ? 'Sẵn có tại nhà' : 'Sẵn có trong tủ lạnh'}
+                                                    </Text>
                                                 )}
                                                 {isMissing && (
                                                     <Text style={styles.missingLabel}>Đang thiếu - Bấm để thêm đi chợ</Text>

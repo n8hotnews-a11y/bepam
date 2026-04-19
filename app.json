@@ -1,5 +1,17 @@
 {
   "android": {
     "package": "com.anonymous.comnha"
-  }
+  },
+  "extra": {
+    "eas": {
+      "projectId": "efe6010e-25c3-442c-badb-7aa106f91e68"
+    }
+  },
+  "runtimeVersion": {
+    "policy": "appVersion"
+  },
+  "updates": {
+    "url": "https://u.expo.dev/efe6010e-25c3-442c-badb-7aa106f91e68"
+  },
+  "ios": {}
 }

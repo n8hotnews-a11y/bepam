@@ -9,7 +9,8 @@ import {
     ActivityIndicator,
     Image,
     Dimensions,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { COLORS, FONTS, TYPOGRAPHY, SPACING, RADIUS } from '../constants/theme';
@@ -110,8 +111,10 @@ const ExplorationView = ({ navigation, selectedDate, existingPlans, onPlanUpdate
                 // Refresh hoặc không có cache: gọi AI với danh sách loại trừ
                 const excludeList = isRefresh ? await recipeService.getDailyExcludeList() : [];
                 const result = await recipeService.suggestDailyMealsAI(user.id, mode, excludeList);
-                if (result.success && result.suggestions) {
+                if (result && result.success && result.suggestions) {
                     setSuggestedRecipes(result.suggestions);
+                } else if (result && !result.success) {
+                    Alert.alert('Có lỗi!', result.error || 'Server bận, vui lòng thử lại.');
                 }
             }
         } catch (error) {
@@ -307,9 +310,9 @@ const ExplorationView = ({ navigation, selectedDate, existingPlans, onPlanUpdate
                     ) : (
                         <View style={styles.mealsContainer}>
                             {/* Danh sách gợi ý phẳng */}
-                            {suggestedRecipes && suggestedRecipes.length > 0 ? (
-                                <View style={styles.suggestionsWrapper}>
-                                    <Text style={styles.suggestionsHeader}>Danh sách gợi ý</Text>
+                            <View style={styles.suggestionsWrapper}>
+                                <Text style={styles.suggestionsHeader}>Danh sách gợi ý</Text>
+                                {suggestedRecipes && suggestedRecipes.length > 0 ? (
                                     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.suggestionsScroll}>
                                         {suggestedRecipes.map(recipe => (
                                             <TouchableOpacity key={recipe.id} style={styles.suggestionCard} onPress={() => handleRecipePress(recipe)}>
@@ -327,12 +330,20 @@ const ExplorationView = ({ navigation, selectedDate, existingPlans, onPlanUpdate
                                             </TouchableOpacity>
                                         ))}
                                     </ScrollView>
-                                </View>
-                            ) : null}
-
-                            {!suggestedRecipes?.length && !selectedMeals?.breakfast?.length && !selectedMeals?.lunch?.length && !selectedMeals?.dinner?.length && (
-                                <Text style={styles.emptyText}>Chưa có gợi ý. Nhấn refresh để AI lập thực đơn.</Text>
-                            )}
+                                ) : (
+                                    <View style={{ padding: SPACING.lg, alignItems: 'center', backgroundColor: COLORS.white, borderRadius: RADIUS.lg, marginHorizontal: SPACING.sm }}>
+                                        <Text style={{ ...TYPOGRAPHY.bodyRegular, color: COLORS.textMuted, marginBottom: SPACING.md, textAlign: 'center' }}>
+                                            Đã hết món gợi ý, hãy bấm làm mới nhé!
+                                        </Text>
+                                        <TouchableOpacity 
+                                            style={{ backgroundColor: COLORS.primaryFade, paddingHorizontal: 16, paddingVertical: 10, borderRadius: RADIUS.md }}
+                                            onPress={() => fetchDailyMeals(suggestionMode, true)}
+                                        >
+                                            <Text style={{ fontFamily: FONTS.bold, color: COLORS.primary }}>Tự động lên thêm món</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
+                            </View>
 
                             {(suggestedRecipes?.length > 0 || selectedMeals?.breakfast?.length > 0) && (
                                 <View style={styles.dividerFull} />

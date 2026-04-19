@@ -11,7 +11,8 @@ import {
     Platform,
     FlatList,
     Image,
-    Alert
+    Alert,
+    Animated
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -23,8 +24,39 @@ import { familyRecipeMatcherService } from '../services/familyRecipeMatcherServi
 import FamilyCompatibilityBadge from '../components/FamilyCompatibilityBadge';
 import RecipeImage from '../components/RecipeImage';
 
+const CookingLoadingVisual = () => {
+    const bounceAnim = React.useRef(new Animated.Value(0)).current;
+
+    React.useEffect(() => {
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(bounceAnim, {
+                    toValue: -20,
+                    duration: 400,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(bounceAnim, {
+                    toValue: 0,
+                    duration: 500,
+                    useNativeDriver: true,
+                })
+            ])
+        ).start();
+    }, [bounceAnim]);
+
+    return (
+        <View style={styles.loadingContainer}>
+            <Animated.View style={{ transform: [{ translateY: bounceAnim }] }}>
+                <Text style={{ fontSize: 70 }}>👨‍🍳🍳</Text>
+            </Animated.View>
+            <Text style={styles.loadingTitle}>Bếp trưởng AI đang nêm nếm...</Text>
+            <Text style={styles.loadingSub}>Đang lựa chọn những món tuyệt vời nhất cho bạn</Text>
+        </View>
+    );
+};
+
 const AIAutoScreen = ({ navigation, route }) => {
-    const { initialPrompt } = route.params || {};
+    const { initialPrompt, systemPrompt } = route.params || {};
     const [prompt, setPrompt] = useState(initialPrompt || '');
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState([]);
@@ -44,7 +76,28 @@ const AIAutoScreen = ({ navigation, route }) => {
             const { data: { user } } = await supabase.auth.getUser();
             const user_id = user?.id;
 
-            const result = await recipeService.suggestRecipesGenAI(query, 'AI Search', user_id);
+            const dynamicPrompt = `Bạn là một chuyên gia ẩm thực chuyên lên thực đơn cho các gia đình Việt Nam.
+Nhiệm vụ của bạn là gợi ý các món ăn ngon, thiết thực và bắt buộc phải đáp ứng yêu cầu đầu vào.
+
+YÊU CẦU HOẶC NGUYÊN LIỆU CHÍNH: "${query}"
+
+RÀNG BUỘC TỐI THƯỢNG:
+1. Bạn TUYỆT ĐỐI KHÔNG được gợi ý bất kỳ món ăn nào không phản ánh đúng yêu cầu "${query}".
+2. Yêu cầu "${query}" phải đóng vai trò là thành phần định hình món ăn (ví dụ nếu là nguyên liệu thì là nguyên liệu chính, nếu là chế độ ăn thì phải tuân thủ nghiêm ngặt).
+3. Các món ăn phải thực tế, dễ nấu và phù hợp với khẩu vị bữa cơm gia đình Việt Nam.
+
+ĐỊNH DẠNG ĐẦU RA BẮT BUỘC (JSON):
+Trình bày danh sách các món ăn trong 1 đối tượng JSON duy nhất có dạng { "recipes": [ ... ] }.
+Với mỗi món ăn, hãy trình bày theo cấu trúc JSON sau:
+- "title": Tên món ăn
+- "reason": Giải thích ngắn gọn 1 câu về sự phù hợp của món ăn với yêu cầu "${query}".
+- "ingredients": Mảng các chuỗi, bắt buộc liệt kê các nguyên liệu liên quan đến "${query}" đầu tiên.
+- "instructions": Chuỗi mô tả các bước nấu, trong đó chỉ rõ bước xử lý liên quan đến "${query}".
+- "image_search": Từ khóa tiếng Anh ngắn gọn để tìm ảnh thực tế của món ăn.`;
+
+            const activeCustomPrompt = (query === initialPrompt && systemPrompt) ? systemPrompt : dynamicPrompt;
+
+            const result = await recipeService.suggestRecipesGenAI(query, 'AI Search', user_id, activeCustomPrompt);
             if (result.success) {
                 let aiRecipes = result.recipes;
 
@@ -88,6 +141,9 @@ const AIAutoScreen = ({ navigation, route }) => {
                         <FamilyCompatibilityBadge familyScore={item.familyScore} compact />
                     )}
                 </View>
+                {item.reason ? (
+                    <Text style={styles.cardReason} numberOfLines={2}>{item.reason}</Text>
+                ) : null}
                 <View style={styles.cardMeta}>
                     <View style={styles.metaItem}>
                         <MaterialIcons name="timer" size={14} color={COLORS.primary} />
@@ -125,6 +181,7 @@ const AIAutoScreen = ({ navigation, route }) => {
                             value={prompt}
                             onChangeText={setPrompt}
                             multiline
+                            scrollEnabled={true}
                         />
                     </View>
                     <TouchableOpacity
@@ -143,7 +200,9 @@ const AIAutoScreen = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
 
-                {results.length > 0 ? (
+                {loading ? (
+                    <CookingLoadingVisual />
+                ) : results.length > 0 ? (
                     <FlatList
                         data={results}
                         renderItem={renderRecipeCard}
@@ -202,6 +261,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.primaryMuted,
         minHeight: 80,
+        maxHeight: 160,
     },
     input: {
         flex: 1,
@@ -209,6 +269,7 @@ const styles = StyleSheet.create({
         ...TYPOGRAPHY.bodyLarge,
         color: COLORS.textPrimary,
         paddingTop: 0,
+        minHeight: 40,
     },
     searchBtn: {
         backgroundColor: COLORS.primary,
@@ -291,6 +352,30 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'flex-start',
         gap: 4,
+    },
+    cardReason: {
+        ...TYPOGRAPHY.caption,
+        color: COLORS.textSecondary,
+        fontStyle: 'italic',
+        marginTop: 4,
+        marginBottom: 2,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SPACING.xl,
+    },
+    loadingTitle: {
+        ...TYPOGRAPHY.heading3,
+        color: COLORS.textPrimary,
+        marginTop: SPACING.xl,
+    },
+    loadingSub: {
+        ...TYPOGRAPHY.bodyRegular,
+        color: COLORS.textMuted,
+        marginTop: SPACING.sm,
+        textAlign: 'center',
     },
 });
 

@@ -171,26 +171,26 @@ const ChefChatScreen = ({ route, navigation }) => {
     );
 
     return (
-        <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <SafeAreaView style={styles.container}>
+            {/* Header */}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <MaterialIcons name="chevron-left" size={32} color={COLORS.textPrimary} />
+                </TouchableOpacity>
+                <View style={styles.headerCenter}>
+                    <Text style={styles.headerTitle}>Bếp Trưởng AI</Text>
+                    <View style={styles.onlineIndicator}>
+                        <View style={styles.greenDot} />
+                        <Text style={styles.onlineText}>Đang trực tuyến</Text>
+                    </View>
+                </View>
+                <View style={styles.placeholder} />
+            </View>
+
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 100}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}
             >
-                {/* Header */}
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <MaterialIcons name="chevron-left" size={32} color={COLORS.textPrimary} />
-                    </TouchableOpacity>
-                    <View style={styles.headerCenter}>
-                        <Text style={styles.headerTitle}>Bếp Trưởng AI</Text>
-                        <View style={styles.onlineIndicator}>
-                            <View style={styles.greenDot} />
-                            <Text style={styles.onlineText}>Đang trực tuyến</Text>
-                        </View>
-                    </View>
-                    <View style={styles.placeholder} />
-                </View>
 
                 <FlatList
                     ref={flatListRef}
