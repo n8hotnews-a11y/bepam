@@ -3,6 +3,7 @@
     "name": "Bếp Ấm",
     "slug": "mobile",
     "version": "1.0.0",
+    "entryPoint": "./index.js",
     "sdkVersion": "55.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,6 +29,8 @@
       "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
       "package": "com.comnha.mobile"
@@ -51,6 +54,12 @@
       "eas": {
         "projectId": "c28b7f16-60cc-4251-abdb-5f4eb4f76c70"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c28b7f16-60cc-4251-abdb-5f4eb4f76c70"
     }
   }
 }

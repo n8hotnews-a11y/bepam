@@ -33,5 +33,31 @@
 ### 2. Clone dự án
 ```bash
 git clone https://github.com/n8hotnews-a11y/bepam.git
-cd bep-am# bepam
-# bepam
+cd bep-am
+
+---
+
+## 📱 Cập nhật ứng dụng tự động (OTA Updates bằng Expo EAS)
+
+Thay vì phải build lại file APK mỗi khi có thay đổi code React Native hoặc UI, bạn có thể đẩy bản cập nhật trực tiếp xuống điện thoại thông qua **EAS Update**.
+
+### Bước 1: Cài đặt và cấu hình thư viện Updates
+Đi vào thư mục `mobile` và chạy 2 lệnh sau:
+```bash
+npx expo install expo-updates
+eas update:configure
+```
+
+### Bước 2: Build lại APK một lần nữa
+Vì ứng dụng hiện tại trên điện thoại chưa có module nhận update, bạn cần build lại APK **một lần duy nhất** để nhúng thư viện OTA vào bên trong.
+```bash
+eas build --platform android --profile preview
+```
+Cài đặt file APK mới này vào điện thoại để bắt đầu nhận các bản cập nhật OTA trong tương lai.
+
+### Bước 3: Đẩy bản cập nhật (OTA Update)
+Sau khi thay đổi code, để đẩy code mới xuống tất cả điện thoại đã cài APK ở Bước 2, bạn chỉ cần gõ lệnh:
+```bash
+eas update --branch preview --message "Mô tả tính năng thay đổi ở bản cập nhật này"
+```
+Khi người dùng mở ứng dụng, bản cập nhật sẽ được tải ngầm ở background và áp dụng vào lần mở ứng dụng tiếp theo mà không cần phải truy cập Store hay tải lại file APK.

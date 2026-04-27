@@ -350,37 +350,16 @@ const ShoppingListScreen = ({ navigation }) => {
         </View>
     ), [openBottomSheet]);
 
-    const getStrictAIPrompt = (ingredient) => `Bạn là một chuyên gia ẩm thực chuyên lên thực đơn cho các gia đình Việt Nam.
-            Nhiệm vụ của bạn là gợi ý các món ăn ngon, thiết thực và bắt buộc phải sử dụng nguyên liệu đầu vào.
-
-            NGUYÊN LIỆU CHÍNH: "${ingredient}"
-
-            RÀNG BUỘC TỐI THƯỢNG:
-            1. Bạn TUYỆT ĐỐI KHÔNG được gợi ý bất kỳ món ăn nào không có chứa nguyên liệu "${ingredient}".
-            2. Nguyên liệu "${ingredient}" phải đóng vai trò là thành phần chính hoặc linh hồn của món ăn, không phải gia vị trang trí.
-            3. Các món ăn phải thực tế, dễ nấu và phù hợp với khẩu vị bữa cơm gia đình Việt Nam.
-
-            ĐỊNH DẠNG ĐẦU RA BẮT BUỘC (JSON):
-            Trình bày danh sách các món ăn trong 1 đối tượng JSON duy nhất có dạng { "recipes": [ ... ] }.
-            Với mỗi món ăn, hãy trình bày theo cấu trúc JSON sau:
-            - "title": Tên món ăn
-            - "reason": Giải thích ngắn gọn 1 câu về cách "${ingredient}" làm nên hương vị món ăn. Tại sao món này phù hợp.
-            - "ingredients": Mảng các chuỗi, bắt buộc liệt kê "${ingredient}" đầu tiên.
-            - "instructions": Chuỗi mô tả các bước nấu, trong đó chỉ rõ bước chế biến "${ingredient}".
-            - "image_search": Từ khóa tiếng Anh ngắn gọn để tìm ảnh thực tế của món ăn.`;
-
     const handleIngredientSearch = () => {
         const text = ingredientInput.trim();
         if (!text) return;
         Keyboard.dismiss();
-        const systemPrompt = getStrictAIPrompt(text);
-        navigation.navigate('AIAuto', { initialPrompt: text, systemPrompt: systemPrompt });
+        navigation.navigate('AIIngredient', { initialPrompt: text });
         setIngredientInput('');
     };
 
     const handleQuickChip = (chipText) => {
-        const systemPrompt = getStrictAIPrompt(chipText);
-        navigation.navigate('AIAuto', { initialPrompt: chipText, systemPrompt: systemPrompt });
+        navigation.navigate('AIIngredient', { initialPrompt: chipText });
     };
 
     const renderHeader = useCallback(() => (

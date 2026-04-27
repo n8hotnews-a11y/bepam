@@ -120,29 +120,11 @@ const ScanAnalyzingScreen = ({ navigation, route }) => {
                 if (items && items.length > 0) {
                     const allNames = items.map(i => i.name || i).join(', ');
                     const initialPrompt = `${allNames}`;
-                    const systemPrompt = `Bạn là một chuyên gia ẩm thực chuyên lên thực đơn cho các gia đình Việt Nam.
-Nhiệm vụ của bạn là gợi ý các món ăn ngon, thiết thực và bắt buộc phải sử dụng nguyên liệu đầu vào.
-
-NGUYÊN LIỆU CHÍNH: "${allNames}"
-
-RÀNG BUỘC TỐI THƯỢNG:
-1. Bạn TUYỆT ĐỐI KHÔNG được gợi ý bất kỳ món ăn nào không có chứa nguyên liệu "${allNames}".
-2. Nguyên liệu "${allNames}" phải đóng vai trò là thành phần chính hoặc linh hồn của món ăn, không phải gia vị trang trí.
-3. Các món ăn phải thực tế, dễ nấu và phù hợp với khẩu vị bữa cơm gia đình Việt Nam.
-
-ĐỊNH DẠNG ĐẦU RA BẮT BUỘC (JSON):
-Trình bày danh sách các món ăn trong 1 đối tượng JSON duy nhất có dạng { "recipes": [ ... ] }.
-Với mỗi món ăn, hãy trình bày theo cấu trúc JSON sau:
-- "title": Tên món ăn
-- "reason": Giải thích ngắn gọn 1 câu về cách "${allNames}" làm nên hương vị món ăn. Tại sao món này phù hợp.
-- "ingredients": Mảng các chuỗi, bắt buộc liệt kê "${allNames}" đầu tiên.
-- "instructions": Chuỗi mô tả các bước nấu, trong đó chỉ rõ bước chế biến "${allNames}".
-- "image_search": Từ khóa tiếng Anh ngắn gọn để tìm ảnh thực tế của món ăn.`;
 
                     // Short delay for completion animation to be seen
                     setTimeout(() => {
                         if (mounted) {
-                            navigation.replace('AIAuto', { initialPrompt, systemPrompt });
+                            navigation.replace('AIIngredient', { initialPrompt });
                         }
                     }, 600);
                 } else {

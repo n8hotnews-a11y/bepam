@@ -26,6 +26,7 @@ import FamilyMembersScreen from '../screens/FamilyMembersScreen';
 import AddEditFamilyMemberScreen from '../screens/AddEditFamilyMemberScreen';
 import FamilyScreen from '../screens/FamilyScreen';
 import AIAutoScreen from '../screens/AIAutoScreen';
+import AIIngredientScreen from '../screens/AIIngredientScreen';
 import FilterScreen from '../screens/FilterScreen';
 
 
@@ -167,6 +168,7 @@ const AppNavigator = () => {
                             <Stack.Screen name="FamilyMembers" component={FamilyMembersScreen} />
                             <Stack.Screen name="AddEditFamilyMember" component={AddEditFamilyMemberScreen} />
                             <Stack.Screen name="AIAuto" component={AIAutoScreen} />
+                            <Stack.Screen name="AIIngredient" component={AIIngredientScreen} />
                             <Stack.Screen name="Filter" component={FilterScreen} />
 
 

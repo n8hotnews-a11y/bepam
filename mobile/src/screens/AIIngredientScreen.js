@@ -55,8 +55,8 @@ const CookingLoadingVisual = () => {
     );
 };
 
-const AIAutoScreen = ({ navigation, route }) => {
-    const { initialPrompt, systemPrompt } = route.params || {};
+const AIIngredientScreen = ({ navigation, route }) => {
+    const { initialPrompt } = route.params || {};
     const [prompt, setPrompt] = useState(initialPrompt || '');
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState([]);
@@ -67,6 +67,25 @@ const AIAutoScreen = ({ navigation, route }) => {
         }
     }, [initialPrompt]);
 
+    const getStrictAIPrompt = (ingredient) => `Bạn là một chuyên gia ẩm thực chuyên lên thực đơn cho các gia đình Việt Nam.
+Nhiệm vụ của bạn là gợi ý các món ăn ngon, thiết thực và bắt buộc phải sử dụng nguyên liệu đầu vào.
+
+NGUYÊN LIỆU CHÍNH: "${ingredient}"
+
+RÀNG BUỘC TỐI THƯỢNG:
+1. Bạn TUYỆT ĐỐI KHÔNG được gợi ý bất kỳ món ăn nào không có chứa nguyên liệu "${ingredient}".
+2. Nguyên liệu "${ingredient}" phải đóng vai trò là thành phần chính hoặc linh hồn của món ăn, không phải gia vị trang trí.
+3. Các món ăn phải thực tế, dễ nấu và phù hợp với khẩu vị bữa cơm gia đình Việt Nam.
+
+ĐỊNH DẠNG ĐẦU RA BẮT BUỘC (JSON):
+Trình bày danh sách các món ăn trong 1 đối tượng JSON duy nhất có dạng { "recipes": [ ... ] }.
+Với mỗi món ăn, hãy trình bày theo cấu trúc JSON sau:
+- "title": Tên món ăn
+- "reason": Giải thích ngắn gọn 1 câu về cách "${ingredient}" làm nên hương vị món ăn. Tại sao món này phù hợp.
+- "ingredients": Mảng các chuỗi, bắt buộc liệt kê "${ingredient}" đầu tiên.
+- "instructions": Chuỗi mô tả các bước nấu, trong đó chỉ rõ bước chế biến "${ingredient}".
+- "image_search": Từ khóa tiếng Anh ngắn gọn để tìm ảnh thực tế của món ăn.`;
+
     const handleSearch = async (overridePrompt = null) => {
         const query = (typeof overridePrompt === 'string' ? overridePrompt : prompt);
         if (!query || !query.trim()) return;
@@ -76,26 +95,9 @@ const AIAutoScreen = ({ navigation, route }) => {
             const { data: { user } } = await supabase.auth.getUser();
             const user_id = user?.id;
 
-            const dynamicPrompt = `Bạn là siêu đầu bếp AI chuyên lên thực đơn và tư vấn ẩm thực cho gia đình Việt Nam.
-                Khách hàng vừa đưa ra yêu cầu: "${query}"
+            const activeCustomPrompt = getStrictAIPrompt(query);
 
-                NHIỆM VỤ CỦA BẠN:
-                1. Phân tích yêu cầu "${query}" của khách hàng và đưa ra các gợi ý món ăn thật chính xác, phù hợp nhất với ngữ cảnh, sở thích, hoặc chế độ ăn được yêu cầu. Đừng trả lời chung chung!
-                2. Mỗi món ăn gợi ý phải có tính thực tế cao, hương vị ngon miệng, dễ nấu với nguyên liệu phổ thông ở Việt Nam. Khẩu vị đặc trưng cho bữa cơm Việt.
-                3. Giải thích ngắn gọn, thuyết phục tại sao món ăn này là lựa chọn hoàn hảo cho yêu cầu của khách.
-
-                ĐỊNH DẠNG ĐẦU RA BẮT BUỘC (JSON):
-                Trình bày danh sách các món ăn trong 1 đối tượng JSON duy nhất có dạng { "recipes": [ ... ] }. Tuyệt đối không thêm văn bản nằm ngoài JSON.
-                Với mỗi món ăn, hãy trình bày theo cấu trúc JSON sau:
-                - "title": Tên món ăn (Ví dụ: Canh chua cá lóc)
-                - "reason": Giải thích 1 câu vì sao món ăn này cực kì phù hợp với yêu cầu: "${query}"
-                - "ingredients": Mảng các chuỗi nguyên liệu cần thiết để nấu món ăn này.
-                - "instructions": Chuỗi mô tả các bước nấu ăn tóm tắt và cực kỳ dễ hiểu.
-                - "image_search": Từ khóa tiếng Anh ngắn gọn và chính xác để tìm ảnh minh họa đẹp nhất của món ăn này.`;
-
-            const activeCustomPrompt = dynamicPrompt;
-
-            const result = await recipeService.suggestRecipesGenAI(query, 'AI Search', user_id, activeCustomPrompt);
+            const result = await recipeService.suggestRecipesGenAI(query, 'AI Ingredient', user_id, activeCustomPrompt);
             if (result.success) {
                 let aiRecipes = result.recipes;
 
@@ -162,7 +164,7 @@ const AIAutoScreen = ({ navigation, route }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
                     <MaterialIcons name="arrow-back" size={24} color={COLORS.textPrimary} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>AI Auto Search</Text>
+                <Text style={styles.headerTitle}>Gợi ý từ Nguyên liệu</Text>
                 <View style={{ width: 40 }} />
             </View>
 
@@ -172,10 +174,10 @@ const AIAutoScreen = ({ navigation, route }) => {
             >
                 <View style={styles.searchSection}>
                     <View style={styles.inputWrapper}>
-                        <MaterialIcons name="auto-awesome" size={24} color={COLORS.primary} />
+                        <MaterialIcons name="kitchen" size={24} color={COLORS.primary} />
                         <TextInput
                             style={styles.input}
-                            placeholder="Món gì cho người ăn kiêng? Món nhậu đơn giản?..."
+                            placeholder="Nhập tên nguyên liệu (VD: Thịt gà, hành tây...)"
                             placeholderTextColor={COLORS.textMuted}
                             value={prompt}
                             onChangeText={setPrompt}
@@ -192,8 +194,8 @@ const AIAutoScreen = ({ navigation, route }) => {
                             <ActivityIndicator color={COLORS.white} />
                         ) : (
                             <>
-                                <MaterialIcons name="send" size={20} color={COLORS.white} />
-                                <Text style={styles.searchBtnText}>Tìm với AI</Text>
+                                <MaterialIcons name="restaurant-menu" size={20} color={COLORS.white} />
+                                <Text style={styles.searchBtnText}>Tìm món ăn</Text>
                             </>
                         )}
                     </TouchableOpacity>
@@ -212,10 +214,10 @@ const AIAutoScreen = ({ navigation, route }) => {
                     />
                 ) : (
                     <View style={styles.emptyState}>
-                        <MaterialIcons name="psychology" size={64} color={COLORS.primaryMuted} />
-                        <Text style={styles.emptyText}>Hỏi Bếp Trưởng bất cứ điều gì!</Text>
+                        <MaterialIcons name="restaurant-menu" size={64} color={COLORS.primaryMuted} />
+                        <Text style={styles.emptyText}>Tìm món theo nguyên liệu</Text>
                         <Text style={styles.emptySubText}>
-                            Ví dụ: "Gợi ý bữa tối lãng phí ít ỏi cho 2 người" hoặc "Món ăn dặm từ cà rốt"
+                            Hãy nhập các nguyên liệu bạn đang có để Bếp Trưởng chuẩn bị một bữa ăn tuyệt vời nhé!
                         </Text>
                     </View>
                 )}
@@ -378,4 +380,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AIAutoScreen;
+export default AIIngredientScreen;

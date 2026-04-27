@@ -138,7 +138,7 @@ const MealPlanScreen = ({ navigation, route }) => {
             item.image,
             targetSlot.date,
             targetSlot.mealType,
-            item 
+            item
         );
 
         if (result.success) {
@@ -320,8 +320,8 @@ const MealPlanScreen = ({ navigation, route }) => {
                     </ScrollView>
                 </View>
             ) : activeTab === 'recipes' ? (
-                <ExplorationView 
-                    navigation={navigation} 
+                <ExplorationView
+                    navigation={navigation}
                     selectedDate={selectedDate}
                     existingPlans={plans.filter(p => p.date === selectedDate)}
                     onPlanUpdated={fetchPlans}

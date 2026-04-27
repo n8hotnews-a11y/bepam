@@ -70,9 +70,8 @@ const OCRReviewScreen = ({ navigation, route }) => {
                         { 
                             text: 'Gợi ý món', 
                             onPress: () => {
-                                // Mở màn AI Auto với câu lệnh mặc định
-                                const prompt = "Các món ăn ngon từ nguyên liệu vừa quét phù hợp với khẩu vị của gia đình";
-                                navigation.navigate('AIAuto', { initialPrompt: prompt });
+                                const names = selectedIndices.map(idx => scannedItems[idx].matchedItem?.name || scannedItems[idx].originalLine).join(', ');
+                                navigation.navigate('AIIngredient', { initialPrompt: names });
                             }
                         },
                         { 
